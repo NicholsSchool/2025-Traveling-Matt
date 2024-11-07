@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class DriveTrain implements DriveConstants{
     /* Public OpMode members. */
 
-    public BNO055IMU imu;
+//    public BNO055IMU imu;
     public DcMotor rearMotor, rightMotor, leftMotor;
     public RevBlinkinLedDriver blinkin;
 
@@ -29,10 +29,10 @@ public class DriveTrain implements DriveConstants{
     /* local OpMode members. */
     HardwareMap hwMap;
 
-    public void init( HardwareMap nowIknowmyabcshwMap ) {
+    public void init( HardwareMap hwMap ) {
 
         // Saving a reference to the Hardware map...
-        this.hwMap = nowIknowmyabcshwMap;
+        this.hwMap = hwMap;
 
         /*
          *  Motors
@@ -53,12 +53,12 @@ public class DriveTrain implements DriveConstants{
         rightMotor.setZeroPowerBehavior( DcMotor.ZeroPowerBehavior.BRAKE );
         leftMotor.setZeroPowerBehavior( DcMotor.ZeroPowerBehavior.BRAKE );
 
-        /*
-         *  Blinkin
-         */
-
-        // Instantiating Blinkin...
-        blinkin = hwMap.get( RevBlinkinLedDriver.class, "Blinkin" );
+//        /*
+//         *  Blinkin
+//         */
+//
+//        // Instantiating Blinkin...
+//        blinkin = hwMap.get( RevBlinkinLedDriver.class, "Blinkin" );
 
 
         /*
@@ -66,12 +66,12 @@ public class DriveTrain implements DriveConstants{
          */
 
         // Instantiating IMU Parameters, setting angleUnit...
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+//        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+//        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
 
         // Instantiating IMU... Initializing it with the above Parameters...
-        imu = hwMap.get( BNO055IMU.class, "IMU" );
-        imu.initialize( parameters );
+        //imu = hwMap.get( BNO055IMU.class, "IMU" );
+        //imu.initialize( parameters );
     }
 
 
@@ -125,18 +125,6 @@ public class DriveTrain implements DriveConstants{
      */
     public void fieldOriented( double speed, double spinSpeed, double angle, double deltaHeading )
     {
-        double sum = speed + spinSpeed;
-
-        if( lowGear )
-        {
-            speed = ( speed / sum ) * 0.5;
-            spinSpeed = ( spinSpeed / sum ) * 0.5;
-        }
-        else
-        {
-            speed /= sum;
-            spinSpeed /= sum;
-        }
 
         if( robotCentric )
         {
@@ -176,42 +164,5 @@ public class DriveTrain implements DriveConstants{
         rearMotor.setMode( DcMotor.RunMode.RUN_USING_ENCODER );
         rightMotor.setMode( DcMotor.RunMode.RUN_USING_ENCODER );
         leftMotor.setMode( DcMotor.RunMode.RUN_USING_ENCODER );
-    }
-
-    /**
-     * Detects the colour we are currently on!
-     * @return 1 if we're on blue, -1 if we're on red, else 0.
-     */
-    public Color colourSensorStuff(){
-        // Pseudo-Code time !!
-        //
-
-
-        ColorSensor colorSensor;
-        float[] hsvValues = new float[]{0F, 0F, 0F};
-
-        // or: float hsvValues[] = {0F, 0F, 0F};
-        colorSensor = hardwareMap.get(ColorSensor.class, "sensor_color");
-
-        // bLedOn represents the state of the LED.
-        boolean LedOn = true;
-
-        // send the info back to driver station using telemetry function.
-        // waitForStart();
-        telemetry.addData("LED", LedOn ? "On" : "Off");
-        telemetry.addData("Clear", colorSensor.alpha());
-        telemetry.addData("Red  ", colorSensor.red());
-        telemetry.addData("Green", colorSensor.green());
-        telemetry.addData("Blue ", colorSensor.blue());
-        telemetry.addData("Hue", hsvValues[0]);
-
-        Color color;
-        if(redThreshold < colorSensor.red())
-            return Color.red;
-        else if(blueThreshold < colorSensor.blue())
-            return Color.blue;
-        else
-            return Color.neutral; // :)
-
     }
 }

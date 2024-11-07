@@ -16,8 +16,8 @@ public class Robot extends OpMode
     Robot robot;
     double power;
     DriveTrain drivetrain;
-    Intake intake;
-    Outtake outtake;
+    //Intake intake;
+    //Outtake outtake;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -25,8 +25,8 @@ public class Robot extends OpMode
     public void init() {
         drivetrain = new DriveTrain();
         drivetrain.init(hardwareMap);
-        intake = new Intake(hardwareMap);
-        outtake = new Outtake(hardwareMap);
+        //intake = new Intake(hardwareMap);
+       // outtake = new Outtake(hardwareMap);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -49,8 +49,10 @@ public class Robot extends OpMode
      */
     @Override
     public void loop(){
-        drivetrain.positionOriented(gamepad1.left_stick_x,gamepad1.left_stick_y);
-
+        drivetrain.fieldOriented(Math.hypot(gamepad1.left_stick_x,gamepad1.left_stick_y), -gamepad1.right_stick_x * 0.3
+        ,Math.toDegrees(Math.atan2(gamepad1.left_stick_y,-gamepad1.left_stick_x)), 0);
+//        intake.intakeSlideManual(gamepad2.left_stick_y);
+//       outtake.outtakeSlideManual(gamepad2.left_stick_x);
     }
 
     /*
