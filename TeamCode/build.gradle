@@ -25,4 +25,11 @@ android {
 
 dependencies {
     implementation project(':FtcRobotController')
+    implementation (name:'navx_ftc-release', ext:'aar')
+}
+
+repositories {
+    flatDir {
+        dirs 'libs', '../TeamCode/navx_libs'
+    }
 }
