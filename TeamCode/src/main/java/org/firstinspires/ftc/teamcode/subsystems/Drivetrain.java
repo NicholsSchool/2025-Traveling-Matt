@@ -17,8 +17,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * Robot Drivetrain
  */
 public class Drivetrain implements DrivetrainConstants {
-    private final DcMotorEx leftDrive, rightDrive, backDrive,
-            frontOdometry, leftOdometry, rightOdometry;
+    private final DcMotorEx leftDrive, rightDrive, backDrive;
     private final AHRS navx;
     private final VectorMotionProfile driveProfile;
     private final MotionProfile turnProfile;
@@ -46,37 +45,23 @@ public class Drivetrain implements DrivetrainConstants {
         leftDrive = hwMap.get(DcMotorEx.class, "leftDrive");
         rightDrive = hwMap.get(DcMotorEx.class, "rightDrive");
         backDrive = hwMap.get(DcMotorEx.class, "backDrive");
-        leftOdometry = hwMap.get(DcMotorEx.class, "leftOdometry");
-        rightOdometry = hwMap.get(DcMotorEx.class, "rightOdometry");
-        frontOdometry = hwMap.get(DcMotorEx.class, "rightShoulder");
+
 
         leftDrive.setDirection(DcMotorEx.Direction.REVERSE);
         rightDrive.setDirection(DcMotorEx.Direction.REVERSE);
         backDrive.setDirection(DcMotorEx.Direction.REVERSE);
-        leftOdometry.setDirection(DcMotorEx.Direction.FORWARD);
-        rightOdometry.setDirection(DcMotorEx.Direction.REVERSE);
-        frontOdometry.setDirection(DcMotorEx.Direction.REVERSE);
 
         leftDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         backDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        leftOdometry.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        rightOdometry.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        frontOdometry.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         leftDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         rightDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         backDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        leftOdometry.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        rightOdometry.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        frontOdometry.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
         leftDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         backDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        leftOdometry.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        rightOdometry.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        frontOdometry.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         leftDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
         rightDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
@@ -132,25 +117,9 @@ public class Drivetrain implements DrivetrainConstants {
      * Updates Robot Pose using Odometry Wheels
      */
     public void update() {
-        int currentLeft = leftOdometry.getCurrentPosition();
-        int currentRight = rightOdometry.getCurrentPosition();
-        int currentFront = frontOdometry.getCurrentPosition();
-
-        double deltaX = (currentLeft - previousLeftPosition + currentRight - previousRightPosition) *
-                INCHES_PER_TICK * STRAFE_ODOMETRY_CORRECTION;
-        double deltaY = (currentFront - previousFrontPosition) *
-                INCHES_PER_TICK * FORWARD_ODOMETRY_CORRECTION;
 
         pose.angle = imuOffset + getCorrectedYaw();
 
-        double averagedHeading = Angles.average(pose.angle, previousHeading);
-
-        pose.x += deltaX * Math.sin(averagedHeading) + deltaY * Math.cos(averagedHeading);
-        pose.y += -deltaX * Math.cos(averagedHeading) + deltaY * Math.sin(averagedHeading);
-
-        previousLeftPosition = currentLeft;
-        previousRightPosition = currentRight;
-        previousFrontPosition = currentFront;
         previousHeading = pose.angle;
     }
 
@@ -210,14 +179,6 @@ public class Drivetrain implements DrivetrainConstants {
         };
     }
 
-    /**
-     * Get the dead wheel position values for telemetry
-     *
-     * @return the left, right, front dead wheel positions
-     */
-    public double[] getOdometryPositions() {
-        return new double[]{previousLeftPosition, previousRightPosition, previousFrontPosition};
-    }
 
     /**
      * The current robot pose
