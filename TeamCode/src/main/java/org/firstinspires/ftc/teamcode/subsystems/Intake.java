@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -26,7 +27,6 @@ public class Intake implements IntakeConstants {
         slide = hwMap.get(DcMotorEx.class, "intakeSlide");
         slide.setDirection(DcMotorEx.Direction.FORWARD);
         slide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        slide.setVelocityPIDFCoefficients(INTAKE_P, INTAKE_I, INTAKE_D, INTAKE_FF);
 
         intakeOne = hwMap.get(CRServoImplEx.class, "intakeOne");
         intakeTwo = hwMap.get(CRServoImplEx.class, "intakeTwo");
@@ -44,6 +44,7 @@ public class Intake implements IntakeConstants {
     }
 
     public void slide(double power){
+        slide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         slide.setPower(power * SLIDE_SPEED);
     }
 
