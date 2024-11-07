@@ -1,32 +1,22 @@
-
 package org.firstinspires.ftc.teamcode;
-
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import java.io.BufferedWriter;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
- * This is NOT an opmode.
- *
+ * This is NOT an op-mode.*
  * This class can be used to define all the specific hardware for a single robot.
  * In this case that robot is a Pushbot.
- * See PushbotTeleopTank_Iterative and others classes starting with "Pushbot" for usage examples.
- *
+ * See PushbotTeleopTank_Iterative and others classes starting with "Pushbot" for usage examples.*
  * This hardware class assumes the following device names have been configured on the robot:
  * Note:  All names are lower case and some have single spaces between words.
  */
-public class DriveTrain {
+public class DriveTrain implements DriveConstants{
     /* Public OpMode members. */
 
     public BNO055IMU imu;
@@ -36,17 +26,13 @@ public class DriveTrain {
     public boolean robotCentric = true;
     public boolean lowGear = false;
 
-
     /* local OpMode members. */
     HardwareMap hwMap;
 
-    public DriveTrain() {}
-
-    public void init( HardwareMap ahwMap ) {
+    public void init( HardwareMap nowIknowmyabcshwMap ) {
 
         // Saving a reference to the Hardware map...
-        hwMap = ahwMap;
-
+        this.hwMap = nowIknowmyabcshwMap;
 
         /*
          *  Motors
@@ -62,18 +48,10 @@ public class DriveTrain {
         rightMotor.setDirection( DcMotorSimple.Direction.REVERSE );
         leftMotor.setDirection( DcMotorSimple.Direction.REVERSE );
 
-        // Setting to run using Encoders...
-        rearMotor.setMode( DcMotor.RunMode.RUN_USING_ENCODERS );
-        rightMotor.setMode( DcMotor.RunMode.RUN_USING_ENCODERS );
-        leftMotor.setMode( DcMotor.RunMode.RUN_USING_ENCODERS );
-
         // Setting 0 Power Behavior...
         rearMotor.setZeroPowerBehavior( DcMotor.ZeroPowerBehavior.BRAKE );
         rightMotor.setZeroPowerBehavior( DcMotor.ZeroPowerBehavior.BRAKE );
         leftMotor.setZeroPowerBehavior( DcMotor.ZeroPowerBehavior.BRAKE );
-
-
-
 
         /*
          *  Blinkin
@@ -174,21 +152,9 @@ public class DriveTrain {
         }
     }
 
-    /**
-     * Combines spinning and linear-like movement to sauce. The robot will move across
-     *  the floor while spinning. (Moves on a line, spinning all the while...)
-     *
-     * @param x the x input or something dude i dunno
-     * @param y refer to my previous comment
-     *
-     */
-    public void positionOriented( double x, double y ){
-        // TODO LATER
-    }
-
 
     /**
-     * Stops the robot's 3 wheels.
+     * Stops the robot's 3 wheels. Do we need this??
      */
     public void stopWheels()
     {
@@ -198,9 +164,8 @@ public class DriveTrain {
         leftMotor.setPower( 0 );
     }
 
-
     /**
-     * Resets the wheels' encoders.
+     * Resets the wheels' encoders. I think we need this :)
      */
     public void resetWheelEncoders()
     {
@@ -211,5 +176,42 @@ public class DriveTrain {
         rearMotor.setMode( DcMotor.RunMode.RUN_USING_ENCODER );
         rightMotor.setMode( DcMotor.RunMode.RUN_USING_ENCODER );
         leftMotor.setMode( DcMotor.RunMode.RUN_USING_ENCODER );
+    }
+
+    /**
+     * Detects the colour we are currently on!
+     * @return 1 if we're on blue, -1 if we're on red, else 0.
+     */
+    public Color colourSensorStuff(){
+        // Pseudo-Code time !!
+        //
+
+
+        ColorSensor colorSensor;
+        float[] hsvValues = new float[]{0F, 0F, 0F};
+
+        // or: float hsvValues[] = {0F, 0F, 0F};
+        colorSensor = hardwareMap.get(ColorSensor.class, "sensor_color");
+
+        // bLedOn represents the state of the LED.
+        boolean LedOn = true;
+
+        // send the info back to driver station using telemetry function.
+        // waitForStart();
+        telemetry.addData("LED", LedOn ? "On" : "Off");
+        telemetry.addData("Clear", colorSensor.alpha());
+        telemetry.addData("Red  ", colorSensor.red());
+        telemetry.addData("Green", colorSensor.green());
+        telemetry.addData("Blue ", colorSensor.blue());
+        telemetry.addData("Hue", hsvValues[0]);
+
+        Color color;
+        if(redThreshold < colorSensor.red())
+            return Color.red;
+        else if(blueThreshold < colorSensor.blue())
+            return Color.blue;
+        else
+            return Color.neutral; // :)
+
     }
 }
