@@ -5,6 +5,7 @@
 *.aab
 
 !libs/*.aar
+!TeamCode/navx_libs/*.aar
 
 # Files for the ART/Dalvik VM
 *.dex
