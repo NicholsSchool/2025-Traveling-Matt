@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.constants.DrivetrainConstants;
 import org.firstinspires.ftc.teamcode.math_utils.Angles;
 import org.firstinspires.ftc.teamcode.math_utils.VectorMotionProfile;
@@ -7,11 +9,14 @@ import org.firstinspires.ftc.teamcode.math_utils.MotionProfile;
 import org.firstinspires.ftc.teamcode.math_utils.Vector;
 import org.firstinspires.ftc.teamcode.math_utils.RobotPose;
 import org.firstinspires.ftc.teamcode.math_utils.SimpleFeedbackController;
+import org.firstinspires.ftc.teamcode.subsystems.components.OpticalSensor;
 
 import com.kauailabs.navx.ftc.AHRS;
 import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+
 
 /**
  * Robot Drivetrain
@@ -24,8 +29,8 @@ public class Drivetrain implements DrivetrainConstants {
     private final SimpleFeedbackController turnController;
     private final RobotPose pose;
     private final boolean isBlueAlliance;
-    private double previousHeading, imuOffset, targetHeading;
-    private int previousLeftPosition, previousRightPosition, previousFrontPosition;
+    private double imuOffset, targetHeading;
+    private OpticalSensor od;
 
     /**
      * Initializes the Drivetrain subsystem
@@ -37,10 +42,11 @@ public class Drivetrain implements DrivetrainConstants {
      * @param isBlue whether we are blue alliance
      */
     public Drivetrain(HardwareMap hwMap, double x, double y, double initialHeading, boolean isBlue) {
-        this.previousHeading = initialHeading;
-        this.imuOffset = initialHeading;
+        this.imuOffset = initialHeading + (isBlue ? Math.PI : 0);
         this.targetHeading = initialHeading;
+        od = new OpticalSensor("otos", hwMap, DistanceUnit.METER, AngleUnit.RADIANS);
         pose = new RobotPose(x, y, initialHeading);
+
 
         leftDrive = hwMap.get(DcMotorEx.class, "leftDrive");
         rightDrive = hwMap.get(DcMotorEx.class, "rightDrive");
@@ -114,50 +120,6 @@ public class Drivetrain implements DrivetrainConstants {
     }
 
     /**
-     * Updates Robot Pose using Odometry Wheels
-     */
-    public void update() {
-
-        pose.angle = imuOffset + getCorrectedYaw();
-
-        previousHeading = pose.angle;
-    }
-
-    /**
-     * Updates Robot Heading using the NavX
-     */
-    public void updateHeadingOnly() {
-        pose.angle = imuOffset + getCorrectedYaw();
-        previousHeading = pose.angle;
-    }
-
-    public void resetFieldOriented() {
-        double yaw = getCorrectedYaw();
-        imuOffset = (isBlueAlliance ? Angles.PI_OVER_TWO : Angles.NEGATIVE_PI_OVER_TWO) - yaw;
-        pose.angle = imuOffset + yaw;
-        previousHeading = pose.angle;
-    }
-
-    /**
-     * Sets the Robot Pose
-     *
-     * @param newPose the new robot pose
-     */
-    public void setPose(RobotPose newPose) {
-        pose.x = newPose.x;
-        pose.y = newPose.y;
-
-        double yaw = getCorrectedYaw();
-        imuOffset = newPose.angle - yaw;
-        pose.angle = imuOffset + yaw;
-        previousHeading = pose.angle;
-    }
-
-    private double getCorrectedYaw() {
-        return Math.toRadians(-navx.getYaw());
-    }
-
-    /**
      * Sets the Drive Wheels to Float Mode
      */
     public void setFloat() {
@@ -177,16 +139,6 @@ public class Drivetrain implements DrivetrainConstants {
                 rightDrive.getVelocity(),
                 backDrive.getVelocity(),
         };
-    }
-
-
-    /**
-     * The current robot pose
-     *
-     * @return the Robot pose (x, y, theta)
-     */
-    public RobotPose getRobotPose() {
-        return pose;
     }
 
     /**
