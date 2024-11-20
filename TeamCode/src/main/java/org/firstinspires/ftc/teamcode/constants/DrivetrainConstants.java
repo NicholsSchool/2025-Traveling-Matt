@@ -4,6 +4,10 @@ package org.firstinspires.ftc.teamcode.constants;
  * Constants for the Drivetrain
  */
 public interface DrivetrainConstants {
+
+    int LEFT_DRIVE_ENC = 2;
+    int RIGHT_DRIVE_ENC = 4;
+    int BACK_DRIVE_ENC = 3;
     /** The Maximum Speed of the Driving Profile */
     double DRIVE_PROFILE_SPEED = 3.0;
 

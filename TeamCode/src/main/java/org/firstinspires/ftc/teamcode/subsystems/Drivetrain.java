@@ -10,8 +10,10 @@ import org.firstinspires.ftc.teamcode.math_utils.Vector;
 import org.firstinspires.ftc.teamcode.math_utils.RobotPose;
 import org.firstinspires.ftc.teamcode.math_utils.SimpleFeedbackController;
 import org.firstinspires.ftc.teamcode.subsystems.components.OpticalSensor;
+import org.firstinspires.ftc.teamcode.subsystems.components.OctoEncoder;
 
 import com.kauailabs.navx.ftc.AHRS;
+import com.qualcomm.hardware.digitalchickenlabs.OctoQuadBase;
 import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -23,6 +25,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  */
 public class Drivetrain implements DrivetrainConstants {
     private final DcMotorEx leftDrive, rightDrive, backDrive;
+    private final OctoEncoder leftEncoder, rightEncoder, backEncoder;
     private final AHRS navx;
     private final VectorMotionProfile driveProfile;
     private final MotionProfile turnProfile;
@@ -52,6 +55,9 @@ public class Drivetrain implements DrivetrainConstants {
         rightDrive = hwMap.get(DcMotorEx.class, "rightDrive");
         backDrive = hwMap.get(DcMotorEx.class, "backDrive");
 
+        leftEncoder = new OctoEncoder(hwMap, LEFT_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
+        rightEncoder = new OctoEncoder(hwMap, RIGHT_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
+        backEncoder = new OctoEncoder(hwMap, BACK_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
 
         leftDrive.setDirection(DcMotorEx.Direction.REVERSE);
         rightDrive.setDirection(DcMotorEx.Direction.REVERSE);
