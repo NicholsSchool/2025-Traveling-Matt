@@ -53,9 +53,9 @@ public class Drivetrain implements DrivetrainConstants {
         pose = new RobotPose(x, y, initialHeading);
 
 
-        leftDrive = hwMap.get(DcMotorEx.class, "leftDrive");
-        rightDrive = hwMap.get(DcMotorEx.class, "rightDrive");
-        backDrive = hwMap.get(DcMotorEx.class, "backDrive");
+        leftDrive = hwMap.get(DcMotorEx.class, "LeftDriveMotor");
+        rightDrive = hwMap.get(DcMotorEx.class, "RightDriveMotor");
+        backDrive = hwMap.get(DcMotorEx.class, "BackDriveMotor");
 
         leftDrive.setDirection(DcMotorEx.Direction.REVERSE);
         rightDrive.setDirection(DcMotorEx.Direction.REVERSE);

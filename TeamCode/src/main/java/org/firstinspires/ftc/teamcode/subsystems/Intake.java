@@ -1,46 +1,46 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.teamcode.constants.IntakeConstants;
-import org.firstinspires.ftc.teamcode.math_utils.MotionProfile;
-import org.firstinspires.ftc.teamcode.math_utils.RobotPose;
-import org.firstinspires.ftc.teamcode.math_utils.SimpleFeedbackController;
-import org.firstinspires.ftc.teamcode.math_utils.VectorMotionProfile;
 
 public class Intake implements IntakeConstants {
     DcMotorEx slide;
-    ServoImplEx wristOne, wristTwo;
+    ServoImplEx intakeWristF, intakeWristB;
     CRServoImplEx intakeOne,intakeTwo;
     ColorSensor colorSensor;
+    DigitalChannel intakeMagnet;
     boolean isBlueAlliance;
 
-    public Intake(HardwareMap hwMap,  boolean isBlue) {
-        slide = hwMap.get(DcMotorEx.class, "intakeSlide");
+    public Intake(HardwareMap hwMap,  boolean isBlueAlliance) {
+        slide = hwMap.get(DcMotorEx.class, "IntakeSlideMotor");
         slide.setDirection(DcMotorEx.Direction.FORWARD);
         slide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
-        intakeOne = hwMap.get(CRServoImplEx.class, "intakeOne");
-        intakeTwo = hwMap.get(CRServoImplEx.class, "intakeTwo");
+        intakeOne = hwMap.get(CRServoImplEx.class, "IntakeLeftWheel");
+        intakeTwo = hwMap.get(CRServoImplEx.class, "IntakeRightWheel");
 
         intakeOne.setDirection(DcMotorSimple.Direction.FORWARD);
         intakeTwo.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        wristOne = hwMap.get(ServoImplEx.class, "wristOne");
-        wristTwo = hwMap.get(ServoImplEx.class, "wristTwo");
+        intakeWristF = hwMap.get(ServoImplEx.class, "IntakeWristFront");
+        intakeWristB = hwMap.get(ServoImplEx.class, "IntakeWristBack");
 
-        wristOne.setDirection(Servo.Direction.FORWARD);
-        wristTwo.setDirection(Servo.Direction.REVERSE);
+        intakeWristF.setDirection(Servo.Direction.FORWARD);
+        intakeWristB.setDirection(Servo.Direction.REVERSE);
 
-        isBlueAlliance = isBlue;
+        colorSensor = hwMap.get(ColorSensor.class, "IntakeColor");
+
+        intakeMagnet = hwMap.get(DigitalChannel.class, "IntakeMagnet");
+
+        this.isBlueAlliance = isBlueAlliance;
     }
 
     public void slide(double power){

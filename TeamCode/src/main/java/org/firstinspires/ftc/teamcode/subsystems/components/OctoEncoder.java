@@ -12,7 +12,7 @@ public class OctoEncoder {
     private final int encoderID;
 
     public OctoEncoder(HardwareMap hwMap, int encoderID, OctoQuadBase.EncoderDirection direction) {
-        oq = hwMap.get(OctoQuad.class, "octoquad");
+        oq = hwMap.get(OctoQuad.class, "OctoQuad");
         this.encoderID = encoderID;
         oq.setSingleEncoderDirection(encoderID, direction);
     }

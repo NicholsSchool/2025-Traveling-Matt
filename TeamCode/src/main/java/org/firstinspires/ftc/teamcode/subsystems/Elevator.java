@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.hardware.digitalchickenlabs.OctoQuadBase;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.constants.ElevatorConstants;
@@ -15,8 +17,10 @@ import org.firstinspires.ftc.teamcode.subsystems.components.OctoEncoder;
 public class Elevator implements ElevatorConstants {
     private final DcMotorEx leftSlideMotor, rightSlideMotor;
     private final OctoEncoder slideEncoder;
-    private final CRServoImplEx leftWheelServo;
-    private final CRServoImplEx rightWheelServo;
+    private final CRServoImplEx leftCarriageServo;
+    private final CRServoImplEx rightCarriageServo;
+    private final ColorSensor carriageSensor;
+    private final DigitalChannel slideMagnet;
 
     /**
      * Initializes the Arm
@@ -24,26 +28,29 @@ public class Elevator implements ElevatorConstants {
      * @param hardwareMap the hardware map
      */
     public Elevator(HardwareMap hardwareMap) throws Exception {
-        leftSlideMotor = hardwareMap.get(DcMotorEx.class, "leftShoulder");
+        leftSlideMotor = hardwareMap.get(DcMotorEx.class, "leftClimberMotor");
         leftSlideMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         leftSlideMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         leftSlideMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         leftSlideMotor.setDirection(DcMotorEx.Direction.FORWARD);
 
-        rightSlideMotor = hardwareMap.get(DcMotorEx.class, "rightShoulder");
+        rightSlideMotor = hardwareMap.get(DcMotorEx.class, "rightClimberMotor");
         rightSlideMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         rightSlideMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         rightSlideMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         rightSlideMotor.setDirection(DcMotorEx.Direction.FORWARD);
 
-        leftWheelServo = hardwareMap.get(CRServoImplEx.class, "leftWheelServo");
-        leftWheelServo.setDirection(CRServoImplEx.Direction.FORWARD);
+        leftCarriageServo = hardwareMap.get(CRServoImplEx.class, "leftCarriage");
+        leftCarriageServo.setDirection(CRServoImplEx.Direction.FORWARD);
 
-        rightWheelServo = hardwareMap.get(CRServoImplEx.class, "rightWheelServo");
-        rightWheelServo.setDirection(CRServoImplEx.Direction.REVERSE);
+        rightCarriageServo = hardwareMap.get(CRServoImplEx.class, "rightCarriage");
+        rightCarriageServo.setDirection(CRServoImplEx.Direction.REVERSE);
 
         slideEncoder = new OctoEncoder(hardwareMap, SLIDE_ENC_ID, OctoQuadBase.EncoderDirection.FORWARD);
 
+        carriageSensor = hardwareMap.get(ColorSensor.class, "CarriageColor");
+
+        slideMagnet = hardwareMap.get(DigitalChannel.class, "LeftClimberMagnet");
     }
 
 
@@ -56,7 +63,7 @@ public class Elevator implements ElevatorConstants {
     }
 
     public void setCarriageServoSpeed(double inputSpeed) {
-        leftWheelServo.setPower(inputSpeed);
-        rightWheelServo.setPower(inputSpeed);
+        leftCarriageServo.setPower(inputSpeed);
+        rightCarriageServo.setPower(inputSpeed);
     }
 }
