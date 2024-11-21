@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.math_utils.MotionProfile;
 import org.firstinspires.ftc.teamcode.math_utils.Vector;
 import org.firstinspires.ftc.teamcode.math_utils.RobotPose;
 import org.firstinspires.ftc.teamcode.math_utils.SimpleFeedbackController;
+import org.firstinspires.ftc.teamcode.subsystems.components.IndicatorLight;
 import org.firstinspires.ftc.teamcode.subsystems.components.OpticalSensor;
 import org.firstinspires.ftc.teamcode.subsystems.components.OctoEncoder;
 
@@ -26,6 +27,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Drivetrain implements DrivetrainConstants {
     private final DcMotorEx leftDrive, rightDrive, backDrive;
     private final OctoEncoder leftEncoder, rightEncoder, backEncoder;
+    private final IndicatorLight leftLight, rightLight;
     private final AHRS navx;
     private final VectorMotionProfile driveProfile;
     private final MotionProfile turnProfile;
@@ -55,10 +57,6 @@ public class Drivetrain implements DrivetrainConstants {
         rightDrive = hwMap.get(DcMotorEx.class, "rightDrive");
         backDrive = hwMap.get(DcMotorEx.class, "backDrive");
 
-        leftEncoder = new OctoEncoder(hwMap, LEFT_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
-        rightEncoder = new OctoEncoder(hwMap, RIGHT_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
-        backEncoder = new OctoEncoder(hwMap, BACK_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
-
         leftDrive.setDirection(DcMotorEx.Direction.REVERSE);
         rightDrive.setDirection(DcMotorEx.Direction.REVERSE);
         backDrive.setDirection(DcMotorEx.Direction.REVERSE);
@@ -78,6 +76,14 @@ public class Drivetrain implements DrivetrainConstants {
         leftDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
         rightDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
         backDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
+
+
+        leftEncoder = new OctoEncoder(hwMap, LEFT_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
+        rightEncoder = new OctoEncoder(hwMap, RIGHT_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
+        backEncoder = new OctoEncoder(hwMap, BACK_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
+
+        leftLight = new IndicatorLight(hwMap, "leftLight", IndicatorLight.Colour.GREEN);
+        rightLight = new IndicatorLight(hwMap, "rightLight", IndicatorLight.Colour.GREEN);
 
         navx = AHRS.getInstance(hwMap.get(NavxMicroNavigationSensor.class,
                 "navx"), AHRS.DeviceDataType.kProcessedData);
