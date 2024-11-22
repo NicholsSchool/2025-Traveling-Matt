@@ -19,7 +19,7 @@ public class Intake implements IntakeConstants {
     ServoImplEx intakeWristF, intakeWristB;
     CRServoImplEx intakeOne,intakeTwo;
     ColorSensor colorSensor;
-    DigitalChannel intakeMagnet;
+    DigitalChannel slideMagnet;
     boolean isBlueAlliance;
 
     public Intake(HardwareMap hwMap,  boolean isBlueAlliance) {
@@ -43,12 +43,21 @@ public class Intake implements IntakeConstants {
 
         colorSensor = hwMap.get(ColorSensor.class, "IntakeColor");
 
-        intakeMagnet = hwMap.get(DigitalChannel.class, "IntakeMagnet");
+        slideMagnet = hwMap.get(DigitalChannel.class, "IntakeMagnet");
 
         this.isBlueAlliance = isBlueAlliance;
+
+        periodic();
     }
 
-    public int getSlideTicks() { return slideEncoder.getPosition(); }
+    public void periodic() {
+        Thread periodicThread = new Thread(() -> {
+            while (true) { if (slideMagnet.getState()) { slideEncoder.reset(); } }
+        });
+        periodicThread.start();
+    }
+
+    public int getEncoderTicks() { return slideEncoder.getPosition(); }
 
     public double[] getWristServoPositions() {
         return new double[]{intakeWristF.getPosition(), intakeWristB.getPosition()};

@@ -25,4 +25,8 @@ public class OctoEncoder {
         return (double) oq.readSingleVelocity(encoderID);
     }
 
+    public void reset() {
+        oq.resetSinglePosition(encoderID);
+    }
+
 }

@@ -13,8 +13,6 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 
-import java.util.ResourceBundle;
-
 @TeleOp(name="Dev Telemetry", group="Dev")
 public class DevTelemetry extends OpMode {
 
@@ -87,7 +85,7 @@ public class DevTelemetry extends OpMode {
         if (showIntakeTelem) {
             telemetry.addLine("=============INTAKE===========");
 
-            telemetry.addData("Slide Encoder Position", intake.getSlideTicks());
+            telemetry.addData("Slide Encoder Position", intake.getEncoderTicks());
             telemetry.addData("Wrist Servo Positions", intake.getWristServoPositions());
 
             telemetry.addLine("==============================\n");

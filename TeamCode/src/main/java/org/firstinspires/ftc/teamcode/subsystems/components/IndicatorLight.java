@@ -67,15 +67,16 @@ public class IndicatorLight implements IndicatorConstants {
     }
 
     public void setColourSequence(@NonNull Colour[] colours, int delay) {
-        for (Colour colour : colours) {
-            setColour(colour);
-            try {
-                Thread.sleep(delay);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                setColour(defaultColour);
-                return;
+        Thread sequenceThread = new Thread(() -> {
+            for (Colour colour : colours) {
+                setColour(colour);
+                try { Thread.sleep(delay); } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    setColour(defaultColour);
+                    return;
+                }
             }
-        }
+        });
+        sequenceThread.start();
     }
 }
