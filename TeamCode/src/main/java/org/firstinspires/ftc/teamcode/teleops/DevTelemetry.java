@@ -34,7 +34,7 @@ public class DevTelemetry extends OpMode {
 
         drivetrain = new Drivetrain(hardwareMap, 0, 0, 0, false);
         elevator = new Elevator(hardwareMap);
-        intake = new Intake(hardwareMap, false);
+        intake = new Intake(hardwareMap);
 
         dashboard = FtcDashboard.getInstance();
         Telemetry dashboardTelemetry = dashboard.getTelemetry();
@@ -47,6 +47,8 @@ public class DevTelemetry extends OpMode {
     public void loop() {
 
         controller1.update();
+        intake.periodic();
+        elevator.periodic();
 
         drivetrain.leftLight.setColourSequence(IndicatorConstants.ORANGE_FLASH, 1000);
         drivetrain.rightLight.setColourSequence(IndicatorConstants.ORANGE_FLASH, 1000);
@@ -93,5 +95,4 @@ public class DevTelemetry extends OpMode {
 
 
     }
-
 }

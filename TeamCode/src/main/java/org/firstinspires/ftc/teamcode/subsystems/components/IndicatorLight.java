@@ -12,6 +12,10 @@ public class IndicatorLight implements IndicatorConstants {
     private final ServoImplEx IndLight;
 
     private final Colour defaultColour;
+    
+    private Thread sequenceThread;
+    private Colour[] lastSequence;
+    private int lastDelay;
 
     public IndicatorLight(HardwareMap hwMap, String name, Colour defaultColour) {
 
@@ -63,17 +67,25 @@ public class IndicatorLight implements IndicatorConstants {
     }
 
     public void setColour(Colour colour) {
+        sequenceThread.interrupt();
         IndLight.setPosition(getPosForColour(colour));
     }
 
     public void setColourSequence(@NonNull Colour[] colours, int delay) {
-        Thread sequenceThread = new Thread(() -> {
-            for (Colour colour : colours) {
-                setColour(colour);
-                try { Thread.sleep(delay); } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    setColour(defaultColour);
-                    return;
+        if (colours == lastSequence && delay == lastDelay) return;
+
+        if (sequenceThread != null) {
+            sequenceThread.interrupt();
+        }
+        
+        sequenceThread = new Thread(() -> {
+            while (sequenceThread != null && sequenceThread.isAlive()) {
+                for (Colour colour : colours) {
+                    setColour(colour);
+                    try { Thread.sleep(delay); } catch (InterruptedException e) {
+                        setColour(defaultColour);
+                        return;
+                    }
                 }
             }
         });

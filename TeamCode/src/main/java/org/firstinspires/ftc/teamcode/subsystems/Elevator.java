@@ -51,15 +51,10 @@ public class Elevator implements ElevatorConstants {
         carriageSensor = hardwareMap.get(ColorSensor.class, "CarriageColor");
 
         slideMagnet = hardwareMap.get(DigitalChannel.class, "LeftClimberMagnet");
-
-        periodic();
     }
 
     public void periodic() {
-        Thread periodicThread = new Thread(() -> {
-            while (true) { if (slideMagnet.getState()) { slideEncoder.reset(); } }
-        });
-        periodicThread.start();
+        if (slideMagnet.getState()) { slideEncoder.reset(); }
     }
 
     public int getEncoderTicks() { return slideEncoder.getPosition(); }

@@ -14,15 +14,14 @@ import org.firstinspires.ftc.teamcode.constants.IntakeConstants;
 import org.firstinspires.ftc.teamcode.subsystems.components.OctoEncoder;
 
 public class Intake implements IntakeConstants {
-    DcMotorEx slide;
-    OctoEncoder slideEncoder;
-    ServoImplEx intakeWristF, intakeWristB;
-    CRServoImplEx intakeOne,intakeTwo;
-    ColorSensor colorSensor;
-    DigitalChannel slideMagnet;
-    boolean isBlueAlliance;
+    public final DcMotorEx slide;
+    public final OctoEncoder slideEncoder;
+    public final ServoImplEx intakeWristF, intakeWristB;
+    public final CRServoImplEx intakeOne,intakeTwo;
+    public final ColorSensor colorSensor;
+    public final DigitalChannel slideMagnet;
 
-    public Intake(HardwareMap hwMap,  boolean isBlueAlliance) {
+    public Intake(HardwareMap hwMap) {
         slide = hwMap.get(DcMotorEx.class, "IntakeSlideMotor");
         slide.setDirection(DcMotorEx.Direction.FORWARD);
         slide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -45,16 +44,10 @@ public class Intake implements IntakeConstants {
 
         slideMagnet = hwMap.get(DigitalChannel.class, "IntakeMagnet");
 
-        this.isBlueAlliance = isBlueAlliance;
-
-        periodic();
     }
 
     public void periodic() {
-        Thread periodicThread = new Thread(() -> {
-            while (true) { if (slideMagnet.getState()) { slideEncoder.reset(); } }
-        });
-        periodicThread.start();
+        if (slideMagnet.getState()) { slideEncoder.reset(); }
     }
 
     public int getEncoderTicks() { return slideEncoder.getPosition(); }
