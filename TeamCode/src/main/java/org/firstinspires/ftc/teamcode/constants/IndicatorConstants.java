@@ -32,4 +32,6 @@ public interface IndicatorConstants {
 
     IndicatorLight.Colour[] RED_FLASH = new IndicatorLight.Colour[]{IndicatorLight.Colour.RED, IndicatorLight.Colour.BLACK};
 
+    IndicatorLight.Colour[] ORANGE_FLASH = new IndicatorLight.Colour[]{IndicatorLight.Colour.ORANGE, IndicatorLight.Colour.BLACK};
+
 }

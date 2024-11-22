@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.hardware.digitalchickenlabs.OctoQuadBase;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -10,9 +11,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.teamcode.constants.IntakeConstants;
+import org.firstinspires.ftc.teamcode.subsystems.components.OctoEncoder;
 
 public class Intake implements IntakeConstants {
     DcMotorEx slide;
+    OctoEncoder slideEncoder;
     ServoImplEx intakeWristF, intakeWristB;
     CRServoImplEx intakeOne,intakeTwo;
     ColorSensor colorSensor;
@@ -23,6 +26,8 @@ public class Intake implements IntakeConstants {
         slide = hwMap.get(DcMotorEx.class, "IntakeSlideMotor");
         slide.setDirection(DcMotorEx.Direction.FORWARD);
         slide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
+        slideEncoder = new OctoEncoder(hwMap, SLIDE_ENC_ID, OctoQuadBase.EncoderDirection.FORWARD);
 
         intakeOne = hwMap.get(CRServoImplEx.class, "IntakeLeftWheel");
         intakeTwo = hwMap.get(CRServoImplEx.class, "IntakeRightWheel");
@@ -41,6 +46,12 @@ public class Intake implements IntakeConstants {
         intakeMagnet = hwMap.get(DigitalChannel.class, "IntakeMagnet");
 
         this.isBlueAlliance = isBlueAlliance;
+    }
+
+    public int getSlideTicks() { return slideEncoder.getPosition(); }
+
+    public double[] getWristServoPositions() {
+        return new double[]{intakeWristF.getPosition(), intakeWristB.getPosition()};
     }
 
     public void slide(double power){

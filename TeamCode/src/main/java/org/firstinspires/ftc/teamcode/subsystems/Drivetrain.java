@@ -27,7 +27,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Drivetrain implements DrivetrainConstants {
     private final DcMotorEx leftDrive, rightDrive, backDrive;
     private final OctoEncoder leftEncoder, rightEncoder, backEncoder;
-    private final IndicatorLight leftLight, rightLight;
+    public final IndicatorLight leftLight, rightLight;
     private final AHRS navx;
     private final VectorMotionProfile driveProfile;
     private final MotionProfile turnProfile;
@@ -49,6 +49,7 @@ public class Drivetrain implements DrivetrainConstants {
     public Drivetrain(HardwareMap hwMap, double x, double y, double initialHeading, boolean isBlue) {
         this.imuOffset = initialHeading + (isBlue ? Math.PI : 0);
         this.targetHeading = initialHeading;
+
         od = new OpticalSensor("otos", hwMap, DistanceUnit.METER, AngleUnit.RADIANS);
         pose = new RobotPose(x, y, initialHeading);
 
@@ -122,52 +123,33 @@ public class Drivetrain implements DrivetrainConstants {
         return Math.abs(error) < AUTO_ALIGN_ERROR ? 0.0 : turnController.calculate(error);
     }
 
-    /**
-     * Sets the auto-alignment target heading
-     *
-     * @param targetHeading the target heading in radians
-     */
     public void setTargetHeading(double targetHeading) {
         this.targetHeading = targetHeading;
     }
 
-    /**
-     * Sets the Drive Wheels to Float Mode
-     */
     public void setFloat() {
         leftDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         rightDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         backDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
     }
 
-    /**
-     * Get Motor Velocities
-     *
-     * @return the left, right, back velocities
-     */
     public double[] getMotorVelocities() {
         return new double[]{
-                leftDrive.getVelocity(),
-                rightDrive.getVelocity(),
-                backDrive.getVelocity(),
+                leftEncoder.getVelocity(),
+                rightEncoder.getVelocity(),
+                backEncoder.getVelocity(),
         };
     }
 
-    /**
-     * Whether tne navx is connected and whether it is calibrating
-     *
-     * @return the information as a boolean array
-     */
     public boolean[] getNavxInfo() {
         return new boolean[]{navx.isConnected(), navx.isCalibrating()};
     }
 
-    /**
-     * The pitch, roll, and yaw of the navx in degrees
-     *
-     * @return the information in degrees as a double array
-     */
-    public double[] getNavxAxes() {
-        return new double[]{navx.getPitch(), navx.getRoll(), navx.getYaw()};
+    public double getYaw() {
+        return Math.toRadians(navx.getYaw());
+    }
+
+    public Vector getPos() {
+        return od.getPosition();
     }
 }

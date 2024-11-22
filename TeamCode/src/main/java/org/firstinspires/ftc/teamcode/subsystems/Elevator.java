@@ -27,7 +27,7 @@ public class Elevator implements ElevatorConstants {
      *
      * @param hardwareMap the hardware map
      */
-    public Elevator(HardwareMap hardwareMap) throws Exception {
+    public Elevator(HardwareMap hardwareMap) {
         leftSlideMotor = hardwareMap.get(DcMotorEx.class, "leftClimberMotor");
         leftSlideMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         leftSlideMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -53,6 +53,7 @@ public class Elevator implements ElevatorConstants {
         slideMagnet = hardwareMap.get(DigitalChannel.class, "LeftClimberMagnet");
     }
 
+    public int getEncoderTicks() { return slideEncoder.getPosition(); }
 
     public void setSlideVelocity(double inputVelocity) {
 

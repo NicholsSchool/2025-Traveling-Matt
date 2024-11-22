@@ -6,6 +6,7 @@ public interface IntakeConstants {
     double INTAKE_D = 0;
     
     double SLIDE_SPEED = 0.3;
+    int SLIDE_ENC_ID = 0;
     int SLIDE_TICKS = 100; //Measured in Ticks Per Centimeter
 
     double INTAKE_SPEED = 0.5;
