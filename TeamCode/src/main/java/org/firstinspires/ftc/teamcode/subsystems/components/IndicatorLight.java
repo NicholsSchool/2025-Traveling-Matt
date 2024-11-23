@@ -67,7 +67,7 @@ public class IndicatorLight implements IndicatorConstants {
     }
 
     public void setColour(Colour colour) {
-        sequenceThread.interrupt();
+        if (sequenceThread != null) { sequenceThread.interrupt(); }
         IndLight.setPosition(getPosForColour(colour));
     }
 

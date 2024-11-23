@@ -19,8 +19,8 @@ public class Elevator implements ElevatorConstants {
     private final OctoEncoder slideEncoder;
     private final CRServoImplEx leftCarriageServo;
     private final CRServoImplEx rightCarriageServo;
-    private final ColorSensor carriageSensor;
-    private final DigitalChannel slideMagnet;
+    // private final ColorSensor carriageSensor;
+    // private final DigitalChannel slideMagnet;
 
     /**
      * Initializes the Arm
@@ -48,14 +48,12 @@ public class Elevator implements ElevatorConstants {
 
         slideEncoder = new OctoEncoder(hardwareMap, SLIDE_ENC_ID, OctoQuadBase.EncoderDirection.FORWARD);
 
-        carriageSensor = hardwareMap.get(ColorSensor.class, "CarriageColor");
+        // carriageSensor = hardwareMap.get(ColorSensor.class, "CarriageColor");
 
-        slideMagnet = hardwareMap.get(DigitalChannel.class, "LeftClimberMagnet");
+        // slideMagnet = hardwareMap.get(DigitalChannel.class, "LeftClimberMagnet");
     }
 
-    public void periodic() {
-        if (slideMagnet.getState()) { slideEncoder.reset(); }
-    }
+    //public void periodic() { if (slideMagnet.getState()) { slideEncoder.reset(); } }
 
     public int getEncoderTicks() { return slideEncoder.getPosition(); }
 

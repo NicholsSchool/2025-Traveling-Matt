@@ -50,8 +50,8 @@ public class DevTelemetry extends OpMode {
     public void loop() {
 
         controller1.update();
-        intake.periodic();
-        elevator.periodic();
+        //intake.periodic();
+        //elevator.periodic();
 
         //drivetrain.leftLight.setColourSequence(IndicatorConstants.ORANGE_FLASH, 1000);
         //drivetrain.rightLight.setColourSequence(IndicatorConstants.ORANGE_FLASH, 1000);
