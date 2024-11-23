@@ -95,6 +95,8 @@ public class Drivetrain implements DrivetrainConstants {
         turnController = new SimpleFeedbackController(AUTO_ALIGN_P);
     }
 
+    public void update() { od.update(); }
+
     /**
      * Drives the robot field oriented
      *
@@ -143,11 +145,8 @@ public class Drivetrain implements DrivetrainConstants {
         return new boolean[]{navx.isConnected(), navx.isCalibrating()};
     }
 
-    public double getYaw() {
-        return Math.toRadians(navx.getYaw());
-    }
+    public RobotPose getPose() {
 
-    public Vector getPos() {
-        return od.getPosition();
+        return new RobotPose(od.getPosition().x, od.getPosition().y, navx.getYaw());
     }
 }

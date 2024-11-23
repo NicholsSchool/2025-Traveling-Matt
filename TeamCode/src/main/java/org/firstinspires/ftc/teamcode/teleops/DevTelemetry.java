@@ -53,8 +53,8 @@ public class DevTelemetry extends OpMode {
         intake.periodic();
         elevator.periodic();
 
-        drivetrain.leftLight.setColourSequence(IndicatorConstants.ORANGE_FLASH, 1000);
-        drivetrain.rightLight.setColourSequence(IndicatorConstants.ORANGE_FLASH, 1000);
+        //drivetrain.leftLight.setColourSequence(IndicatorConstants.ORANGE_FLASH, 1000);
+        //drivetrain.rightLight.setColourSequence(IndicatorConstants.ORANGE_FLASH, 1000);
 
         telemetry.addLine(
                 "Circle for Drivetrain, Triangle for Elevator, Square for Intake, X for Other"
@@ -79,9 +79,9 @@ public class DevTelemetry extends OpMode {
 
             telemetry.addData("Motor Velocities", drivetrain.getMotorVelocities());
             telemetry.addData("NavX Info", drivetrain.getNavxInfo());
-            telemetry.addData("NavX Yaw", drivetrain.getYaw());
-            telemetry.addData("x", drivetrain.getPos().x);
-            telemetry.addData("y", drivetrain.getPos().y);
+            telemetry.addData("NavX Yaw", drivetrain.getPose().angle);
+            telemetry.addData("x", drivetrain.getPose().x);
+            telemetry.addData("y", drivetrain.getPose().y);
 
             telemetry.addLine("==============================\n");
         }

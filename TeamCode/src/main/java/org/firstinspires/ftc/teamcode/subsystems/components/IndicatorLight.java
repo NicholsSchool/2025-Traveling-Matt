@@ -71,26 +71,26 @@ public class IndicatorLight implements IndicatorConstants {
         IndLight.setPosition(getPosForColour(colour));
     }
 
-    public void setColourSequence(@NonNull Colour[] colours, int delay) {
-        if (colours == lastSequence && delay == lastDelay) return;
-
-        lastSequence = colours; lastDelay = delay;
-
-        if (sequenceThread != null) {
-            sequenceThread.interrupt();
-        }
-        
-        sequenceThread = new Thread(() -> {
-            while (sequenceThread != null && sequenceThread.isAlive()) {
-                for (Colour colour : colours) {
-                    setColour(colour);
-                    try { Thread.sleep(delay); } catch (InterruptedException e) {
-                        setColour(defaultColour);
-                        return;
-                    }
-                }
-            }
-        });
-        sequenceThread.start();
-    }
+//    public void setColourSequence(@NonNull Colour[] colours, int delay) {
+//        if (colours == lastSequence && delay == lastDelay) return;
+//
+//        lastSequence = colours; lastDelay = delay;
+//
+//        if (sequenceThread != null) {
+//            sequenceThread.interrupt();
+//        }
+//
+//        sequenceThread = new Thread(() -> {
+//            while (sequenceThread.isAlive()) {
+//                for (Colour colour : colours) {
+//                    setColour(colour);
+//                    try { Thread.sleep(delay); } catch (InterruptedException e) {
+//                        setColour(defaultColour);
+//                        return;
+//                    }
+//                }
+//            }
+//        });
+//        sequenceThread.start();
+//    }
 }
