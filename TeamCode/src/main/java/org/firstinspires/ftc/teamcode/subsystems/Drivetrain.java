@@ -50,7 +50,7 @@ public class Drivetrain implements DrivetrainConstants {
         this.imuOffset = initialHeading + (isBlue ? Math.PI : 0);
         this.targetHeading = initialHeading;
         this.isBlueAlliance = isBlue;
-        od = new OpticalSensor("otos", hwMap, DistanceUnit.METER, AngleUnit.RADIANS);
+        od = new OpticalSensor("OTOS", hwMap, DistanceUnit.METER, AngleUnit.RADIANS);
         pose = new RobotPose(x, y, initialHeading);
 
 
@@ -83,11 +83,11 @@ public class Drivetrain implements DrivetrainConstants {
         rightEncoder = new OctoEncoder(hwMap, RIGHT_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
         backEncoder = new OctoEncoder(hwMap, BACK_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
 
-        leftLight = new IndicatorLight(hwMap, "leftLight", IndicatorLight.Colour.GREEN);
-        rightLight = new IndicatorLight(hwMap, "rightLight", IndicatorLight.Colour.GREEN);
+        leftLight = new IndicatorLight(hwMap, "LeftLight", IndicatorLight.Colour.GREEN);
+        rightLight = new IndicatorLight(hwMap, "RightLight", IndicatorLight.Colour.GREEN);
 
         navx = AHRS.getInstance(hwMap.get(NavxMicroNavigationSensor.class,
-                "navx"), AHRS.DeviceDataType.kProcessedData);
+                "navX"), AHRS.DeviceDataType.kProcessedData);
         navx.zeroYaw();
 
         driveProfile = new VectorMotionProfile(DRIVE_PROFILE_SPEED);

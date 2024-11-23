@@ -22,20 +22,20 @@ public class Intake implements IntakeConstants {
     public final DigitalChannel slideMagnet;
 
     public Intake(HardwareMap hwMap) {
-        slide = hwMap.get(DcMotorEx.class, "IntakeSlideMotor");
+        slide = hwMap.get(DcMotorEx.class, "IntakeMotor");
         slide.setDirection(DcMotorEx.Direction.FORWARD);
         slide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         slideEncoder = new OctoEncoder(hwMap, SLIDE_ENC_ID, OctoQuadBase.EncoderDirection.FORWARD);
 
-        intakeOne = hwMap.get(CRServoImplEx.class, "IntakeLeftWheel");
-        intakeTwo = hwMap.get(CRServoImplEx.class, "IntakeRightWheel");
+        intakeOne = hwMap.get(CRServoImplEx.class, "IntakeLeft");
+        intakeTwo = hwMap.get(CRServoImplEx.class, "IntakeRight");
 
         intakeOne.setDirection(DcMotorSimple.Direction.FORWARD);
         intakeTwo.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        intakeWristF = hwMap.get(ServoImplEx.class, "IntakeWristFront");
-        intakeWristB = hwMap.get(ServoImplEx.class, "IntakeWristBack");
+        intakeWristF = hwMap.get(ServoImplEx.class, "WristFront");
+        intakeWristB = hwMap.get(ServoImplEx.class, "WristBack");
 
         intakeWristF.setDirection(Servo.Direction.FORWARD);
         intakeWristB.setDirection(Servo.Direction.FORWARD);

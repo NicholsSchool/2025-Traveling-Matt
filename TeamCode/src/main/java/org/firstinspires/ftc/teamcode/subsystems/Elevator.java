@@ -28,22 +28,22 @@ public class Elevator implements ElevatorConstants {
      * @param hardwareMap the hardware map
      */
     public Elevator(HardwareMap hardwareMap) {
-        leftSlideMotor = hardwareMap.get(DcMotorEx.class, "leftClimberMotor");
+        leftSlideMotor = hardwareMap.get(DcMotorEx.class, "LeftClimberMotor");
         leftSlideMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         leftSlideMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         leftSlideMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         leftSlideMotor.setDirection(DcMotorEx.Direction.FORWARD);
 
-        rightSlideMotor = hardwareMap.get(DcMotorEx.class, "rightClimberMotor");
+        rightSlideMotor = hardwareMap.get(DcMotorEx.class, "RightClimberMotor");
         rightSlideMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         rightSlideMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         rightSlideMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         rightSlideMotor.setDirection(DcMotorEx.Direction.FORWARD);
 
-        leftCarriageServo = hardwareMap.get(CRServoImplEx.class, "leftCarriage");
+        leftCarriageServo = hardwareMap.get(CRServoImplEx.class, "LeftCarriage");
         leftCarriageServo.setDirection(CRServoImplEx.Direction.FORWARD);
 
-        rightCarriageServo = hardwareMap.get(CRServoImplEx.class, "rightCarriage");
+        rightCarriageServo = hardwareMap.get(CRServoImplEx.class, "RightCarriage");
         rightCarriageServo.setDirection(CRServoImplEx.Direction.REVERSE);
 
         slideEncoder = new OctoEncoder(hardwareMap, SLIDE_ENC_ID, OctoQuadBase.EncoderDirection.FORWARD);
