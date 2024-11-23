@@ -59,12 +59,8 @@ public class Elevator implements ElevatorConstants {
 
     public int getEncoderTicks() { return slideEncoder.getPosition(); }
 
-    public void setSlideVelocity(double inputVelocity) {
-
-    }
-
     public void setSlidePosition(double inputPosition) {
-
+        //TODO: Use SimpleFeedbackController for this
     }
 
     public void slideRawPower(double power){

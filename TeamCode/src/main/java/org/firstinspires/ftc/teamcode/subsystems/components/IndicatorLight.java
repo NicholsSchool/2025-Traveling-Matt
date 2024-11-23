@@ -74,6 +74,8 @@ public class IndicatorLight implements IndicatorConstants {
     public void setColourSequence(@NonNull Colour[] colours, int delay) {
         if (colours == lastSequence && delay == lastDelay) return;
 
+        lastSequence = colours; lastDelay = delay;
+
         if (sequenceThread != null) {
             sequenceThread.interrupt();
         }

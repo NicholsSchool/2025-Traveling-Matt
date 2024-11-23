@@ -38,7 +38,7 @@ public class Intake implements IntakeConstants {
         intakeWristB = hwMap.get(ServoImplEx.class, "IntakeWristBack");
 
         intakeWristF.setDirection(Servo.Direction.FORWARD);
-        intakeWristB.setDirection(Servo.Direction.REVERSE);
+        intakeWristB.setDirection(Servo.Direction.FORWARD);
 
         colorSensor = hwMap.get(ColorSensor.class, "IntakeColor");
 
@@ -61,13 +61,18 @@ public class Intake implements IntakeConstants {
         slide.setPower(power * SLIDE_SPEED);
     }
 
+    public void slideToPos(double pos){
+        //TODO: Use SimpleFeedbackController for this
+    }
+
     public void runIntake(double power){
         intakeOne.setPower(power * INTAKE_SPEED);
         intakeTwo.setPower(power * INTAKE_SPEED);
     }
 
     public void wristToPos(double pos){
-        
+        intakeWristF.setPosition(pos);
+        intakeWristB.setPosition(pos);
     }
 
 }
