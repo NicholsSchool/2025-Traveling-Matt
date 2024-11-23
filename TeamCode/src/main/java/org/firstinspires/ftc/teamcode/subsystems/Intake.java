@@ -56,7 +56,7 @@ public class Intake implements IntakeConstants {
         return new double[]{intakeWristF.getPosition(), intakeWristB.getPosition()};
     }
 
-    public void slide(double power){
+    public void slideRawPower(double power){
         slide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         slide.setPower(power * SLIDE_SPEED);
     }

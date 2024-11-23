@@ -67,8 +67,13 @@ public class Elevator implements ElevatorConstants {
 
     }
 
-    public void setCarriageServoSpeed(double inputSpeed) {
-        leftCarriageServo.setPower(inputSpeed);
-        rightCarriageServo.setPower(inputSpeed);
+    public void slideRawPower(double power){
+        leftSlideMotor.setPower(power);
+        rightSlideMotor.setPower(power);
+    }
+
+    public void setCarriageServoPower(double inputPower) {
+        leftCarriageServo.setPower(inputPower);
+        rightCarriageServo.setPower(inputPower);
     }
 }

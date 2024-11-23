@@ -85,8 +85,7 @@ public class LerpPathPlanning implements SplineConstants {
      * @return if we are close enough to the destination area
      */
     public boolean spline(double turn, boolean autoAlign, boolean lowGear) {
-        drivetrain.update();
-        robotPosition = drivetrain.getRobotPose().toPoint();
+        robotPosition = new Point(drivetrain.getPos().x ,drivetrain.getPos().y);
 
         Vector driveVector;
         if(distanceOnLine() > projectedDistance()) {

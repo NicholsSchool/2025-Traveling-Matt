@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.constants.IndicatorConstants;
 import org.firstinspires.ftc.teamcode.controller.Controller;
+import org.firstinspires.ftc.teamcode.math_utils.Vector;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystems.Elevator;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -28,6 +29,7 @@ public class DevTelemetry extends OpMode {
     boolean showOtherTelem = false;
 
     Controller controller1;
+    Controller controller2;
 
     @Override
     public void init() {
@@ -41,6 +43,7 @@ public class DevTelemetry extends OpMode {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
         controller1 = new Controller(gamepad1);
+        controller2 = new Controller(gamepad2);
 
     }
 
@@ -65,13 +68,20 @@ public class DevTelemetry extends OpMode {
         if (controller1.square.wasJustPressed()) { showIntakeTelem = !showIntakeTelem; }
         if (controller1.x.wasJustPressed()) { showOtherTelem = !showOtherTelem; }
 
+        elevator.slideRawPower(-controller2.leftStick.y.value());
+        intake.slideRawPower(-controller2.rightStick.y.value());
+        elevator.setCarriageServoPower(controller2.leftTrigger.value() - controller2.rightTrigger.value());
+        intake.runIntake(controller1.leftTrigger.value() - controller1.rightTrigger.value());
+        drivetrain.drive(new Vector(controller1.leftStick.x.value(),controller1.leftStick.y.value()), controller1.rightStick.x.value(), true, true);
+
         if (showDrivetrainTelem) {
             telemetry.addLine("==========DRIVETRAIN==========");
 
             telemetry.addData("Motor Velocities", drivetrain.getMotorVelocities());
             telemetry.addData("NavX Info", drivetrain.getNavxInfo());
             telemetry.addData("NavX Yaw", drivetrain.getYaw());
-            telemetry.addData("Position", drivetrain.getPos());
+            telemetry.addData("x", drivetrain.getPos().x);
+            telemetry.addData("y", drivetrain.getPos().y);
 
             telemetry.addLine("==============================\n");
         }

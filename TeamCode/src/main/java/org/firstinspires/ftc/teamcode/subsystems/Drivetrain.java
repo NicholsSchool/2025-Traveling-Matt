@@ -49,7 +49,7 @@ public class Drivetrain implements DrivetrainConstants {
     public Drivetrain(HardwareMap hwMap, double x, double y, double initialHeading, boolean isBlue) {
         this.imuOffset = initialHeading + (isBlue ? Math.PI : 0);
         this.targetHeading = initialHeading;
-
+        this.isBlueAlliance = isBlue;
         od = new OpticalSensor("otos", hwMap, DistanceUnit.METER, AngleUnit.RADIANS);
         pose = new RobotPose(x, y, initialHeading);
 
@@ -89,8 +89,6 @@ public class Drivetrain implements DrivetrainConstants {
         navx = AHRS.getInstance(hwMap.get(NavxMicroNavigationSensor.class,
                 "navx"), AHRS.DeviceDataType.kProcessedData);
         navx.zeroYaw();
-
-        isBlueAlliance = isBlue;
 
         driveProfile = new VectorMotionProfile(DRIVE_PROFILE_SPEED);
         turnProfile = new MotionProfile(TURN_PROFILE_SPEED, TURN_PROFILE_MAX);
