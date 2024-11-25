@@ -1,12 +1,10 @@
-package org.firstinspires.ftc.teamcode;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.hardware.bosch.BNO055IMU;
+package org.firstinspires.ftc.teamcode.subsystems;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.constants.DriveConstants;
 
 /**
  * This is NOT an op-mode.*
@@ -16,7 +14,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * This hardware class assumes the following device names have been configured on the robot:
  * Note:  All names are lower case and some have single spaces between words.
  */
-public class DriveTrain implements DriveConstants{
+public class DriveTrain implements DriveConstants {
     /* Public OpMode members. */
 
 //    public BNO055IMU imu;
