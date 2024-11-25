@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+@OpMode(name="liteTesting", group="Dev")
 public class liteTesting extends OpMode {
 
     private DcMotor leftClimbMotor, rightClimbMotor, intakeSlideMotor;
