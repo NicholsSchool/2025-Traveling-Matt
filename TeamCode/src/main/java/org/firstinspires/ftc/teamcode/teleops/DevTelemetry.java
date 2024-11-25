@@ -74,7 +74,7 @@ public class DevTelemetry extends OpMode {
         intake.slideRawPower(-controller2.rightStick.y.value());
         elevator.setCarriageServoPower(controller2.leftTrigger.value() - controller2.rightTrigger.value());
         intake.runIntake(controller1.leftTrigger.value() - controller1.rightTrigger.value());
-        drivetrain.drive(new Vector(controller1.leftStick.x.value(),controller1.leftStick.y.value()), controller1.rightStick.x.value(), true, true);
+        drivetrain.drive(controller1.leftStick.toVector(), controller1.rightStick.x.value(), false, true);
 
         if (showDrivetrainTelem) {
             telemetry.addLine("==========DRIVETRAIN==========");
