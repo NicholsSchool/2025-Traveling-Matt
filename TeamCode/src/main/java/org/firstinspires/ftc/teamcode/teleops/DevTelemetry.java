@@ -79,7 +79,6 @@ public class DevTelemetry extends OpMode {
         if (showDrivetrainTelem) {
             telemetry.addLine("==========DRIVETRAIN==========");
 
-            telemetry.addData("Motor Velocities", drivetrain.getMotorVelocities());
             telemetry.addData("NavX Info", drivetrain.getNavxInfo());
             telemetry.addData("NavX Yaw", drivetrain.getPose().angle);
             telemetry.addData("x", drivetrain.getPose().x);

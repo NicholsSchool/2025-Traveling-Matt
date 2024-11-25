@@ -133,13 +133,6 @@ public class Drivetrain implements DrivetrainConstants {
         backDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
     }
 
-    public double[] getMotorVelocities() {
-        return new double[]{
-                leftEncoder.getVelocity(),
-                rightEncoder.getVelocity(),
-                backEncoder.getVelocity(),
-        };
-    }
 
     public boolean[] getNavxInfo() {
         return new boolean[]{navx.isConnected(), navx.isCalibrating()};
