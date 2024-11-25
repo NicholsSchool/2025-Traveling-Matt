@@ -19,11 +19,11 @@ public class Intake implements IntakeConstants {
     public final ServoImplEx intakeWristF, intakeWristB;
     public final CRServoImplEx intakeOne,intakeTwo;
     //public final ColorSensor colorSensor;
-    //public final DigitalChannel slideMagnet;
+    public final DigitalChannel slideMagnet;
 
     public Intake(HardwareMap hwMap) {
         slide = hwMap.get(DcMotorEx.class, "IntakeMotor");
-        slide.setDirection(DcMotorEx.Direction.FORWARD);
+        slide.setDirection(DcMotorEx.Direction.REVERSE);
         slide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         slideEncoder = new OctoEncoder(hwMap, SLIDE_ENC_ID, OctoQuadBase.EncoderDirection.FORWARD);
@@ -42,11 +42,14 @@ public class Intake implements IntakeConstants {
 
         //colorSensor = hwMap.get(ColorSensor.class, "IntakeColor");
 
-        //slideMagnet = hwMap.get(DigitalChannel.class, "IntakeMagnet");
+        slideMagnet = hwMap.get(DigitalChannel.class, "IntakeMagnet");
 
     }
 
-    //public void periodic() { if (slideMagnet.getState()) { slideEncoder.reset(); } }
+    public void periodic() {
+        slideEncoder.update();
+        //if (slideMagnet.getState()) { slideEncoder.reset(); }
+    }
 
     public int getEncoderTicks() { return slideEncoder.getPosition(); }
 

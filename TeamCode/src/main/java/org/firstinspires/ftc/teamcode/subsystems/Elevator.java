@@ -20,7 +20,7 @@ public class Elevator implements ElevatorConstants {
     private final CRServoImplEx leftCarriageServo;
     private final CRServoImplEx rightCarriageServo;
     // private final ColorSensor carriageSensor;
-    // private final DigitalChannel slideMagnet;
+    private final DigitalChannel slideMagnet;
 
     /**
      * Initializes the Arm
@@ -29,14 +29,10 @@ public class Elevator implements ElevatorConstants {
      */
     public Elevator(HardwareMap hardwareMap) {
         leftSlideMotor = hardwareMap.get(DcMotorEx.class, "LeftClimberMotor");
-        leftSlideMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        leftSlideMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         leftSlideMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        leftSlideMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        leftSlideMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
         rightSlideMotor = hardwareMap.get(DcMotorEx.class, "RightClimberMotor");
-        rightSlideMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        rightSlideMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         rightSlideMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         rightSlideMotor.setDirection(DcMotorEx.Direction.FORWARD);
 
@@ -50,10 +46,13 @@ public class Elevator implements ElevatorConstants {
 
         // carriageSensor = hardwareMap.get(ColorSensor.class, "CarriageColor");
 
-        // slideMagnet = hardwareMap.get(DigitalChannel.class, "LeftClimberMagnet");
+        slideMagnet = hardwareMap.get(DigitalChannel.class, "LeftClimberMagnet");
     }
 
-    //public void periodic() { if (slideMagnet.getState()) { slideEncoder.reset(); } }
+    public void periodic() {
+        slideEncoder.update();
+        //if (slideMagnet.getState()) { slideEncoder.reset(); }
+    }
 
     public int getEncoderTicks() { return slideEncoder.getPosition(); }
 

@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.math_utils.Vector;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystems.Elevator;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.components.IndicatorLight;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 
@@ -50,11 +51,12 @@ public class DevTelemetry extends OpMode {
     public void loop() {
 
         controller1.update();
-        //intake.periodic();
-        //elevator.periodic();
+        controller2.update();
+        intake.periodic();
+        elevator.periodic();
 
-        //drivetrain.leftLight.setColourSequence(IndicatorConstants.ORANGE_FLASH, 1000);
-        //drivetrain.rightLight.setColourSequence(IndicatorConstants.ORANGE_FLASH, 1000);
+        drivetrain.leftLight.setColour(IndicatorLight.Colour.ORANGE);
+        drivetrain.rightLight.setColour(IndicatorLight.Colour.ORANGE);
 
         telemetry.addLine(
                 "Circle for Drivetrain, Triangle for Elevator, Square for Intake, X for Other"
