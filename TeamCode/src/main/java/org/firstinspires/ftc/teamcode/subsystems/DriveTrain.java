@@ -1,9 +1,17 @@
 package org.firstinspires.ftc.teamcode.subsystems;
+import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Gyroscope;
+import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.constants.DriveConstants;
 
 /**
@@ -20,6 +28,10 @@ public class DriveTrain implements DriveConstants {
 //    public BNO055IMU imu;
     public DcMotor rearMotor, rightMotor, leftMotor;
     public RevBlinkinLedDriver blinkin;
+    IntegratingGyroscope gyro;
+//    NavxMicroNavigationSensor navxMicro;
+    Orientation angles;
+
 
     public boolean robotCentric = true;
     public boolean lowGear = false;
@@ -40,6 +52,7 @@ public class DriveTrain implements DriveConstants {
         rearMotor = hwMap.get( DcMotor.class, "Rear" );
         rightMotor = hwMap.get( DcMotor.class, "Right" );
         leftMotor = hwMap.get( DcMotor.class, "Left" );
+//        navxMicro = hwMap.get(NavxMicroNavigationSensor.class, "navx");
 
         // Inverting the Motors...
         rearMotor.setDirection( DcMotorSimple.Direction.REVERSE );
@@ -50,6 +63,8 @@ public class DriveTrain implements DriveConstants {
         rearMotor.setZeroPowerBehavior( DcMotor.ZeroPowerBehavior.BRAKE );
         rightMotor.setZeroPowerBehavior( DcMotor.ZeroPowerBehavior.BRAKE );
         leftMotor.setZeroPowerBehavior( DcMotor.ZeroPowerBehavior.BRAKE );
+
+//        angles = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
 //        /*
 //         *  Blinkin
@@ -90,6 +105,10 @@ public class DriveTrain implements DriveConstants {
         rightMotor.setPower( speed *  Math.cos( Math.toRadians( angle + 60 ) ) );
         leftMotor.setPower( speed * Math.cos( Math.toRadians( angle + 300 ) ) );
     }
+
+//    public double getYaw(){
+//        return angles.firstAngle;
+//    }
 
     /**
      * Spins the robot. No linear movement, so no saucin'. Just spinning in place.

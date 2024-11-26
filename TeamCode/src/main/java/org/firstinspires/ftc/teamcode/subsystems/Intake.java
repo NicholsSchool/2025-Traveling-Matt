@@ -6,25 +6,49 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class Intake {
+import org.firstinspires.ftc.teamcode.constants.ArmConstants;
+
+public class Intake implements ArmConstants {
     DcMotorEx intakeSlide;
     Servo wristServo;
     CRServo intakeServo;
     ColorSensor colorSensor;
+    Encoders encoder;
 
     public Intake(HardwareMap hwMap) {
         intakeServo = hwMap.get(CRServo.class, "intakeServo");
         intakeSlide = hwMap.get(DcMotorEx.class, "intakeSlide");
         colorSensor = hwMap.get(ColorSensor.class, "colorSensor");
         wristServo = hwMap.get(Servo.class, "wristServo");
+        encoder = new Encoders(hwMap);
 
     }
 
     public void intakeSlideManual(double power){
-        intakeSlide.setPower(power);
+
+        if (power < 0) {
+            intakeSlide.setPower(power);
+        }else{
+            intakeSlide.setPower(0.7 * power);
+        }
+
 
 
     }
+
+    public void intakeSoftLimited(double power){
+        if((power > 0 && encoder.getIntakePos() < INTAKEMAX) || (power <= 0 && encoder.getIntakePos() > INTAKEMIN)) {
+            intakeSlideManual(power);
+        }else{
+            intakeSlide.setPower(0.0);
+
+        }
+
+        wristControl(encoder.getIntakePos() > INTAKEMAX - 10000);
+
+    }
+
+
 
     public void intakeSlidePos(int targetPos) {
         intakeSlide.setPower((targetPos - intakeSlide.getCurrentPosition()) / 100.0);
@@ -33,8 +57,12 @@ public class Intake {
     }
 
     public void intakeServo(double power){
-        intakeServo.setPower(power);
-  }
+//        if(colorSensor.green() < 600) {
+            intakeServo.setPower(power);
+//        }else{
+//            intakeServo.setPower(0);
+        }
+
 
     public void wristControl(boolean isIntaking){
         wristServo.setPosition(isIntaking ? 0 : 1);
@@ -45,24 +73,17 @@ public class Intake {
         intakeServo.setPower(-power);
     }
 
-    public int color() {
-        int red = colorSensor.red();
-        int blue = colorSensor.blue();
-        int green = colorSensor.green();
-        //yellow is a combination of rgb and i don't know how to do it
-
-        if (red > 450) {
-            return 2;
-        }else if (green > 550){
-            return 3;
-        }else if (blue > 1){
-            return 4;
-        }else {
-            return 1;
-
-        }
+    public enum Color {
+        RED,
+        BLUE,
+        YELLOW,
+        NONE
     }
 
+    public int[] printColorSensor(){
+        return new int[] {colorSensor.red(), colorSensor.blue(), colorSensor.green()};
+
+    }
 
 
 }

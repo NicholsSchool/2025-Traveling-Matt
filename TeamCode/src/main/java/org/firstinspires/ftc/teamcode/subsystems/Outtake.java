@@ -4,10 +4,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.constants.ArmConstants;
 
 
-public class Outtake {
+public class Outtake implements ArmConstants {
     DcMotorEx outtakeRight, outtakeLeft;
+    Encoders encoder;
 
 
     /**
@@ -24,19 +26,23 @@ public class Outtake {
         outtakeLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         outtakeLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
+        encoder = new Encoders(hwMap);
+
 
 
 
     }
 
-    public int getOuttakePosition() {
-        return outtakeLeft.getCurrentPosition();
-    }
+
 
     public void outtakeSlideManual(double power){
-        outtakeRight.setPower(-power);
-        outtakeLeft.setPower(power);
-
+        if((power > 0 && encoder.getElevatorPos() < OUTTAKEMAX) || (power <= 0 && encoder.getElevatorPos() > OUTTAKEMIN)) {
+            outtakeRight.setPower(power);
+            outtakeLeft.setPower(-power);
+        }else{
+            outtakeRight.setPower(0.0);
+            outtakeLeft.setPower(0.0);
+        }
 
     }
 

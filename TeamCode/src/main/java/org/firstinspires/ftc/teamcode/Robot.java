@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
+import org.firstinspires.ftc.teamcode.subsystems.Encoders;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Outtake;
 
@@ -22,6 +23,7 @@ public class Robot extends OpMode
     DriveTrain drivetrain;
     Outtake outtake;
     Intake intake;
+    Encoders encoder;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -35,6 +37,7 @@ public class Robot extends OpMode
         drivetrain.init(hardwareMap);
         intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap);
+        encoder = new Encoders(hardwareMap);
 
 
         // Tell the driver that initialization is complete.
@@ -59,21 +62,13 @@ public class Robot extends OpMode
     @Override
     public void loop(){
         drivetrain.fieldOriented(Math.hypot(controller1.leftStick.x.value(),controller1.leftStick.y.value()), -controller1.rightStick.x.value() * 0.3
-        ,Math.toDegrees(Math.atan2(-controller1.leftStick.y.value(),controller1.leftStick.x.value())), 0);
-        outtake.outtakeSlideManual(-controller2.leftStick.y.value());
-        intake.intakeSlideManual(controller2.rightStick.y.value()*.7);
-        //intake.intakeServo(controller2.leftBumper.isPressed() ? 1 : 0);
-        intake.wristControl(controller2.leftBumper.isPressed());
-        //intake.outtakeBlock(controller2.rightBumper.isPressed() ? 1 : 0 );
-//        intake.intakeServo(controller2.leftTrigger.value() - controller2.rightTrigger.value());
-
+        ,Math.toDegrees(Math.atan2(controller1.leftStick.y.value(),controller1.leftStick.x.value())), 180);
+        outtake.outtakeSlideManual(controller2.leftStick.y.value());
+        intake.intakeSoftLimited(controller2.rightStick.y.value());
         if(controller2.leftBumper.isPressed()) {
-            intake.wristControl(controller2.leftBumper.isPressed());
+//            intake.wristControl(controller2.leftBumper.isPressed());
             intake.intakeServo(1);
-
-
         }
-
         else if (controller2.rightBumper.isPressed()){
             intake.outtakeBlock(1);
 
@@ -98,7 +93,13 @@ public class Robot extends OpMode
         controller1.update();
         controller2.update();
 
-        telemetry.addData("Outtake position", outtake.getOuttakePosition());
+
+        telemetry.addData("elevator position", encoder.getElevatorPos());
+        telemetry.addData("intake arm position", encoder.getIntakePos());
+        telemetry.addData("red", intake.printColorSensor()[0]);
+        telemetry.addData("blue", intake.printColorSensor()[1]);
+        telemetry.addData("green", intake.printColorSensor()[2]);
+//        telemetry.addData("yaw", drivetrain.getYaw());
 
 
 
