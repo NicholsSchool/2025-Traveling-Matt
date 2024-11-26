@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
+import com.kauailabs.navx.ftc.AHRS;
 import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -22,11 +23,11 @@ import org.firstinspires.ftc.teamcode.constants.DriveConstants;
  * This hardware class assumes the following device names have been configured on the robot:
  * Note:  All names are lower case and some have single spaces between words.
  */
-public class DriveTrain implements DriveConstants {
+public class Drivetrain implements DriveConstants {
     /* Public OpMode members. */
     public DcMotor rearMotor, rightMotor, leftMotor;
     public RevBlinkinLedDriver blinkin;
-
+    private AHRS navx;
 
     public boolean robotCentric = true;
     public boolean lowGear = false;
@@ -58,28 +59,9 @@ public class DriveTrain implements DriveConstants {
         rearMotor.setZeroPowerBehavior( DcMotor.ZeroPowerBehavior.BRAKE );
         rightMotor.setZeroPowerBehavior( DcMotor.ZeroPowerBehavior.BRAKE );
         leftMotor.setZeroPowerBehavior( DcMotor.ZeroPowerBehavior.BRAKE );
-
-//        angles = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
-//        /*
-//         *  Blinkin
-//         */
-//
-//        // Instantiating Blinkin...
-//        blinkin = hwMap.get( RevBlinkinLedDriver.class, "Blinkin" );
-
-
-        /*
-         *  IMU
-         */
-
-        // Instantiating IMU Parameters, setting angleUnit...
-//        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-//        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-
-        // Instantiating IMU... Initializing it with the above Parameters...
-        //imu = hwMap.get( BNO055IMU.class, "IMU" );
-        //imu.initialize( parameters );
+        navx = AHRS.getInstance(hwMap.get(NavxMicroNavigationSensor.class,
+                "navX"), AHRS.DeviceDataType.kProcessedData);
+        navx.zeroYaw();
     }
 
 
@@ -162,6 +144,10 @@ public class DriveTrain implements DriveConstants {
         rearMotor.setPower( 0 );
         rightMotor.setPower( 0 );
         leftMotor.setPower( 0 );
+    }
+
+    public double getYaw(){
+        return navx.getYaw();
     }
 
     /**
