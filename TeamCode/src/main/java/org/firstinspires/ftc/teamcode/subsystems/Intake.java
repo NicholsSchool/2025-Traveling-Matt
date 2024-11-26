@@ -1,79 +1,89 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.hardware.digitalchickenlabs.OctoQuadBase;
-import com.qualcomm.robotcore.hardware.CRServoImplEx;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoImplEx;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.constants.IntakeConstants;
-import org.firstinspires.ftc.teamcode.subsystems.components.OctoEncoder;
+import org.firstinspires.ftc.teamcode.constants.ArmConstants;
 
-public class Intake implements IntakeConstants {
-    public final DcMotorEx slide;
-    public final OctoEncoder slideEncoder;
-    public final ServoImplEx intakeWristF, intakeWristB;
-    public final CRServoImplEx intakeOne,intakeTwo;
-    //public final ColorSensor colorSensor;
-    public final DigitalChannel slideMagnet;
+public class Intake implements ArmConstants {
+    DcMotorEx intakeSlide;
+    Servo wristServo;
+    CRServo intakeServo;
+    ColorSensor colorSensor;
+    Encoders encoder;
 
     public Intake(HardwareMap hwMap) {
-        slide = hwMap.get(DcMotorEx.class, "IntakeMotor");
-        slide.setDirection(DcMotorEx.Direction.REVERSE);
-        slide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-
-        slideEncoder = new OctoEncoder(hwMap, SLIDE_ENC_ID, OctoQuadBase.EncoderDirection.FORWARD);
-
-        intakeOne = hwMap.get(CRServoImplEx.class, "IntakeLeft");
-        intakeTwo = hwMap.get(CRServoImplEx.class, "IntakeRight");
-
-        intakeOne.setDirection(DcMotorSimple.Direction.FORWARD);
-        intakeTwo.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        intakeWristF = hwMap.get(ServoImplEx.class, "WristFront");
-        intakeWristB = hwMap.get(ServoImplEx.class, "WristBack");
-
-        intakeWristF.setDirection(Servo.Direction.FORWARD);
-        intakeWristB.setDirection(Servo.Direction.FORWARD);
-
-        //colorSensor = hwMap.get(ColorSensor.class, "IntakeColor");
-
-        slideMagnet = hwMap.get(DigitalChannel.class, "IntakeMagnet");
+        intakeServo = hwMap.get(CRServo.class, "intakeServo");
+        intakeSlide = hwMap.get(DcMotorEx.class, "intakeSlide");
+        colorSensor = hwMap.get(ColorSensor.class, "colorSensor");
+        wristServo = hwMap.get(Servo.class, "wristServo");
+        encoder = new Encoders(hwMap);
 
     }
 
-    public void periodic() {
-        slideEncoder.update();
-        //if (slideMagnet.getState()) { slideEncoder.reset(); }
+    public void intakeSlideManual(double power){
+
+        if (power < 0) {
+            intakeSlide.setPower(power);
+        }else{
+            intakeSlide.setPower(0.7 * power);
+        }
+
+
+
     }
 
-    public int getEncoderTicks() { return slideEncoder.getPosition(); }
+    public void intakeSoftLimited(double power){
+        if((power > 0 && encoder.getIntakePos() < INTAKEMAX) || (power <= 0 && encoder.getIntakePos() > INTAKEMIN)) {
+            intakeSlideManual(power);
+        }else{
+            intakeSlide.setPower(0.0);
 
-    public double[] getWristServoPositions() {
-        return new double[]{intakeWristF.getPosition(), intakeWristB.getPosition()};
+        }
+
+        wristControl(encoder.getIntakePos() > INTAKEMAX - 10000);
+
     }
 
-    public void slideRawPower(double power){
-        slide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        slide.setPower(power * SLIDE_SPEED);
+
+
+    public void intakeSlidePos(int targetPos) {
+        intakeSlide.setPower((targetPos - intakeSlide.getCurrentPosition()) / 100.0);
+
+
     }
 
-    public void slideToPos(double pos){
-        //TODO: Use SimpleFeedbackController for this
+    public void intakeServo(double power){
+//        if(colorSensor.green() < 600) {
+            intakeServo.setPower(power);
+//        }else{
+//            intakeServo.setPower(0);
+        }
+
+
+    public void wristControl(boolean isIntaking){
+        wristServo.setPosition(isIntaking ? 0 : 1);
+
     }
 
-    public void runIntake(double power){
-        intakeOne.setPower(power * INTAKE_SPEED);
-        intakeTwo.setPower(power * INTAKE_SPEED);
+    public void outtakeBlock(double power){
+        intakeServo.setPower(-power);
     }
 
-    public void wristToPos(double pos){
-        intakeWristF.setPosition(pos);
-        intakeWristB.setPosition(pos);
+    public enum Color {
+        RED,
+        BLUE,
+        YELLOW,
+        NONE
     }
+
+    public int[] printColorSensor(){
+        return new int[] {colorSensor.red(), colorSensor.blue(), colorSensor.green()};
+
+    }
+
 
 }
