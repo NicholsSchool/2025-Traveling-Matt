@@ -54,18 +54,21 @@ public class Outtake implements ArmConstants {
      *
      * @param targetPos is an integer where you set the position of the slides
      */
-    public void outtakeToPos(int targetPos){
-        outtakeRight.setPower((targetPos - outtakeRight.getCurrentPosition()) / 100.0);
-        outtakeLeft.setPower((targetPos - outtakeLeft.getCurrentPosition()) / 100.0);
+//    public void outtakeToPos(int targetPos){
+//        outtakeRight.setPower((targetPos - outtakeRight.getCurrentPosition()) / 100.0);
+//        outtakeLeft.setPower((targetPos - outtakeLeft.getCurrentPosition()) / 100.0);
+//
+//    }
+
+    public void elevatorToPos(int targetPos){
+
 
     }
 
 
 
 
-
-
-
+    
 
 
 

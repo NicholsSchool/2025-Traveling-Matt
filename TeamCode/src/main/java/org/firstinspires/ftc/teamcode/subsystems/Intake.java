@@ -22,6 +22,8 @@ public class Intake implements ArmConstants {
         wristServo = hwMap.get(Servo.class, "wristServo");
         encoder = new Encoders(hwMap);
 
+        intakeSlide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
     }
 
     public void intakeSlideManual(double power){
@@ -50,11 +52,11 @@ public class Intake implements ArmConstants {
 
 
 
-    public void intakeSlidePos(int targetPos) {
-        intakeSlide.setPower((targetPos - intakeSlide.getCurrentPosition()) / 100.0);
-
-
-    }
+//    public void intakeSlidePos(int targetPos) {
+//        intakeSlide.setPower((targetPos - intakeSlide.getCurrentPosition()) / 100.0);
+//
+//
+//    }
 
     public void intakeServo(double power){
 //        if(colorSensor.green() < 600) {

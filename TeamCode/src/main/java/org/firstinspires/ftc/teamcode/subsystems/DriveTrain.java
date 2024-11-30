@@ -5,14 +5,9 @@ import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Gyroscope;
-import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 import org.firstinspires.ftc.teamcode.constants.DriveConstants;
 
 /**
@@ -23,7 +18,7 @@ import org.firstinspires.ftc.teamcode.constants.DriveConstants;
  * This hardware class assumes the following device names have been configured on the robot:
  * Note:  All names are lower case and some have single spaces between words.
  */
-public class Drivetrain implements DriveConstants {
+public class DriveTrain implements DriveConstants {
     /* Public OpMode members. */
     public DcMotor rearMotor, rightMotor, leftMotor;
     public RevBlinkinLedDriver blinkin;
@@ -48,7 +43,6 @@ public class Drivetrain implements DriveConstants {
         rearMotor = hwMap.get( DcMotor.class, "Rear" );
         rightMotor = hwMap.get( DcMotor.class, "Right" );
         leftMotor = hwMap.get( DcMotor.class, "Left" );
-//        navxMicro = hwMap.get(NavxMicroNavigationSensor.class, "navx");
 
         // Inverting the Motors...
         rearMotor.setDirection( DcMotorSimple.Direction.REVERSE );
@@ -148,6 +142,11 @@ public class Drivetrain implements DriveConstants {
 
     public double getYaw(){
         return navx.getYaw();
+    }
+
+    public void resetYaw(){
+        navx.zeroYaw();
+
     }
 
     /**
