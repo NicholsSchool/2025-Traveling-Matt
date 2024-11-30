@@ -9,4 +9,6 @@ public interface DriveConstants {
 
     double redThreshold = 30;
     double blueThreshold = 30;
+    double LOWGEAR = .7;
+    double HIGHGEAR = 1;
 }

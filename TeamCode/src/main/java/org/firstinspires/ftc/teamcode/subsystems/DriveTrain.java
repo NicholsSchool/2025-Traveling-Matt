@@ -111,21 +111,27 @@ public class DriveTrain implements DriveConstants {
      * @param deltaHeading how far, in degrees, the robot has spun on the elevated-floor-like
      *  axis. The change in Heading. Is updated with every loop
      */
-    public void fieldOriented( double speed, double spinSpeed, double angle, double deltaHeading )
+    public void fieldOriented( double speed, double spinSpeed, double angle, double deltaHeading, boolean isHighGear)
     {
-
+        double multiplier = (isHighGear ? 0.7 : 0.3);
         if( robotCentric )
         {
-            rearMotor.setPower( -spinSpeed + ( speed * Math.cos( Math.toRadians( angle + 180 - deltaHeading ) ) ) );
-            rightMotor.setPower( -spinSpeed + ( speed * Math.cos( Math.toRadians( angle + 60 - deltaHeading ) ) ) );
-            leftMotor.setPower( -spinSpeed + ( speed * Math.cos( Math.toRadians( angle + 300 - deltaHeading ) ) ) );
+            rearMotor.setPower( -spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 180 - deltaHeading ) ) ) );
+            rightMotor.setPower( -spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 60 - deltaHeading ) ) ) );
+            leftMotor.setPower( -spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 300 - deltaHeading ) ) ) );
         }
         else
         {
-            rearMotor.setPower( speed * Math.cos( Math.toRadians( angle + 180 - deltaHeading ) ) );
-            rightMotor.setPower( -spinSpeed + ( speed * Math.cos( Math.toRadians( angle + 60 - deltaHeading ) ) ) );
-            leftMotor.setPower( -spinSpeed + ( speed * Math.cos( Math.toRadians( angle + 300 - deltaHeading ) ) ) );
+            rearMotor.setPower( ((speed * multiplier) * Math.cos( Math.toRadians( angle + 180 - deltaHeading) ) ) );
+            rightMotor.setPower( -spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 60 - deltaHeading ) ) ) );
+            leftMotor.setPower( -spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 300 - deltaHeading ) ) ) );
         }
+
+
+
+
+
+
     }
 
 
@@ -162,4 +168,8 @@ public class DriveTrain implements DriveConstants {
         rightMotor.setMode( DcMotor.RunMode.RUN_USING_ENCODER );
         leftMotor.setMode( DcMotor.RunMode.RUN_USING_ENCODER );
     }
+
+
+
+
 }

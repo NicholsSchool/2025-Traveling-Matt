@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.teamcode.constants.DriveConstants;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.Encoders;
@@ -24,6 +25,7 @@ public class Robot extends OpMode
     Outtake outtake;
     Intake intake;
     Encoders encoder;
+    boolean highGear = false;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -85,9 +87,17 @@ public class Robot extends OpMode
             drivetrain.resetYaw();
         }
 
-        if(controller2.square.wasJustPressed()){
+        if (controller2.square.wasJustPressed()){
            outtake.elevatorToPos((60000 * 100) - encoder.getElevatorPos());
         }
+
+        if (controller1.leftBumper.isPressed()){
+
+
+        }
+
+
+
 
 
 
