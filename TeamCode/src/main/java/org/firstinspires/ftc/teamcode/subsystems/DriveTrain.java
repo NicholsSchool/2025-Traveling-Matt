@@ -116,15 +116,15 @@ public class DriveTrain implements DriveConstants {
         double multiplier = (isHighGear ? 0.7 : 0.3);
         if( robotCentric )
         {
-            rearMotor.setPower( -spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 180 - deltaHeading ) ) ) );
-            rightMotor.setPower( -spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 60 - deltaHeading ) ) ) );
+            rearMotor.setPower( (-spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 180 - deltaHeading ) ) ) ));
+            rightMotor.setPower(  (-spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 60 - deltaHeading ) ) )) );
             leftMotor.setPower( -spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 300 - deltaHeading ) ) ) );
         }
         else
         {
-            rearMotor.setPower( ((speed * multiplier) * Math.cos( Math.toRadians( angle + 180 - deltaHeading) ) ) );
-            rightMotor.setPower( -spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 60 - deltaHeading ) ) ) );
-            leftMotor.setPower( -spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 300 - deltaHeading ) ) ) );
+            rearMotor.setPower( multiplier * ((speed * multiplier) * Math.cos( Math.toRadians( angle + 180 - deltaHeading) ) ) );
+            rightMotor.setPower( multiplier * (-spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 60 - deltaHeading ) ) )) );
+            leftMotor.setPower( multiplier * (-spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 300 - deltaHeading ) ) )) );
         }
 
 

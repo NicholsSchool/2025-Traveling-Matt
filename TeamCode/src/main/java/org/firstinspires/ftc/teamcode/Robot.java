@@ -64,7 +64,7 @@ public class Robot extends OpMode
     @Override
     public void loop(){
         drivetrain.fieldOriented(Math.hypot(controller1.leftStick.x.value(),controller1.leftStick.y.value()), -controller1.rightStick.x.value() * 0.3
-        ,Math.toDegrees(Math.atan2(controller1.leftStick.y.value(),controller1.leftStick.x.value())), - drivetrain.getYaw());
+        ,Math.toDegrees(Math.atan2(controller1.leftStick.y.value(),controller1.leftStick.x.value())), - drivetrain.getYaw(), controller1.rightBumper.isPressed());
         outtake.outtakeSlideManual(controller2.leftStick.y.value());
         intake.intakeSoftLimited(controller2.rightStick.y.value());
         if(controller2.leftBumper.isPressed()) {

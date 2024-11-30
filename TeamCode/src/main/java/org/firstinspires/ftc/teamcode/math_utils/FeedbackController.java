@@ -42,4 +42,3 @@ public class FeedbackController {
                     verticalProportional * Math.cos(position * cosineCoefficient);
         }
     }
-}
