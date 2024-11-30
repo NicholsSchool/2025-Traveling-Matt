@@ -113,7 +113,7 @@ public class DriveTrain implements DriveConstants {
      */
     public void fieldOriented( double speed, double spinSpeed, double angle, double deltaHeading, boolean isHighGear)
     {
-        double multiplier = (isHighGear ? 0.7 : 0.3);
+        double multiplier = (isHighGear ? 0.8 : 0.5);
         if( robotCentric )
         {
             rearMotor.setPower( (-spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 180 - deltaHeading ) ) ) ));
