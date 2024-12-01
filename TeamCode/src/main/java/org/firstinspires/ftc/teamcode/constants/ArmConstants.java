@@ -8,6 +8,7 @@ public interface ArmConstants {
     int OUTTAKEMAX = 65000;
     int INTAKEMIN = 0;
     int INTAKEMAX = 30000;
+    double ELEVATOR_P = 0.00025;
 
 
 

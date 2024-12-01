@@ -2,13 +2,13 @@ package org.firstinspires.ftc.teamcode.math_utils;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.constants.SplineConstants;
-import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 
 /**
  * Math for Lerp Path Planning
  */
 public class LerpPathPlanning implements SplineConstants {
-    private final Drivetrain drivetrain;
+    private final DriveTrain drivetrain;
     private Point robotPosition;
     private final LerpPath[] paths;
     private LerpPath currentPath;
@@ -20,7 +20,7 @@ public class LerpPathPlanning implements SplineConstants {
      * @param drivetrain the drivetrain
      * @param paths all the paths we will follow
      */
-    public LerpPathPlanning(Drivetrain drivetrain, LerpPath[] paths) {
+    public LerpPathPlanning(DriveTrain drivetrain, LerpPath[] paths) {
         this.drivetrain = drivetrain;
         this.paths = paths;
         this.currentPath = this.paths[0];

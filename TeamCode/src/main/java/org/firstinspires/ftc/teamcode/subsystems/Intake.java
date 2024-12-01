@@ -87,6 +87,4 @@ public class Intake implements ArmConstants {
         return new int[] {colorSensor.red(), colorSensor.blue(), colorSensor.green()};
 
     }
-
-
 }

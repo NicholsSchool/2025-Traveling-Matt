@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.controller.Controller;
+import org.firstinspires.ftc.teamcode.math_utils.Vector;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.components.Encoders;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -31,10 +32,10 @@ public class Robot extends OpMode
     @Override
     public void init() {
 
-        drivetrain = new DriveTrain();
+        drivetrain = new DriveTrain(hardwareMap, 0, 0, Math.PI / 2, false);
         controller1 = new Controller(gamepad1);
         controller2 = new Controller(gamepad2);
-        drivetrain.init(hardwareMap);
+//        drivetrain.init(hardwareMap);
         intake = new Intake(hardwareMap);
         outtake = new Outtake(hardwareMap);
         encoder = new Encoders(hardwareMap);
@@ -61,8 +62,7 @@ public class Robot extends OpMode
      */
     @Override
     public void loop(){
-        drivetrain.fieldOriented(Math.hypot(controller1.leftStick.x.value(),controller1.leftStick.y.value()), -controller1.rightStick.x.value() * 0.3
-        ,Math.toDegrees(Math.atan2(controller1.leftStick.y.value(),controller1.leftStick.x.value())), - drivetrain.getYaw() + 180, controller1.rightBumper.isPressed());
+        drivetrain.drive(new Vector(controller1.leftStick.x.value(), controller1.leftStick.y.value()), controller1.rightStick.x.value(), controller1.rightBumper.isPressed());
         outtake.outtakeSlideManual(controller2.leftStick.y.value());
         intake.intakeSoftLimited(controller2.rightStick.y.value());
         if(controller2.leftBumper.isPressed()) {
@@ -82,9 +82,12 @@ public class Robot extends OpMode
         }
 
         if(controller1.options.isPressed()){
-            drivetrain.resetYaw();
+            drivetrain.resetIMU();
         }
 
+        if(controller2.square.isPressed()){
+            outtake.elevatorToPos(50000);
+        }
 
 
 
@@ -103,6 +106,7 @@ public class Robot extends OpMode
 
         controller1.update();
         controller2.update();
+        drivetrain.update();
 
 
         telemetry.addData("elevator position", encoder.getElevatorPos());
@@ -110,7 +114,7 @@ public class Robot extends OpMode
         telemetry.addData("red", intake.printColorSensor()[0]);
         telemetry.addData("blue", intake.printColorSensor()[1]);
         telemetry.addData("green", intake.printColorSensor()[2]);
-//        telemetry.addData("yaw", drivetrain.getYaw());
+        telemetry.addData("yaw", drivetrain.getPose().angle);
 
 
 

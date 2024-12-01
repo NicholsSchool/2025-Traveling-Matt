@@ -20,6 +20,8 @@ public class Outtake implements ArmConstants {
 
 
 
+
+
     /**
      *
      * @param hwMap
@@ -39,12 +41,13 @@ public class Outtake implements ArmConstants {
 //        slideEncoder.reset();
 //
 //        setpoint = 0.0;
-//        pidController = new PIDController(SLIDE_P, 0.0, SLIDE_D);
+        pidController = new PIDController(0.0, 0.0, 0.0);
 
 
 
 
     }
+
 
 
 
@@ -74,8 +77,7 @@ public class Outtake implements ArmConstants {
 //    }
 
     public void elevatorToPos(int targetPos){
-
-
+        
     }
 
 

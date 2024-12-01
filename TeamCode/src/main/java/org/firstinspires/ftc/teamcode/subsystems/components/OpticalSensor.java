@@ -21,7 +21,7 @@ public class OpticalSensor {
      * @param linearUnit Unit to measure linear motion (DistanceUnit.METERS or DistanceUnit.INCHES)
      * @param angularUnit Unit to measure angle (AngleUnit.DEGREES or AngleUnit.RADIANS)
      */
-    public OpticalSensor(String deviceName, @NonNull HardwareMap hwMap, DistanceUnit linearUnit, AngleUnit angularUnit) {
+    public OpticalSensor(String deviceName, HardwareMap hwMap, DistanceUnit linearUnit, AngleUnit angularUnit) {
 
         otos = hwMap.get(SparkFunOTOS.class, deviceName);
 

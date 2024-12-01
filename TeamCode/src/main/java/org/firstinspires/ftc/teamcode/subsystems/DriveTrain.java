@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.math_utils.MotionProfile;
 import org.firstinspires.ftc.teamcode.math_utils.Vector;
 import org.firstinspires.ftc.teamcode.math_utils.RobotPose;
 import org.firstinspires.ftc.teamcode.math_utils.SimpleFeedbackController;
-import org.firstinspires.ftc.teamcode.subsystems.components.IndicatorLight;
+//import org.firstinspires.ftc.teamcode.subsystems.components.IndicatorLight;
 import org.firstinspires.ftc.teamcode.subsystems.components.OpticalSensor;
 import org.firstinspires.ftc.teamcode.subsystems.components.OctoEncoder;
 
@@ -24,7 +24,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  */
 public class DriveTrain implements DriveConstants {
     private final DcMotorEx leftDrive, rightDrive, backDrive;
-    private final OctoEncoder leftEncoder, rightEncoder, backEncoder;
+//    private final OctoEncoder leftEncoder, rightEncoder, backEncoder;
     private final VectorMotionProfile driveProfile;
     private final MotionProfile turnProfile;
     private final SimpleFeedbackController turnController;
@@ -50,9 +50,9 @@ public class DriveTrain implements DriveConstants {
         pose = new RobotPose(x, y, initialHeading);
 
 
-        leftDrive = hwMap.get(DcMotorEx.class, "LeftDriveMotor");
-        rightDrive = hwMap.get(DcMotorEx.class, "RightDriveMotor");
-        backDrive = hwMap.get(DcMotorEx.class, "BackDriveMotor");
+        leftDrive = hwMap.get(DcMotorEx.class, "Left");
+        rightDrive = hwMap.get(DcMotorEx.class, "Right");
+        backDrive = hwMap.get(DcMotorEx.class, "Rear");
 
         leftDrive.setDirection(DcMotorEx.Direction.REVERSE);
         rightDrive.setDirection(DcMotorEx.Direction.REVERSE);
@@ -78,14 +78,14 @@ public class DriveTrain implements DriveConstants {
 //        leftLight = new IndicatorLight(hwMap, "LeftLight", IndicatorLight.Colour.GREEN);
 //        rightLight = new IndicatorLight(hwMap, "RightLight", IndicatorLight.Colour.GREEN);
 //
-//        driveProfile = new VectorMotionProfile(DRIVE_PROFILE_SPEED);
-//        turnProfile = new MotionProfile(TURN_PROFILE_SPEED, TURN_PROFILE_MAX);
-//        turnController = new SimpleFeedbackController(AUTO_ALIGN_P);
+        driveProfile = new VectorMotionProfile(DRIVE_PROFILE_SPEED);
+        turnProfile = new MotionProfile(TURN_PROFILE_SPEED, TURN_PROFILE_MAX);
+        turnController = new SimpleFeedbackController(AUTO_ALIGN_P);
     }
 
     public void update() {
         od.update();
-        pose = new RobotPose(od.getPosition().x, od.getPosition().y, od.getHeading());
+        pose = new RobotPose(od.getPosition().x, od.getPosition().y, od.getHeading() + imuOffset );
     }
 
     /**
@@ -96,10 +96,12 @@ public class DriveTrain implements DriveConstants {
      * @param lowGear whether to put the robot to virtual low gear
      */
     public void drive(Vector driveInput, double turn, boolean lowGear) {
-        targetHeading += turn * -0.04;
-        double turnCalculated = turnProfile.calculate(turnToAngle());
+        double turnCalculated = Math.abs(turn) < 0.05 ? turnProfile.calculate(turnToAngle()) : turn * 0.3;
+        if(Math.abs(turn) < 0.05){
+            setTargetHeading(pose.angle);
+        }
         driveInput = driveProfile.calculate(driveInput.clipMagnitude(
-                (lowGear ? VIRTUAL_LOW_GEAR : VIRTUAL_HIGH_GEAR) - Math.abs(turn)));
+                (lowGear ? VIRTUAL_LOW_GEAR : VIRTUAL_HIGH_GEAR) - Math.abs(turn * 0.3)));
         double power = driveInput.magnitude();
         double angle = driveInput.angle();
 
@@ -123,9 +125,7 @@ public class DriveTrain implements DriveConstants {
         backDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
     }
 
-    public int[] getMotorVelocities() {
-        return new int[]{leftEncoder.getVelocity(), rightEncoder.getVelocity(), backEncoder.getVelocity()};
-    }
+
 
     public void runDriveMotors(double power){
         leftDrive.setPower(power);
