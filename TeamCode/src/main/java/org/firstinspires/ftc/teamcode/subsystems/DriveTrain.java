@@ -1,175 +1,139 @@
 package org.firstinspires.ftc.teamcode.subsystems;
-import com.kauailabs.navx.ftc.AHRS;
-import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.constants.DriveConstants;
+import org.firstinspires.ftc.teamcode.math_utils.Angles;
+import org.firstinspires.ftc.teamcode.math_utils.VectorMotionProfile;
+import org.firstinspires.ftc.teamcode.math_utils.MotionProfile;
+import org.firstinspires.ftc.teamcode.math_utils.Vector;
+import org.firstinspires.ftc.teamcode.math_utils.RobotPose;
+import org.firstinspires.ftc.teamcode.math_utils.SimpleFeedbackController;
+import org.firstinspires.ftc.teamcode.subsystems.components.IndicatorLight;
+import org.firstinspires.ftc.teamcode.subsystems.components.OpticalSensor;
+import org.firstinspires.ftc.teamcode.subsystems.components.OctoEncoder;
+
+import com.qualcomm.hardware.digitalchickenlabs.OctoQuadBase;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
 
-import org.firstinspires.ftc.teamcode.constants.DriveConstants;
-
 /**
- * This is NOT an op-mode.*
- * This class can be used to define all the specific hardware for a single robot.
- * In this case that robot is a Pushbot.
- * See PushbotTeleopTank_Iterative and others classes starting with "Pushbot" for usage examples.*
- * This hardware class assumes the following device names have been configured on the robot:
- * Note:  All names are lower case and some have single spaces between words.
+ * Robot Drivetrain
  */
 public class DriveTrain implements DriveConstants {
-    /* Public OpMode members. */
-    public DcMotor rearMotor, rightMotor, leftMotor;
-    public RevBlinkinLedDriver blinkin;
-    private AHRS navx;
-
-    public boolean robotCentric = true;
-    public boolean lowGear = false;
-
-    /* local OpMode members. */
-    HardwareMap hwMap;
-
-    public void init( HardwareMap hwMap ) {
-
-        // Saving a reference to the Hardware map...
-        this.hwMap = hwMap;
-
-        /*
-         *  Motors
-         */
-
-        // Instantiating the Motors...
-        rearMotor = hwMap.get( DcMotor.class, "Rear" );
-        rightMotor = hwMap.get( DcMotor.class, "Right" );
-        leftMotor = hwMap.get( DcMotor.class, "Left" );
-
-        // Inverting the Motors...
-        rearMotor.setDirection( DcMotorSimple.Direction.REVERSE );
-        rightMotor.setDirection( DcMotorSimple.Direction.REVERSE );
-        leftMotor.setDirection( DcMotorSimple.Direction.REVERSE );
-
-        // Setting 0 Power Behavior...
-        rearMotor.setZeroPowerBehavior( DcMotor.ZeroPowerBehavior.BRAKE );
-        rightMotor.setZeroPowerBehavior( DcMotor.ZeroPowerBehavior.BRAKE );
-        leftMotor.setZeroPowerBehavior( DcMotor.ZeroPowerBehavior.BRAKE );
-        navx = AHRS.getInstance(hwMap.get(NavxMicroNavigationSensor.class,
-                "navX"), AHRS.DeviceDataType.kProcessedData);
-        navx.zeroYaw();
-    }
-
-
-    /*
-     *  MOTORS
-     */
+    private final DcMotorEx leftDrive, rightDrive, backDrive;
+    private final OctoEncoder leftEncoder, rightEncoder, backEncoder;
+    private final VectorMotionProfile driveProfile;
+    private final MotionProfile turnProfile;
+    private final SimpleFeedbackController turnController;
+    private RobotPose pose;
+    private final boolean isBlueAlliance;
+    private double imuOffset, targetHeading;
+    private OpticalSensor od;
 
     /**
-     * Moves the robot. No spinning, no saucing. Just linear-like, across-the-floor
-     *  movement.
+     * Initializes the Drivetrain subsystem
      *
-     * @param speed the speed the robot will move at
-     * @param angle the angle at which the robot will move
+     * @param hwMap the hardwareMap
+     * @param x the initial x coordinate
+     * @param y the initial y coordinate
+     * @param initialHeading the initial robot heading in radians
+     * @param isBlue whether we are blue alliance
      */
-    public void move( double speed, double angle ) {
+    public DriveTrain(HardwareMap hwMap, double x, double y, double initialHeading, boolean isBlue) {
+        this.imuOffset = initialHeading + Math.PI;
+        this.targetHeading = initialHeading;
+        this.isBlueAlliance = isBlue;
+        od = new OpticalSensor("OTOS", hwMap, DistanceUnit.METER, AngleUnit.RADIANS);
+        pose = new RobotPose(x, y, initialHeading);
 
-        rearMotor.setPower( speed * Math.cos( Math.toRadians( angle + 180 ) ) );
-        rightMotor.setPower( speed *  Math.cos( Math.toRadians( angle + 60 ) ) );
-        leftMotor.setPower( speed * Math.cos( Math.toRadians( angle + 300 ) ) );
+
+        leftDrive = hwMap.get(DcMotorEx.class, "LeftDriveMotor");
+        rightDrive = hwMap.get(DcMotorEx.class, "RightDriveMotor");
+        backDrive = hwMap.get(DcMotorEx.class, "BackDriveMotor");
+
+        leftDrive.setDirection(DcMotorEx.Direction.REVERSE);
+        rightDrive.setDirection(DcMotorEx.Direction.REVERSE);
+        backDrive.setDirection(DcMotorEx.Direction.REVERSE);
+
+        leftDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        backDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
+        leftDrive.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        rightDrive.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        backDrive.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+//
+//        leftDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
+//        rightDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
+//        backDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
+//
+//
+//        leftEncoder = new OctoEncoder(hwMap, LEFT_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
+//        rightEncoder = new OctoEncoder(hwMap, RIGHT_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
+//        backEncoder = new OctoEncoder(hwMap, BACK_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
+
+//        leftLight = new IndicatorLight(hwMap, "LeftLight", IndicatorLight.Colour.GREEN);
+//        rightLight = new IndicatorLight(hwMap, "RightLight", IndicatorLight.Colour.GREEN);
+//
+//        driveProfile = new VectorMotionProfile(DRIVE_PROFILE_SPEED);
+//        turnProfile = new MotionProfile(TURN_PROFILE_SPEED, TURN_PROFILE_MAX);
+//        turnController = new SimpleFeedbackController(AUTO_ALIGN_P);
     }
 
-//    public double getYaw(){
-//        return angles.firstAngle;
-//    }
+    public void update() {
+        od.update();
+        pose = new RobotPose(od.getPosition().x, od.getPosition().y, od.getHeading());
+    }
 
     /**
-     * Spins the robot. No linear movement, so no saucin'. Just spinning in place.
+     * Drives the robot field oriented
      *
-     * @param speed the speed the robot will spin at
+     * @param driveInput the (x, y) input
+     * @param turn the turning input
+     * @param lowGear whether to put the robot to virtual low gear
      */
-    public void spin( double speed ) {
+    public void drive(Vector driveInput, double turn, boolean lowGear) {
+        targetHeading += turn * -0.04;
+        double turnCalculated = turnProfile.calculate(turnToAngle());
+        driveInput = driveProfile.calculate(driveInput.clipMagnitude(
+                (lowGear ? VIRTUAL_LOW_GEAR : VIRTUAL_HIGH_GEAR) - Math.abs(turn)));
+        double power = driveInput.magnitude();
+        double angle = driveInput.angle();
 
-        if( robotCentric )
-        {
-            rearMotor.setPower( -speed );
-            rightMotor.setPower( -speed );
-            leftMotor.setPower( -speed );
-        }
-        else
-        {
-            rightMotor.setPower( -speed );
-            leftMotor.setPower( -speed );
-        }
+        leftDrive.setPower(turnCalculated + power * Math.cos(angle + LEFT_DRIVE_OFFSET - pose.angle));
+        rightDrive.setPower(turnCalculated + power * Math.cos(angle + RIGHT_DRIVE_OFFSET - pose.angle));
+        backDrive.setPower(turnCalculated + power * Math.cos(angle + BACK_DRIVE_OFFSET - pose.angle));
     }
 
-    /**
-     * Combines spinning and linear-like movement to sauce. The robot will move across
-     *  the floor while spinning. (Moves on a line, spinning all the while...)
-     *
-     * @param speed the speed the robot will move across the floor (on a line) at
-     * @param spinSpeed the speed the robot will spin at
-     * @param angle the angle at which the robot will move across the floor (on a line) at
-     * @param deltaHeading how far, in degrees, the robot has spun on the elevated-floor-like
-     *  axis. The change in Heading. Is updated with every loop
-     */
-    public void fieldOriented( double speed, double spinSpeed, double angle, double deltaHeading, boolean isHighGear)
-    {
-        double multiplier = (isHighGear ? 0.8 : 0.5);
-        if ( robotCentric )
-        {
-            rearMotor.setPower(multiplier * ( (-spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 180 - deltaHeading ) ) ) )));
-            rightMotor.setPower( multiplier * ( (-spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 60 - deltaHeading ) ) )) ));
-            leftMotor.setPower( multiplier * (-spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 300 - deltaHeading ) ) ) ));
-        }
-        else
-        {
-            rearMotor.setPower( multiplier * ((speed * multiplier) * Math.cos( Math.toRadians( angle + 180 - deltaHeading) ) ) );
-            rightMotor.setPower( multiplier * (-spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 60 - deltaHeading ) ) )) );
-            leftMotor.setPower( multiplier * (-spinSpeed + ( (speed * multiplier) * Math.cos( Math.toRadians( angle + 300 - deltaHeading ) ) )) );
-        }
-
-
-
-
-
-
+    private double turnToAngle() {
+        double error = Angles.clipRadians(pose.angle - targetHeading);
+        return Math.abs(error) < AUTO_ALIGN_ERROR ? 0.0 : turnController.calculate(error);
     }
 
-
-    /**
-     * Stops the robot's 3 wheels. Do we need this??
-     */
-    public void stopWheels()
-    {
-        // Stopping Wheels...
-        rearMotor.setPower( 0 );
-        rightMotor.setPower( 0 );
-        leftMotor.setPower( 0 );
+    public void setTargetHeading(double targetHeading) {
+        this.targetHeading = targetHeading;
     }
 
-    public double getYaw(){
-        return navx.getYaw();
+    public void setFloat() {
+        leftDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        rightDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        backDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
     }
 
-    public void resetYaw(){
-        navx.zeroYaw();
-
+    public int[] getMotorVelocities() {
+        return new int[]{leftEncoder.getVelocity(), rightEncoder.getVelocity(), backEncoder.getVelocity()};
     }
 
-    /**
-     * Resets the wheels' encoders. I think we need this :)
-     */
-    public void resetWheelEncoders()
-    {
-        rearMotor.setMode( DcMotor.RunMode.STOP_AND_RESET_ENCODER );
-        rightMotor.setMode( DcMotor.RunMode.STOP_AND_RESET_ENCODER );
-        leftMotor.setMode( DcMotor.RunMode.STOP_AND_RESET_ENCODER );
-
-        rearMotor.setMode( DcMotor.RunMode.RUN_USING_ENCODER );
-        rightMotor.setMode( DcMotor.RunMode.RUN_USING_ENCODER );
-        leftMotor.setMode( DcMotor.RunMode.RUN_USING_ENCODER );
+    public void runDriveMotors(double power){
+        leftDrive.setPower(power);
+        rightDrive.setPower(power);
+        backDrive.setPower(power );
     }
 
+    public RobotPose getPose() { return pose; }
 
-
-
+    public void resetIMU() { od.resetHeading(); }
 }

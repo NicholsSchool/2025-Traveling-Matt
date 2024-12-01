@@ -9,8 +9,8 @@ import org.firstinspires.ftc.teamcode.constants.ArmConstants;
 public class Encoders implements ArmConstants {
     private OctoQuad octoquad;
 
-    private int         elevatorPos;
-    private int         intakePos;
+    private int elevatorPos;
+    private int intakePos;
 
 
     public Encoders(HardwareMap hwMap){
@@ -26,7 +26,7 @@ public class Encoders implements ArmConstants {
     }
 
     public int getIntakePos(){
-      return octoquad.readSinglePosition(intakeSlideEncoderID);
+        return octoquad.readSinglePosition(intakeSlideEncoderID);
 
     }
 
