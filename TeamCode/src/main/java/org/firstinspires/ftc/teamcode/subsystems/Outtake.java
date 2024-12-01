@@ -1,15 +1,23 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.constants.ArmConstants;
+import org.firstinspires.ftc.teamcode.subsystems.components.Encoders;
+import com.qualcomm.hardware.digitalchickenlabs.OctoQuadBase;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import org.firstinspires.ftc.teamcode.math_utils.PIDController;
+import org.firstinspires.ftc.teamcode.subsystems.components.OctoEncoder;
 
 
 public class Outtake implements ArmConstants {
     DcMotorEx outtakeRight, outtakeLeft;
     Encoders encoder;
+    PIDController pidController;
+    double setpoint;
+    OctoEncoder slideEncoder;
+
 
 
     /**
@@ -27,6 +35,11 @@ public class Outtake implements ArmConstants {
         outtakeLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         encoder = new Encoders(hwMap);
+//        slideEncoder = new OctoEncoder(hwMap, SLIDE_ENC_ID, OctoQuadBase.EncoderDirection.FORWARD);
+//        slideEncoder.reset();
+//
+//        setpoint = 0.0;
+//        pidController = new PIDController(SLIDE_P, 0.0, SLIDE_D);
 
 
 

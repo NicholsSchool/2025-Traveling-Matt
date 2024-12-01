@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.constants.ArmConstants;
+import org.firstinspires.ftc.teamcode.subsystems.components.Encoders;
 
 public class Intake implements ArmConstants {
     DcMotorEx intakeSlide;

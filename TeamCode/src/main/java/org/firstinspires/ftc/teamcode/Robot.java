@@ -2,12 +2,10 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.constants.DriveConstants;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
-import org.firstinspires.ftc.teamcode.subsystems.Encoders;
+import org.firstinspires.ftc.teamcode.subsystems.components.Encoders;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Outtake;
 
@@ -64,7 +62,7 @@ public class Robot extends OpMode
     @Override
     public void loop(){
         drivetrain.fieldOriented(Math.hypot(controller1.leftStick.x.value(),controller1.leftStick.y.value()), -controller1.rightStick.x.value() * 0.3
-        ,Math.toDegrees(Math.atan2(controller1.leftStick.y.value(),controller1.leftStick.x.value())), - drivetrain.getYaw(), controller1.rightBumper.isPressed());
+        ,Math.toDegrees(Math.atan2(controller1.leftStick.y.value(),controller1.leftStick.x.value())), - drivetrain.getYaw() + 180, controller1.rightBumper.isPressed());
         outtake.outtakeSlideManual(controller2.leftStick.y.value());
         intake.intakeSoftLimited(controller2.rightStick.y.value());
         if(controller2.leftBumper.isPressed()) {
@@ -87,14 +85,9 @@ public class Robot extends OpMode
             drivetrain.resetYaw();
         }
 
-        if (controller2.square.wasJustPressed()){
-           outtake.elevatorToPos((60000 * 100) - encoder.getElevatorPos());
-        }
-
-        if (controller1.leftBumper.isPressed()){
 
 
-        }
+
 
 
 
