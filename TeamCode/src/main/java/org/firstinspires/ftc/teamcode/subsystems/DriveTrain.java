@@ -29,6 +29,8 @@ public class DriveTrain implements DriveConstants {
     private final MotionProfile turnProfile;
     private final SimpleFeedbackController turnController;
     private RobotPose pose;
+    private RobotPose fieldPose;
+    private RobotPose initalPose;
     private final boolean isBlueAlliance;
     private double imuOffset, targetHeading;
     private OpticalSensor od;
@@ -44,9 +46,11 @@ public class DriveTrain implements DriveConstants {
      */
     public DriveTrain(HardwareMap hwMap, double x, double y, double initialHeading, boolean isBlue) {
         this.imuOffset = initialHeading + Math.PI;
+        this.initalPose = new RobotPose(x, y, initialHeading + (isBlue ? Math.PI : 0));
+        this.fieldPose = new RobotPose(x, y, initialHeading + (isBlue ? Math.PI : 0));
         this.targetHeading = initialHeading;
         this.isBlueAlliance = isBlue;
-        od = new OpticalSensor("OTOS", hwMap, DistanceUnit.METER, AngleUnit.RADIANS);
+        od = new OpticalSensor("OTOS", hwMap, DistanceUnit.INCH, AngleUnit.RADIANS);
         pose = new RobotPose(x, y, initialHeading);
 
 
@@ -65,6 +69,7 @@ public class DriveTrain implements DriveConstants {
         leftDrive.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         backDrive.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        update();
 //
 //        leftDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
 //        rightDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
@@ -86,6 +91,7 @@ public class DriveTrain implements DriveConstants {
     public void update() {
         od.update();
         pose = new RobotPose(od.getPosition().x, od.getPosition().y, od.getHeading() + imuOffset );
+        fieldPose = new RobotPose(od.getPosition().x + initalPose.x, od.getPosition().y + initalPose.y, od.getHeading() + initalPose.angle );
     }
 
     /**
@@ -133,7 +139,7 @@ public class DriveTrain implements DriveConstants {
         backDrive.setPower(power );
     }
 
-    public RobotPose getPose() { return pose; }
+    public RobotPose getPose() { return fieldPose; }
 
     public void resetIMU() { od.resetHeading(); }
 }

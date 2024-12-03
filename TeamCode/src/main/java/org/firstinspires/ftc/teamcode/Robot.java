@@ -14,9 +14,8 @@ import org.firstinspires.ftc.teamcode.subsystems.Outtake;
 /**
  * Kiwi Teleop Code
  */
-@TeleOp(name="Robot", group="Iterative OpMode")
-public class Robot extends OpMode
-{
+@TeleOp(name = "Robot", group = "Iterative OpMode")
+public class Robot extends OpMode {
     Robot robot;
     double power;
     public Controller controller1, controller2;
@@ -49,7 +48,8 @@ public class Robot extends OpMode
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
     @Override
-    public void init_loop() {}
+    public void init_loop() {
+    }
 
     /*
      * Code to run ONCE when the driver hits PLAY
@@ -61,47 +61,30 @@ public class Robot extends OpMode
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     @Override
-    public void loop(){
+    public void loop() {
         drivetrain.drive(new Vector(controller1.leftStick.x.value(), controller1.leftStick.y.value()), controller1.rightStick.x.value(), controller1.rightBumper.isPressed());
         outtake.outtakeSlideManual(controller2.leftStick.y.value());
         intake.intakeSoftLimited(controller2.rightStick.y.value());
-        if(controller2.leftBumper.isPressed()) {
+        if (controller2.leftBumper.isPressed()) {
 //            intake.wristControl(controller2.leftBumper.isPressed());
             intake.intakeServo(1);
-        }
-        else if (controller2.rightBumper.isPressed()){
+        } else if (controller2.rightBumper.isPressed()) {
             intake.outtakeBlock(1);
 
 
-        }
-
-        else{
+        } else {
             telemetry.addData("nothing pressed", "true");
             intake.intakeServo(0);
             intake.outtakeBlock(0);
         }
 
-        if(controller1.options.isPressed()){
+        if (controller1.options.isPressed()) {
             drivetrain.resetIMU();
         }
 
-        if(controller2.square.isPressed()){
+        if (controller2.square.isPressed()) {
             outtake.elevatorToPos(50000);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         controller1.update();
@@ -114,14 +97,9 @@ public class Robot extends OpMode
         telemetry.addData("red", intake.printColorSensor()[0]);
         telemetry.addData("blue", intake.printColorSensor()[1]);
         telemetry.addData("green", intake.printColorSensor()[2]);
-        telemetry.addData("yaw", drivetrain.getPose().angle);
-
-
-
-
-
-
-
+        telemetry.addData("x", drivetrain.getPose().x);
+        telemetry.addData("y", drivetrain.getPose().y);
+        telemetry.addData("yaw", drivetrain.getPose().angle * 180 / Math.PI);
 
     }
 
@@ -129,5 +107,6 @@ public class Robot extends OpMode
      * Code to run ONCE after the driver hits STOP
      */
     @Override
-    public void stop() {}
+    public void stop() {
+    }
 }
