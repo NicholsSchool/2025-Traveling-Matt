@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.components.Encoders;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.subsystems.components.LED;
 
 
 /**
@@ -23,6 +24,7 @@ public class Robot extends OpMode {
     Outtake outtake;
     Intake intake;
     Encoders encoder;
+    LED leftLED, rightLED;
     boolean highGear = false;
 
     /*
@@ -94,9 +96,6 @@ public class Robot extends OpMode {
 
         telemetry.addData("elevator position", encoder.getElevatorPos());
         telemetry.addData("intake arm position", encoder.getIntakePos());
-        telemetry.addData("red", intake.printColorSensor()[0]);
-        telemetry.addData("blue", intake.printColorSensor()[1]);
-        telemetry.addData("green", intake.printColorSensor()[2]);
         telemetry.addData("x", drivetrain.getPose().x);
         telemetry.addData("y", drivetrain.getPose().y);
         telemetry.addData("yaw", drivetrain.getPose().angle * 180 / Math.PI);

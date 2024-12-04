@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.math_utils.Vector;
 import org.firstinspires.ftc.teamcode.math_utils.RobotPose;
 import org.firstinspires.ftc.teamcode.math_utils.SimpleFeedbackController;
 //import org.firstinspires.ftc.teamcode.subsystems.components.IndicatorLight;
+import org.firstinspires.ftc.teamcode.subsystems.components.LED;
 import org.firstinspires.ftc.teamcode.subsystems.components.OpticalSensor;
 import org.firstinspires.ftc.teamcode.subsystems.components.OctoEncoder;
 
@@ -24,6 +25,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  */
 public class DriveTrain implements DriveConstants {
     private final DcMotorEx leftDrive, rightDrive, backDrive;
+    private final LED leftLED, rightLED;
 //    private final OctoEncoder leftEncoder, rightEncoder, backEncoder;
     private final VectorMotionProfile driveProfile;
     private final MotionProfile turnProfile;
@@ -70,6 +72,10 @@ public class DriveTrain implements DriveConstants {
         rightDrive.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         backDrive.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         update();
+
+        leftLED = new LED(hwMap, "leftLED", LED.Colour.BLUE);
+        rightLED = new LED(hwMap, "rightLED", LED.Colour.BLUE);
+
 //
 //        leftDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
 //        rightDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);

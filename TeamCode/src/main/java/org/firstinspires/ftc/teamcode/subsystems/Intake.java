@@ -13,13 +13,11 @@ public class Intake implements ArmConstants {
     DcMotorEx intakeSlide;
     Servo wristServo;
     CRServo intakeServo;
-    ColorSensor colorSensor;
     Encoders encoder;
 
     public Intake(HardwareMap hwMap) {
         intakeServo = hwMap.get(CRServo.class, "intakeServo");
         intakeSlide = hwMap.get(DcMotorEx.class, "intakeSlide");
-        colorSensor = hwMap.get(ColorSensor.class, "colorSensor");
         wristServo = hwMap.get(Servo.class, "wristServo");
         encoder = new Encoders(hwMap);
 
@@ -81,10 +79,5 @@ public class Intake implements ArmConstants {
         BLUE,
         YELLOW,
         NONE
-    }
-
-    public int[] printColorSensor(){
-        return new int[] {colorSensor.red(), colorSensor.blue(), colorSensor.green()};
-
     }
 }
