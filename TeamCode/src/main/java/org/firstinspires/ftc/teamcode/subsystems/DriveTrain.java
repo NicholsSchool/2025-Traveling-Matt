@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.math_utils.SimpleFeedbackController;
 //import org.firstinspires.ftc.teamcode.subsystems.components.IndicatorLight;
 import org.firstinspires.ftc.teamcode.subsystems.components.LED;
 import org.firstinspires.ftc.teamcode.subsystems.components.OpticalSensor;
-import org.firstinspires.ftc.teamcode.subsystems.components.OctoEncoder;
+//import org.firstinspires.ftc.teamcode.subsystems.components.OctoEncoder;
 
 import com.qualcomm.hardware.digitalchickenlabs.OctoQuadBase;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -147,5 +147,6 @@ public class DriveTrain implements DriveConstants {
 
     public RobotPose getPose() { return fieldPose; }
 
-    public void resetIMU() { od.resetHeading(); }
+    public void resetIMU() { od.resetHeading();}
+
 }

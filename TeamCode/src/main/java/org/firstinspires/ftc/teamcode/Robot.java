@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.math_utils.Vector;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
-import org.firstinspires.ftc.teamcode.subsystems.components.Encoders;
+//import org.firstinspires.ftc.teamcode.subsystems.components.Encoders;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.subsystems.components.LED;
@@ -23,7 +23,7 @@ public class Robot extends OpMode {
     DriveTrain drivetrain;
     Outtake outtake;
     Intake intake;
-    Encoders encoder;
+//    Encoders encoder;
     LED leftLED, rightLED;
     boolean highGear = false;
 
@@ -37,9 +37,10 @@ public class Robot extends OpMode {
         controller1 = new Controller(gamepad1);
         controller2 = new Controller(gamepad2);
 //        drivetrain.init(hardwareMap);
-        intake = new Intake(hardwareMap);
+        intake = new Intake(hardwareMap, telemetry);
         outtake = new Outtake(hardwareMap);
-        encoder = new Encoders(hardwareMap);
+//        encoder = new Encoders(hardwareMap);
+
 
 
         // Tell the driver that initialization is complete.
@@ -94,8 +95,8 @@ public class Robot extends OpMode {
         drivetrain.update();
 
 
-        telemetry.addData("elevator position", encoder.getElevatorPos());
-        telemetry.addData("intake arm position", encoder.getIntakePos());
+        telemetry.addData("elevator position", intake.getIntakePosition());
+        telemetry.addData("intake arm position", outtake.getOuttakePosition());
         telemetry.addData("x", drivetrain.getPose().x);
         telemetry.addData("y", drivetrain.getPose().y);
         telemetry.addData("yaw", drivetrain.getPose().angle * 180 / Math.PI);

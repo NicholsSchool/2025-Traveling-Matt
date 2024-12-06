@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -8,7 +9,7 @@ import org.firstinspires.ftc.teamcode.subsystems.components.Encoders;
 import com.qualcomm.hardware.digitalchickenlabs.OctoQuadBase;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import org.firstinspires.ftc.teamcode.math_utils.PIDController;
-import org.firstinspires.ftc.teamcode.subsystems.components.OctoEncoder;
+//import org.firstinspires.ftc.teamcode.subsystems.components.OctoEncoder;
 
 
 public class Outtake implements ArmConstants {
@@ -16,7 +17,8 @@ public class Outtake implements ArmConstants {
     Encoders encoder;
     PIDController pidController;
     double setpoint;
-    OctoEncoder slideEncoder;
+//    OctoEncoder slideEncoder;
+
 
 
 
@@ -29,6 +31,7 @@ public class Outtake implements ArmConstants {
     public Outtake(HardwareMap hwMap){
         //bucket slide is the vertical slide, intake is the horizontal slide
         outtakeRight = hwMap.get(DcMotorEx.class, "outtakeRight");
+        outtakeRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         outtakeRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         outtakeRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
@@ -36,7 +39,7 @@ public class Outtake implements ArmConstants {
         outtakeLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         outtakeLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
-        encoder = new Encoders(hwMap);
+//        encoder = new Encoders(hwMap);
 //        slideEncoder = new OctoEncoder(hwMap, SLIDE_ENC_ID, OctoQuadBase.EncoderDirection.FORWARD);
 //        slideEncoder.reset();
 //
@@ -52,7 +55,7 @@ public class Outtake implements ArmConstants {
 
 
     public void outtakeSlideManual(double power){
-        if((power > 0 && encoder.getElevatorPos() < OUTTAKEMAX) || (power <= 0 && encoder.getElevatorPos() > OUTTAKEMIN)) {
+        if((power > 0 && outtakeRight.getCurrentPosition() > OUTTAKEMAX) || (power <= 0 && outtakeRight.getCurrentPosition() < OUTTAKEMIN)) {
             outtakeRight.setPower(power);
             outtakeLeft.setPower(-power);
         }else{
@@ -61,6 +64,9 @@ public class Outtake implements ArmConstants {
         }
 
     }
+
+
+
 
 
 
@@ -80,6 +86,11 @@ public class Outtake implements ArmConstants {
         
     }
 
+    public int getOuttakePosition(){
+        return outtakeRight.getCurrentPosition();
+    }
+}
+
 
 
 
@@ -91,4 +102,4 @@ public class Outtake implements ArmConstants {
 
 
 
-}
+

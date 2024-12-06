@@ -109,6 +109,7 @@ public class LerpPathPlanning implements SplineConstants {
         if(error >= DESTINATION_ERROR) {
             driveVector.scaleMagnitude(SPLINE_P * error);
             isFinished = false;
+            driveVector.scaleMagnitude(0.5);
         }
         else {
             driveVector.zero();
