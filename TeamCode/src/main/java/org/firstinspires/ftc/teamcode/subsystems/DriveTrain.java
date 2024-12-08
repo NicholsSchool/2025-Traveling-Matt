@@ -25,7 +25,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  */
 public class DriveTrain implements DriveConstants {
     private final DcMotorEx leftDrive, rightDrive, backDrive;
-    private final LED leftLED, rightLED;
 //    private final OctoEncoder leftEncoder, rightEncoder, backEncoder;
     private final VectorMotionProfile driveProfile;
     private final MotionProfile turnProfile;
@@ -73,8 +72,7 @@ public class DriveTrain implements DriveConstants {
         backDrive.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         update();
 
-        leftLED = new LED(hwMap, "leftLED", LED.Colour.BLUE);
-        rightLED = new LED(hwMap, "rightLED", LED.Colour.BLUE);
+
 
 //
 //        leftDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
@@ -122,6 +120,25 @@ public class DriveTrain implements DriveConstants {
         backDrive.setPower(turnCalculated + power * Math.cos(angle + BACK_DRIVE_OFFSET - pose.angle));
     }
 
+    public void driveWithHeading(Vector driveInput, double turn, boolean lowGear, double desiredHeading) {
+        double turnCalculated = Math.abs(turn) < 0.05 ? turnProfile.calculate(turnToAngle()) : turn * 0.3;
+        if(Math.abs(turn) < 0.05){
+            setTargetHeading(pose.angle);
+        }
+        driveInput = driveProfile.calculate(driveInput.clipMagnitude(
+                (lowGear ? VIRTUAL_LOW_GEAR : VIRTUAL_HIGH_GEAR) - Math.abs(turn * 0.3)));
+        double power = driveInput.magnitude();
+        double angle = driveInput.angle();
+
+        while(Math.abs(desiredHeading - targetHeading) > 0.005) {
+            turn(-0.2);
+        }
+
+        leftDrive.setPower(turnCalculated + power * Math.cos(angle + LEFT_DRIVE_OFFSET - pose.angle));
+        rightDrive.setPower(turnCalculated + power * Math.cos(angle + RIGHT_DRIVE_OFFSET - pose.angle));
+        backDrive.setPower(turnCalculated + power * Math.cos(angle + BACK_DRIVE_OFFSET - pose.angle));
+    }
+
     private double turnToAngle() {
         double error = Angles.clipRadians(pose.angle - targetHeading);
         return Math.abs(error) < AUTO_ALIGN_ERROR ? 0.0 : turnController.calculate(error);
@@ -139,7 +156,7 @@ public class DriveTrain implements DriveConstants {
 
 
 
-    public void runDriveMotors(double power){
+    public void turn(double power){
         leftDrive.setPower(power);
         rightDrive.setPower(power);
         backDrive.setPower(power );

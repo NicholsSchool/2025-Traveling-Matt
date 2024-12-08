@@ -2,13 +2,14 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.math_utils.Vector;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 //import org.firstinspires.ftc.teamcode.subsystems.components.Encoders;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Outtake;
+import org.firstinspires.ftc.teamcode.subsystems.Elevator;
 import org.firstinspires.ftc.teamcode.subsystems.components.LED;
 
 
@@ -21,7 +22,7 @@ public class Robot extends OpMode {
     double power;
     public Controller controller1, controller2;
     DriveTrain drivetrain;
-    Outtake outtake;
+    Elevator elevator;
     Intake intake;
 //    Encoders encoder;
     LED leftLED, rightLED;
@@ -38,7 +39,7 @@ public class Robot extends OpMode {
         controller2 = new Controller(gamepad2);
 //        drivetrain.init(hardwareMap);
         intake = new Intake(hardwareMap, telemetry);
-        outtake = new Outtake(hardwareMap);
+        elevator = new Elevator(hardwareMap);
 //        encoder = new Encoders(hardwareMap);
 
 
@@ -66,7 +67,9 @@ public class Robot extends OpMode {
     @Override
     public void loop() {
         drivetrain.drive(new Vector(controller1.leftStick.x.value(), controller1.leftStick.y.value()), controller1.rightStick.x.value(), controller1.rightBumper.isPressed());
-        outtake.outtakeSlideManual(controller2.leftStick.y.value());
+        if(!controller2.square.isPressed()) {
+            elevator.elevatorManual(controller2.leftStick.y.value());
+        }
         intake.intakeSoftLimited(controller2.rightStick.y.value());
         if (controller2.leftBumper.isPressed()) {
 //            intake.wristControl(controller2.leftBumper.isPressed());
@@ -86,8 +89,19 @@ public class Robot extends OpMode {
         }
 
         if (controller2.square.isPressed()) {
-            outtake.elevatorToPos(50000);
+            elevator.elevatorToPos(59000);
         }
+
+        if (Math.abs(elevator.getElevatorPosition() - 59000)< 1000) {
+            elevator.headlight(1);
+
+        } else if (Math.abs(elevator.getElevatorPosition() - 30000)< 1000){
+            elevator.headlight(1);
+
+        } else{
+            elevator.headlight(0);
+        }
+
 
 
         controller1.update();
@@ -95,11 +109,12 @@ public class Robot extends OpMode {
         drivetrain.update();
 
 
-        telemetry.addData("elevator position", intake.getIntakePosition());
-        telemetry.addData("intake arm position", outtake.getOuttakePosition());
+        telemetry.addData("elevator position", elevator.getElevatorPosition());
+        telemetry.addData("intake arm position", intake.getIntakePosition());
         telemetry.addData("x", drivetrain.getPose().x);
         telemetry.addData("y", drivetrain.getPose().y);
         telemetry.addData("yaw", drivetrain.getPose().angle * 180 / Math.PI);
+        telemetry.addData("elevatorTest", elevator.elevatorTest(57000));
 
     }
 
