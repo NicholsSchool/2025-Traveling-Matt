@@ -28,22 +28,26 @@ public interface DriveConstants {
 
     /** Auto Align Proportional Constant */
     double AUTO_ALIGN_P = 0.45;
+
     /** Auto Align allowed error in radians (.5 degrees) */
     double AUTO_ALIGN_ERROR = 0.00872664625997;
 
-    /** Left Drive Wheel Angle Offset (30 degrees) */
-    double LEFT_DRIVE_OFFSET = Math.PI / 6.0;
+    /** Anthony has his left and right reversed here for some reason that I cannot figure out */
+    /** Left Drive Wheel Angle Offset (30 degrees) (now 240) */
+    double LEFT_DRIVE_OFFSET = Math.toRadians(240)  ;
 
-    /** Right Drive Wheel Angle Offset (150 degrees) */
-    double RIGHT_DRIVE_OFFSET = 5.0 * Math.PI / 6.0;
+    /** Right Drive Wheel Angle Offset (150 degrees) (now 120) */
+    double RIGHT_DRIVE_OFFSET = Math.toRadians(120) ;
 
-    /** Back Drive Wheel Angle Offset (270 degrees) */
-    double BACK_DRIVE_OFFSET = 1.5 * Math.PI;
+    /** Back Drive Wheel Angle Offset (270 degrees) (now 0) */
+    double BACK_DRIVE_OFFSET = 0;
 
     /** Drive Motor Proportional Gain */
     double DRIVE_P = 16.0;
 
     /** Drive Motor Integral Gain */
     double DRIVE_I = 6.0;
+
+    double HEADING_TOLERANCE = .017;
 
 }

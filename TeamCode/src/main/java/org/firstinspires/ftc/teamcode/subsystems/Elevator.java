@@ -34,12 +34,13 @@ public class Elevator implements ArmConstants {
      */
     public Elevator(HardwareMap hwMap){
         //bucket slide is the vertical slide, intake is the horizontal slide
-        elevatorRight = hwMap.get(DcMotorEx.class, "outtakeRight");
+        elevatorRight = hwMap.get(DcMotorEx.class, "elevatorRight");
         elevatorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         elevatorRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         elevatorRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
-        elevatorLeft = hwMap.get(DcMotorEx.class, "outtakeLeft");
+        elevatorLeft = hwMap.get(DcMotorEx.class, "elevatorLeft");
+        elevatorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         elevatorLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         elevatorLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
@@ -64,8 +65,8 @@ public class Elevator implements ArmConstants {
 
     public void elevatorManual(double power){
         if((power > 0 && getElevatorPosition() < ELEVATORMAX) || (power <= 0 && getElevatorPosition() > ELEVATORMIN)) {
-            elevatorRight.setPower(power);
-            elevatorLeft.setPower(-power);
+            elevatorRight.setPower(-power);
+            elevatorLeft.setPower(power);
         }else{
             elevatorRight.setPower(0.0);
             elevatorLeft.setPower(0.0);
@@ -99,7 +100,7 @@ public class Elevator implements ArmConstants {
     }
 
     public int getElevatorPosition(){
-        return -elevatorRight.getCurrentPosition();
+        return -elevatorLeft.getCurrentPosition();
     }
 
     public void headlight(double brightness){

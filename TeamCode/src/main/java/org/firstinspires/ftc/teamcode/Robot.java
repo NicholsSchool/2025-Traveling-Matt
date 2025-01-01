@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.subsystems.components.LED;
 /**
  * Kiwi Teleop Code
  */
-@TeleOp(name = "Robot", group = "Iterative OpMode")
+@TeleOp(name = "Comp Teleop", group = "Iterative OpMode")
 public class Robot extends OpMode {
     Robot robot;
     double power;
@@ -34,7 +34,7 @@ public class Robot extends OpMode {
     @Override
     public void init() {
 
-        drivetrain = new DriveTrain(hardwareMap, 0, 0, Math.PI / 2, false);
+        drivetrain = new DriveTrain(hardwareMap, 0, 0, 0, false);
         controller1 = new Controller(gamepad1);
         controller2 = new Controller(gamepad2);
 //        drivetrain.init(hardwareMap);
@@ -70,7 +70,7 @@ public class Robot extends OpMode {
         if(!controller2.square.isPressed()) {
             elevator.elevatorManual(controller2.leftStick.y.value());
         }
-        intake.intakeSoftLimited(controller2.rightStick.y.value());
+        intake.intakeSoftLimited(controller2.rightStick.y.value() * .6);
         if (controller2.leftBumper.isPressed()) {
 //            intake.wristControl(controller2.leftBumper.isPressed());
             intake.intakeServo(1);
@@ -115,7 +115,7 @@ public class Robot extends OpMode {
         telemetry.addData("y", drivetrain.getPose().y);
         telemetry.addData("yaw", drivetrain.getPose().angle * 180 / Math.PI);
         telemetry.addData("elevatorTest", elevator.elevatorTest(57000));
-
+        telemetry.addData("yawod", drivetrain.getHeading());
     }
 
     /*

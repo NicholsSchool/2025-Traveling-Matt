@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystems.components.Encoders;
 
 public class Intake implements ArmConstants {
     DcMotorEx intakeSlide;
-    Servo wristServo;
+    Servo rightWrist, leftWrist;
     CRServo intakeServo;
     Telemetry telemetry;
 //
@@ -22,7 +22,8 @@ public class Intake implements ArmConstants {
         this.telemetry = telemetry;
         intakeServo = hwMap.get(CRServo.class, "intakeServo");
         intakeSlide = hwMap.get(DcMotorEx.class, "intakeSlide");
-        wristServo = hwMap.get(Servo.class, "wristServo");
+        rightWrist = hwMap.get(Servo.class, "rightWrist");
+        leftWrist = hwMap.get(Servo.class, "leftWrist");
 //        encoder = new Encoders(hwMap);
         intakeSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intakeSlide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -35,7 +36,7 @@ public class Intake implements ArmConstants {
         if (power < 0) {
             intakeSlide.setPower(power);
         }else{
-            intakeSlide.setPower(0.7 * power);
+            intakeSlide.setPower(power);
         }
 
 
@@ -52,10 +53,9 @@ public class Intake implements ArmConstants {
 
         telemetry.addData("isIntaking", intakeSlide.getCurrentPosition() < INTAKEMAX + 10000);
         telemetry.addData("Intaking limit", INTAKEMAX + 10000);
-        wristControl(intakeSlide.getCurrentPosition() < INTAKEMAX + 10000);
+        wristControl(intakeSlide.getCurrentPosition() < INTAKEMAX + 25000);
 
     }
-
 
 
 //    public void intakeSlidePos(int targetPos) {
@@ -73,7 +73,8 @@ public class Intake implements ArmConstants {
 
 
     public void wristControl(boolean isIntaking){
-        wristServo.setPosition(isIntaking ? 0 : 1);
+        rightWrist.setPosition(isIntaking ? 1 : 0);
+        leftWrist.setPosition(isIntaking ? 0 : 1);
 
     }
 

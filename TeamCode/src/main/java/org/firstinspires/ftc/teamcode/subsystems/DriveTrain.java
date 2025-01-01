@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.subsystems.components.OpticalSensor;
 
 import com.qualcomm.hardware.digitalchickenlabs.OctoQuadBase;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
@@ -30,11 +31,12 @@ public class DriveTrain implements DriveConstants {
     private final MotionProfile turnProfile;
     private final SimpleFeedbackController turnController;
     private RobotPose pose;
-    private RobotPose fieldPose;
-    private RobotPose initalPose;
     private final boolean isBlueAlliance;
     private double imuOffset, targetHeading;
     private OpticalSensor od;
+    public double desiredHeading;
+    public double currentHeading;
+
 
     /**
      * Initializes the Drivetrain subsystem
@@ -47,21 +49,19 @@ public class DriveTrain implements DriveConstants {
      */
     public DriveTrain(HardwareMap hwMap, double x, double y, double initialHeading, boolean isBlue) {
         this.imuOffset = initialHeading + Math.PI;
-        this.initalPose = new RobotPose(x, y, initialHeading + (isBlue ? Math.PI : 0));
-        this.fieldPose = new RobotPose(x, y, initialHeading + (isBlue ? Math.PI : 0));
         this.targetHeading = initialHeading;
         this.isBlueAlliance = isBlue;
         od = new OpticalSensor("OTOS", hwMap, DistanceUnit.INCH, AngleUnit.RADIANS);
         pose = new RobotPose(x, y, initialHeading);
 
 
-        leftDrive = hwMap.get(DcMotorEx.class, "Left");
-        rightDrive = hwMap.get(DcMotorEx.class, "Right");
-        backDrive = hwMap.get(DcMotorEx.class, "Rear");
+        leftDrive = hwMap.get(DcMotorEx.class, "left");
+        rightDrive = hwMap.get(DcMotorEx.class, "right");
+        backDrive = hwMap.get(DcMotorEx.class, "front");
 
-        leftDrive.setDirection(DcMotorEx.Direction.REVERSE);
-        rightDrive.setDirection(DcMotorEx.Direction.REVERSE);
-        backDrive.setDirection(DcMotorEx.Direction.REVERSE);
+        leftDrive.setDirection(DcMotorEx.Direction.FORWARD);
+        rightDrive.setDirection(DcMotorEx.Direction.FORWARD);
+        backDrive.setDirection(DcMotorEx.Direction.FORWARD);
 
         leftDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -71,6 +71,12 @@ public class DriveTrain implements DriveConstants {
         rightDrive.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         backDrive.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         update();
+        currentHeading = getHeading();
+//
+//
+//        leftEncoder = new OctoEncoder(hwMap, LEFT_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
+//        rightEncoder = new OctoEncoder(hwMap, RIGHT_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
+//        backEncoder = new OctoEncoder(hwMap, BACK_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
 
 
 
@@ -78,11 +84,6 @@ public class DriveTrain implements DriveConstants {
 //        leftDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
 //        rightDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
 //        backDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
-//
-//
-//        leftEncoder = new OctoEncoder(hwMap, LEFT_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
-//        rightEncoder = new OctoEncoder(hwMap, RIGHT_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
-//        backEncoder = new OctoEncoder(hwMap, BACK_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
 
 //        leftLight = new IndicatorLight(hwMap, "LeftLight", IndicatorLight.Colour.GREEN);
 //        rightLight = new IndicatorLight(hwMap, "RightLight", IndicatorLight.Colour.GREEN);
@@ -95,7 +96,7 @@ public class DriveTrain implements DriveConstants {
     public void update() {
         od.update();
         pose = new RobotPose(od.getPosition().x, od.getPosition().y, od.getHeading() + imuOffset );
-        fieldPose = new RobotPose(od.getPosition().x + initalPose.x, od.getPosition().y + initalPose.y, od.getHeading() + initalPose.angle );
+
     }
 
     /**
@@ -106,7 +107,7 @@ public class DriveTrain implements DriveConstants {
      * @param lowGear whether to put the robot to virtual low gear
      */
     public void drive(Vector driveInput, double turn, boolean lowGear) {
-        double turnCalculated = Math.abs(turn) < 0.05 ? turnProfile.calculate(turnToAngle()) : turn * 0.3;
+        double turnCalculated = Math.abs(turn) < 0.05 ? turnProfile.calculate(turnToAngle()) : -turn * 0.3;
         if(Math.abs(turn) < 0.05){
             setTargetHeading(pose.angle);
         }
@@ -159,11 +160,35 @@ public class DriveTrain implements DriveConstants {
     public void turn(double power){
         leftDrive.setPower(power);
         rightDrive.setPower(power);
-        backDrive.setPower(power );
+        backDrive.setPower(power);
     }
 
-    public RobotPose getPose() { return fieldPose; }
+    public void stopDrive(double power){
+        leftDrive.setPower(power);
+        rightDrive.setPower(power);
+        backDrive.setPower(power );
+
+    }
+
+    public void testLeft(double power){
+        leftDrive.setPower(power);
+
+    }
+
+    public void badDrive(){
+        rightDrive.setPower(.5);
+        leftDrive.setPower(-.5);
+
+    }
+
+
 
     public void resetIMU() { od.resetHeading();}
+
+    public double getHeading(){
+        return od.getHeading();
+    }
+
+
 
 }
