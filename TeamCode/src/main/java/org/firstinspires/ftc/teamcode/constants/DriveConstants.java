@@ -19,7 +19,7 @@ public interface DriveConstants {
     double TURN_PROFILE_SPEED = 5.0;
 
     /** The Maximum Output Value Magnitude of the Turning Profile */
-    double TURN_PROFILE_MAX = 0.5;
+    double TURN_PROFILE_MAX = 0.25;
     /** Virtual Low Gear Max Speed */
     double VIRTUAL_LOW_GEAR = 0.5;
 
@@ -34,10 +34,10 @@ public interface DriveConstants {
 
     /** Anthony has his left and right reversed here for some reason that I cannot figure out */
     /** Left Drive Wheel Angle Offset (30 degrees) (now 240) */
-    double LEFT_DRIVE_OFFSET = Math.toRadians(240)  ;
+    double LEFT_DRIVE_OFFSET = Math.toRadians(120)  ;
 
     /** Right Drive Wheel Angle Offset (150 degrees) (now 120) */
-    double RIGHT_DRIVE_OFFSET = Math.toRadians(120) ;
+    double RIGHT_DRIVE_OFFSET = Math.toRadians(240) ;
 
     /** Back Drive Wheel Angle Offset (270 degrees) (now 0) */
     double BACK_DRIVE_OFFSET = 0;

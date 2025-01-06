@@ -34,8 +34,7 @@ public class DriveTrain implements DriveConstants {
     private final boolean isBlueAlliance;
     private double imuOffset, targetHeading;
     private OpticalSensor od;
-    public double desiredHeading;
-    public double currentHeading;
+
 
 
     /**
@@ -71,7 +70,7 @@ public class DriveTrain implements DriveConstants {
         rightDrive.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         backDrive.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         update();
-        currentHeading = getHeading();
+
 //
 //
 //        leftEncoder = new OctoEncoder(hwMap, LEFT_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
@@ -163,25 +162,14 @@ public class DriveTrain implements DriveConstants {
         backDrive.setPower(power);
     }
 
-    public void stopDrive(double power){
+    public void runDriveMotors(double power){
         leftDrive.setPower(power);
         rightDrive.setPower(power);
         backDrive.setPower(power );
 
     }
 
-    public void testLeft(double power){
-        leftDrive.setPower(power);
-
-    }
-
-    public void badDrive(){
-        rightDrive.setPower(.5);
-        leftDrive.setPower(-.5);
-
-    }
-
-
+    public RobotPose getPose() { return pose; }
 
     public void resetIMU() { od.resetHeading();}
 

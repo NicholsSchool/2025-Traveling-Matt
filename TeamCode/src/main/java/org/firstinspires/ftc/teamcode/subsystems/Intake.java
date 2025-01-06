@@ -53,7 +53,7 @@ public class Intake implements ArmConstants {
 
         telemetry.addData("isIntaking", intakeSlide.getCurrentPosition() < INTAKEMAX + 10000);
         telemetry.addData("Intaking limit", INTAKEMAX + 10000);
-        wristControl(intakeSlide.getCurrentPosition() < INTAKEMAX + 25000);
+        wristControl(intakeSlide.getCurrentPosition() < INTAKEMAX + 22850);
 
     }
 
@@ -74,7 +74,7 @@ public class Intake implements ArmConstants {
 
     public void wristControl(boolean isIntaking){
         rightWrist.setPosition(isIntaking ? 1 : 0);
-        leftWrist.setPosition(isIntaking ? 0 : 1);
+        leftWrist.setPosition(isIntaking ? 1 : 0);
 
     }
 

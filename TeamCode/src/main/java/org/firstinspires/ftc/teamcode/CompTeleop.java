@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.math_utils.Vector;
@@ -17,8 +16,8 @@ import org.firstinspires.ftc.teamcode.subsystems.components.LED;
  * Kiwi Teleop Code
  */
 @TeleOp(name = "Comp Teleop", group = "Iterative OpMode")
-public class Robot extends OpMode {
-    Robot robot;
+public class CompTeleop extends OpMode {
+    CompTeleop robot;
     double power;
     public Controller controller1, controller2;
     DriveTrain drivetrain;
@@ -34,14 +33,13 @@ public class Robot extends OpMode {
     @Override
     public void init() {
 
-        drivetrain = new DriveTrain(hardwareMap, 0, 0, 0, false);
-        controller1 = new Controller(gamepad1);
-        controller2 = new Controller(gamepad2);
-//        drivetrain.init(hardwareMap);
+        drivetrain = new DriveTrain(hardwareMap, 0, 0, Math.PI , false);
+
         intake = new Intake(hardwareMap, telemetry);
         elevator = new Elevator(hardwareMap);
-//        encoder = new Encoders(hardwareMap);
 
+        controller1 = new Controller(gamepad1);
+        controller2 = new Controller(gamepad2);
 
 
         // Tell the driver that initialization is complete.
@@ -66,27 +64,27 @@ public class Robot extends OpMode {
      */
     @Override
     public void loop() {
-        drivetrain.drive(new Vector(controller1.leftStick.x.value(), controller1.leftStick.y.value()), controller1.rightStick.x.value(), controller1.rightBumper.isPressed());
+        drivetrain.drive(new Vector(-controller1.leftStick.x.value(), controller1.leftStick.y.value()), controller1.rightStick.x.value(), controller1.rightBumper.isPressed());
         if(!controller2.square.isPressed()) {
             elevator.elevatorManual(controller2.leftStick.y.value());
         }
         intake.intakeSoftLimited(controller2.rightStick.y.value() * .6);
-        if (controller2.leftBumper.isPressed()) {
-//            intake.wristControl(controller2.leftBumper.isPressed());
+        if (controller2.leftBumper.isPressed()){
             intake.intakeServo(1);
-        } else if (controller2.rightBumper.isPressed()) {
+        } else if (controller2.rightBumper.isPressed()){
             intake.outtakeBlock(1);
-
-
         } else {
             telemetry.addData("nothing pressed", "true");
             intake.intakeServo(0);
             intake.outtakeBlock(0);
         }
 
-        if (controller1.options.isPressed()) {
-            drivetrain.resetIMU();
-        }
+        if (controller1.options.isPressed()) {drivetrain.resetIMU();}
+
+        if (controller1.circle.wasJustPressed()) drivetrain.setTargetHeading(0);
+        if (controller1.square.wasJustPressed()) drivetrain.setTargetHeading(Math.PI);
+        if (controller1.triangle.wasJustPressed()) drivetrain.setTargetHeading(Math.PI / 2);
+        if (controller1.x.wasJustPressed()) drivetrain.setTargetHeading(3 * Math.PI / 2);
 
         if (controller2.square.isPressed()) {
             elevator.elevatorToPos(59000);
@@ -113,9 +111,9 @@ public class Robot extends OpMode {
         telemetry.addData("intake arm position", intake.getIntakePosition());
         telemetry.addData("x", drivetrain.getPose().x);
         telemetry.addData("y", drivetrain.getPose().y);
-        telemetry.addData("yaw", drivetrain.getPose().angle * 180 / Math.PI);
+        telemetry.addData("yaw", Math.toDegrees(drivetrain.getPose().angle));
+        telemetry.addData("Robot Pose", drivetrain.getPose().toString());
         telemetry.addData("elevatorTest", elevator.elevatorTest(57000));
-        telemetry.addData("yawod", drivetrain.getHeading());
     }
 
     /*
