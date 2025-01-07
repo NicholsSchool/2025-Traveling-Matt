@@ -58,9 +58,9 @@ public class DriveTrain implements DriveConstants {
         rightDrive = hwMap.get(DcMotorEx.class, "right");
         backDrive = hwMap.get(DcMotorEx.class, "front");
 
-        leftDrive.setDirection(DcMotorEx.Direction.FORWARD);
-        rightDrive.setDirection(DcMotorEx.Direction.FORWARD);
-        backDrive.setDirection(DcMotorEx.Direction.FORWARD);
+        leftDrive.setDirection(DcMotorEx.Direction.REVERSE);
+        rightDrive.setDirection(DcMotorEx.Direction.REVERSE);
+        backDrive.setDirection(DcMotorEx.Direction.REVERSE);
 
         leftDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -106,7 +106,7 @@ public class DriveTrain implements DriveConstants {
      * @param lowGear whether to put the robot to virtual low gear
      */
     public void drive(Vector driveInput, double turn, boolean lowGear) {
-        double turnCalculated = Math.abs(turn) < 0.05 ? turnProfile.calculate(turnToAngle()) : -turn * 0.3;
+        double turnCalculated = Math.abs(turn) < 0.05 ? turnProfile.calculate(turnToAngle()) : turn * 0.3;
         if(Math.abs(turn) < 0.05){
             setTargetHeading(pose.angle);
         }

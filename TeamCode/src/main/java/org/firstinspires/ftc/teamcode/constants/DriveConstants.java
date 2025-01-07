@@ -34,10 +34,10 @@ public interface DriveConstants {
 
     /** Anthony has his left and right reversed here for some reason that I cannot figure out */
     /** Left Drive Wheel Angle Offset (30 degrees) (now 240) */
-    double LEFT_DRIVE_OFFSET = Math.toRadians(120)  ;
+    double LEFT_DRIVE_OFFSET = Math.toRadians(240)  ;
 
     /** Right Drive Wheel Angle Offset (150 degrees) (now 120) */
-    double RIGHT_DRIVE_OFFSET = Math.toRadians(240) ;
+    double RIGHT_DRIVE_OFFSET = Math.toRadians(120) ;
 
     /** Back Drive Wheel Angle Offset (270 degrees) (now 0) */
     double BACK_DRIVE_OFFSET = 0;

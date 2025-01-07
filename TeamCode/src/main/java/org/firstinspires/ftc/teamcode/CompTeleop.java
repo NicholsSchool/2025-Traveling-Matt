@@ -33,7 +33,7 @@ public class CompTeleop extends OpMode {
     @Override
     public void init() {
 
-        drivetrain = new DriveTrain(hardwareMap, 0, 0, Math.PI , false);
+        drivetrain = new DriveTrain(hardwareMap, 0, 0, Math.PI, false);
 
         intake = new Intake(hardwareMap, telemetry);
         elevator = new Elevator(hardwareMap);
@@ -64,7 +64,7 @@ public class CompTeleop extends OpMode {
      */
     @Override
     public void loop() {
-        drivetrain.drive(new Vector(-controller1.leftStick.x.value(), controller1.leftStick.y.value()), controller1.rightStick.x.value(), controller1.rightBumper.isPressed());
+        drivetrain.drive(new Vector(controller1.leftStick.x.value(), controller1.leftStick.y.value()), controller1.rightStick.x.value(), controller1.rightBumper.isPressed());
         if(!controller2.square.isPressed()) {
             elevator.elevatorManual(controller2.leftStick.y.value());
         }
