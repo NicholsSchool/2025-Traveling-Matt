@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.controller.Controller;
+import org.firstinspires.ftc.teamcode.math_utils.Vector;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 //import org.firstinspires.ftc.teamcode.subsystems.components.Encoders;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -65,6 +66,16 @@ public class TestTeleop extends OpMode {
      */
     @Override
     public void loop() {
+        drivetrain.drive(new Vector(controller1.leftStick.x.value(), controller1.leftStick.y.value()), controller1.rightStick.x.value(), controller1.rightBumper.isPressed());
+        controller1.update();
+        controller2.update();
+        drivetrain.update();
+        telemetry.addData("elevator position", elevator.getElevatorPosition());
+        telemetry.addData("intake arm position", intake.getIntakePosition());
+        telemetry.addData("x", drivetrain.getPose().x);
+        telemetry.addData("y", drivetrain.getPose().y);
+        telemetry.addData("yaw", Math.toDegrees(drivetrain.getPose().angle));
+        telemetry.addData("Robot Pose", drivetrain.getPose().toString());
 
 
 

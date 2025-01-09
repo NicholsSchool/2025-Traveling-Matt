@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.constants.ArmConstants;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.math_utils.Vector;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
@@ -33,7 +34,7 @@ public class CompTeleop extends OpMode {
     @Override
     public void init() {
 
-        drivetrain = new DriveTrain(hardwareMap, 0, 0, Math.PI, false);
+        drivetrain = new DriveTrain(hardwareMap, 0, 0, 0, false);
 
         intake = new Intake(hardwareMap, telemetry);
         elevator = new Elevator(hardwareMap);
@@ -68,7 +69,7 @@ public class CompTeleop extends OpMode {
         if(!controller2.square.isPressed()) {
             elevator.elevatorManual(controller2.leftStick.y.value());
         }
-        intake.intakeSoftLimited(controller2.rightStick.y.value() * .6);
+        intake.intakeSoftLimited(controller2.rightStick.y.value() * .8);
         if (controller2.leftBumper.isPressed()){
             intake.intakeServo(1);
         } else if (controller2.rightBumper.isPressed()){
@@ -87,7 +88,11 @@ public class CompTeleop extends OpMode {
         if (controller1.x.wasJustPressed()) drivetrain.setTargetHeading(3 * Math.PI / 2);
 
         if (controller2.square.isPressed()) {
-            elevator.elevatorToPos(59000);
+            elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT);
+        }
+
+        if (controller2.circle.isPressed()) {
+            intake.intakeToPos(-31000);
         }
 
         if (Math.abs(elevator.getElevatorPosition() - 59000)< 1000) {

@@ -28,7 +28,7 @@ public class Auto extends LinearOpMode implements DriveConstants, ArmConstants {
         AutonomousRobot robot = new AutonomousRobot(hardwareMap, 0, 0, 0);
         ElapsedTime time = new ElapsedTime();
         Elevator elevator = new Elevator(hardwareMap);
-        DriveTrain drivetrain = new DriveTrain(hardwareMap, 0, 0, 3 * Math.PI / 4, false);
+        DriveTrain drivetrain = new DriveTrain(hardwareMap, 0, 0, 0, false);
         waitForStart();
         telemetry.addData("elevator position", elevator.getElevatorPosition());
         telemetry.addData("heading", drivetrain.getHeading());
@@ -43,45 +43,46 @@ public class Auto extends LinearOpMode implements DriveConstants, ArmConstants {
 
         time.reset();
         while (time.time(TimeUnit.SECONDS) < 3.8) {
-            elevator.elevatorManual(1);
-        }
-        elevator.elevatorManual(0);
-        time.reset();
-        while (time.time(TimeUnit.SECONDS) < 1.0){
-            drivetrain.drive(new Vector(12.0,12.0), 0, true);
-
+            drivetrain.turnToAngle(Math.PI, .5);
             drivetrain.update();
-            telemetry.update();
-
         }
-
-
-        time.reset();
-        while (time.time(TimeUnit.SECONDS) < 1.2) {
-            drivetrain.drive(new Vector(-12.0, 12.0), 0, true);
-
-            drivetrain.update();
-            telemetry.update();
-        }
-
-        time.reset();
-        while (time.time(TimeUnit.SECONDS) < 0.1) {
-            drivetrain.drive(new Vector(3.0, -3.0), 0, true);
-
-            drivetrain.update();
-            telemetry.update();
-        }
-        time.reset();
-        while (time.time(TimeUnit.SECONDS) < 4.2) {
-            elevator.elevatorManual(-0.90);
-            telemetry.update();
-        }
-        time.reset();
-        while (time.time(TimeUnit.SECONDS) < 3.7) {
-            drivetrain.drive(new Vector(0, -4), 0, true);
-        }
-
-        time.reset();
+//        elevator.elevatorManual(0);
+//        time.reset();
+//        while (time.time(TimeUnit.SECONDS) < 1.0){
+//            drivetrain.drive(new Vector(12.0,12.0), 0, true);
+//
+//            drivetrain.update();
+//            telemetry.update();
+//
+//        }
+//
+//
+//        time.reset();
+//        while (time.time(TimeUnit.SECONDS) < 1.2) {
+//            drivetrain.drive(new Vector(-12.0, 12.0), 0, true);
+//
+//            drivetrain.update();
+//            telemetry.update();
+//        }
+//
+//        time.reset();
+//        while (time.time(TimeUnit.SECONDS) < 0.1) {
+//            drivetrain.drive(new Vector(3.0, -3.0), 0, true);
+//
+//            drivetrain.update();
+//            telemetry.update();
+//        }
+//        time.reset();
+//        while (time.time(TimeUnit.SECONDS) < 4.2) {
+//            elevator.elevatorManual(-0.90);
+//            telemetry.update();
+//        }
+//        time.reset();
+//        while (time.time(TimeUnit.SECONDS) < 3.7) {
+//            drivetrain.drive(new Vector(0, -4), 0, true);
+//        }
+//
+//        time.reset();
     }
 
 

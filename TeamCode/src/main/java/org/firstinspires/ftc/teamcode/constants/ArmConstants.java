@@ -9,7 +9,8 @@ public interface ArmConstants {
     int INTAKEMIN = 0;
     int INTAKEMAX = -31000;
     double ELEVATOR_P = 0.001;
-    int BUCKETHEIGHT = 597 mn 00;
+    double INTAKE_P = 0.0003;
+    int BUCKETHEIGHT = 60000;
 
 
 

@@ -6,9 +6,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.constants.ArmConstants;
+import org.firstinspires.ftc.teamcode.math_utils.SimpleFeedbackController;
 import org.firstinspires.ftc.teamcode.subsystems.components.Encoders;
 
 public class Intake implements ArmConstants {
@@ -16,6 +18,7 @@ public class Intake implements ArmConstants {
     Servo rightWrist, leftWrist;
     CRServo intakeServo;
     Telemetry telemetry;
+    SimpleFeedbackController intakeController;
 //
 
     public Intake(HardwareMap hwMap, Telemetry telemetry) {
@@ -28,6 +31,7 @@ public class Intake implements ArmConstants {
         intakeSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intakeSlide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         intakeSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intakeController = new SimpleFeedbackController(INTAKE_P);
 
     }
 
@@ -71,10 +75,14 @@ public class Intake implements ArmConstants {
 //            intakeServo.setPower(0);
         }
 
+    public void intakeToPos(int targetPos){
+        intakeSoftLimited(-Range.clip(intakeController.calculate(getIntakePosition() + targetPos), -1    , 1));
+    }
+
 
     public void wristControl(boolean isIntaking){
         rightWrist.setPosition(isIntaking ? 1 : 0);
-        leftWrist.setPosition(isIntaking ? 1 : 0);
+        leftWrist.setPosition(isIntaking ? 0 : 1);
 
     }
 

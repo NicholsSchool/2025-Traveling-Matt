@@ -47,7 +47,7 @@ public class DriveTrain implements DriveConstants {
      * @param isBlue whether we are blue alliance
      */
     public DriveTrain(HardwareMap hwMap, double x, double y, double initialHeading, boolean isBlue) {
-        this.imuOffset = initialHeading + Math.PI;
+        this.imuOffset = initialHeading;
         this.targetHeading = initialHeading;
         this.isBlueAlliance = isBlue;
         od = new OpticalSensor("OTOS", hwMap, DistanceUnit.INCH, AngleUnit.RADIANS);
@@ -154,6 +154,14 @@ public class DriveTrain implements DriveConstants {
         backDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
     }
 
+    public void turnToAngle(double targetHeading, double power){
+        if(targetHeading - pose.angle > 0.001){
+            leftDrive.setPower(power);
+            rightDrive.setPower(power);
+            backDrive.setPower(power);
+        }
+
+    }
 
 
     public void turn(double power){
