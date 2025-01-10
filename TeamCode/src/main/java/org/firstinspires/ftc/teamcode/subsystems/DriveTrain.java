@@ -154,8 +154,9 @@ public class DriveTrain implements DriveConstants {
         backDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
     }
 
-    public void turnToAngle(double targetHeading, double power){
-        if(targetHeading - pose.angle > 0.001){
+    public void turnToAngle(double targetHeading){
+        double power = 2 * Math.sin(targetHeading - pose.angle);
+        if(Math.abs(targetHeading - pose.angle) > 0.001){
             leftDrive.setPower(power);
             rightDrive.setPower(power);
             backDrive.setPower(power);

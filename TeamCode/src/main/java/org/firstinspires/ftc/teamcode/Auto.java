@@ -43,7 +43,7 @@ public class Auto extends LinearOpMode implements DriveConstants, ArmConstants {
 
         time.reset();
         while (time.time(TimeUnit.SECONDS) < 3.8) {
-            drivetrain.turnToAngle(Math.PI, .5);
+            drivetrain.turnToAngle(Math.PI);
             drivetrain.update();
         }
 //        elevator.elevatorManual(0);
