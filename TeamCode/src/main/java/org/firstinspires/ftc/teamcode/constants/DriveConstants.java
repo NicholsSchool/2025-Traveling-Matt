@@ -13,7 +13,7 @@ public interface DriveConstants {
     double HIGHGEAR = 1;
 
     /** The Maximum Speed of the Driving Profile */
-    double DRIVE_PROFILE_SPEED = 20.0;
+    double DRIVE_PROFILE_SPEED = 22.0;
 
     /** The Maximum Speed of the Turning Profile */
     double TURN_PROFILE_SPEED = 5.0;

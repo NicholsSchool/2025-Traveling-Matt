@@ -13,6 +13,8 @@ import org.firstinspires.ftc.teamcode.math_utils.SimpleFeedbackController;
 import org.firstinspires.ftc.teamcode.subsystems.components.LED;
 import org.firstinspires.ftc.teamcode.subsystems.components.OpticalSensor;
 //import org.firstinspires.ftc.teamcode.subsystems.components.OctoEncoder;
+import org.firstinspires.ftc.teamcode.math_utils.PoseEstimator;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 import com.qualcomm.hardware.digitalchickenlabs.OctoQuadBase;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -34,6 +36,7 @@ public class DriveTrain implements DriveConstants {
     private final boolean isBlueAlliance;
     private double imuOffset, targetHeading;
     private OpticalSensor od;
+    private PoseEstimator poseEstimator;
 
 
 
@@ -46,12 +49,12 @@ public class DriveTrain implements DriveConstants {
      * @param initialHeading the initial robot heading in radians
      * @param isBlue whether we are blue alliance
      */
-    public DriveTrain(HardwareMap hwMap, double x, double y, double initialHeading, boolean isBlue) {
+    public DriveTrain(HardwareMap hwMap, Pose2D initialPose, double initialHeading, boolean isBlue) {
         this.imuOffset = initialHeading;
         this.targetHeading = initialHeading;
         this.isBlueAlliance = isBlue;
         od = new OpticalSensor("OTOS", hwMap, DistanceUnit.INCH, AngleUnit.RADIANS);
-        pose = new RobotPose(x, y, initialHeading);
+
 
 
         leftDrive = hwMap.get(DcMotorEx.class, "left");
@@ -90,6 +93,8 @@ public class DriveTrain implements DriveConstants {
         driveProfile = new VectorMotionProfile(DRIVE_PROFILE_SPEED);
         turnProfile = new MotionProfile(TURN_PROFILE_SPEED, TURN_PROFILE_MAX);
         turnController = new SimpleFeedbackController(AUTO_ALIGN_P);
+
+        poseEstimator = new PoseEstimator(hwMap, initialPose, true);
     }
 
     public void update() {
@@ -105,7 +110,8 @@ public class DriveTrain implements DriveConstants {
      * @param turn the turning input
      * @param lowGear whether to put the robot to virtual low gear
      */
-    public void drive(Vector driveInput, double turn, boolean lowGear) {
+    public void drive(Vector driveInput, double turn, boolean autoAlign, boolean lowGear) {
+        turn = 5 * (turnProfile.calculate(autoAlign ? turnToAngle() : turn));
         double turnCalculated = Math.abs(turn) < 0.05 ? turnProfile.calculate(turnToAngle()) : turn * 0.3;
         if(Math.abs(turn) < 0.05){
             setTargetHeading(pose.angle);
@@ -118,6 +124,14 @@ public class DriveTrain implements DriveConstants {
         leftDrive.setPower(turnCalculated + power * Math.cos(angle + LEFT_DRIVE_OFFSET - pose.angle));
         rightDrive.setPower(turnCalculated + power * Math.cos(angle + RIGHT_DRIVE_OFFSET - pose.angle));
         backDrive.setPower(turnCalculated + power * Math.cos(angle + BACK_DRIVE_OFFSET - pose.angle));
+    }
+
+    public void driveToPose(Pose2D targetPose, boolean lowGear){
+        Vector driveInput = new Vector(targetPose.getX(DistanceUnit.INCH) - poseEstimator.getPose().getX(DistanceUnit.INCH),
+                targetPose.getY(DistanceUnit.INCH) - poseEstimator.getPose().getY(DistanceUnit.INCH));
+        setTargetHeading(targetPose.getHeading(AngleUnit.RADIANS));
+        driveInput.scaleMagnitude(-0.8);
+        drive(driveInput,turnToAngle(), false, lowGear);
     }
 
     public void driveWithHeading(Vector driveInput, double turn, boolean lowGear, double desiredHeading) {
@@ -140,7 +154,7 @@ public class DriveTrain implements DriveConstants {
     }
 
     private double turnToAngle() {
-        double error = Angles.clipRadians(pose.angle - targetHeading);
+        double error = Angles.clipRadians(getHeading() - targetHeading);
         return Math.abs(error) < AUTO_ALIGN_ERROR ? 0.0 : turnController.calculate(error);
     }
 
@@ -154,15 +168,15 @@ public class DriveTrain implements DriveConstants {
         backDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
     }
 
-    public void turnToAngle(double targetHeading){
-        double power = 2 * Math.sin(targetHeading - pose.angle);
-        if(Math.abs(targetHeading - pose.angle) > 0.001){
-            leftDrive.setPower(power);
-            rightDrive.setPower(power);
-            backDrive.setPower(power);
-        }
-
-    }
+//    public void turnToAngle(double targetHeading){
+//        double power = 2 * Math.sin(targetHeading - pose.angle);
+//        if(Math.abs(targetHeading - pose.angle) > 0.001){
+//            leftDrive.setPower(power);
+//            rightDrive.setPower(power);
+//            backDrive.setPower(power);
+//        }
+//
+//    }
 
 
     public void turn(double power){

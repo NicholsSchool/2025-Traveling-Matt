@@ -33,7 +33,7 @@ public class PoseEstimator {
      */
     public PoseEstimator(HardwareMap hwMap, Pose2D initialPose, boolean useLL) {
         this.useLL = useLL;
-        Optional<Point> LLPose = null;
+        Optional<Point> LLPose = Optional.empty();
         if (useLL) {
             limelight = new LimelightComponent(hwMap);
             limelight.updateWithPose(initialPose.getHeading(AngleUnit.DEGREES));
@@ -74,7 +74,8 @@ public class PoseEstimator {
 
         if (useLL) limelight.updateWithPose(robotPose.getHeading(AngleUnit.DEGREES));
 
-        Optional<Point> LLEstimate = limelight.getRobotPose();
+        Optional<Point> LLEstimate = Optional.empty();
+        if (useLL) { LLEstimate = limelight.getRobotPose(); }
 
         isUsingLL = LLEstimate.isPresent();
 
@@ -117,11 +118,9 @@ public class PoseEstimator {
      */
     private Vector transformFieldOriented(Vector inputVector) {
         return new Vector(
-                (Math.cos(getFieldHeading(AngleUnit.RADIANS)) * inputVector.x) - (Math.sin(getFieldHeading(AngleUnit.RADIANS)) * inputVector.y),
-                (Math.sin(getFieldHeading(AngleUnit.RADIANS)) * inputVector.x) + (Math.cos(getFieldHeading(AngleUnit.RADIANS)) * inputVector.y)
-        );
+                (Math.cos(initialPose.getHeading(AngleUnit.RADIANS)) * inputVector.x) - (Math.sin(initialPose.getHeading(AngleUnit.RADIANS)) * inputVector.y),
+                (Math.sin(initialPose.getHeading(AngleUnit.RADIANS)) * inputVector.x) + (Math.cos(initialPose.getHeading(AngleUnit.RADIANS)) * inputVector.y));
     }
-
     /**
      * Method for testing the robot to field transformation using the OTOS data (not deltas)
      * @return The transformed Vector.

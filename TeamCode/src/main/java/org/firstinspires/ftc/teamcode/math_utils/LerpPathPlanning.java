@@ -116,7 +116,7 @@ public class LerpPathPlanning implements SplineConstants {
             isFinished = true;
         }
 
-        drivetrain.drive(driveVector, turn, lowGear);
+        drivetrain.drive(driveVector, turn, autoAlign, lowGear);
         return isFinished;
     }
 }

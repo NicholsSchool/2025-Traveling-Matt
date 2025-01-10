@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.constants.ArmConstants;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.math_utils.Vector;
@@ -34,7 +37,7 @@ public class CompTeleop extends OpMode {
     @Override
     public void init() {
 
-        drivetrain = new DriveTrain(hardwareMap, 0, 0, 0, false);
+        drivetrain = new DriveTrain(hardwareMap, new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0), 0, false);
 
         intake = new Intake(hardwareMap, telemetry);
         elevator = new Elevator(hardwareMap);
@@ -65,7 +68,6 @@ public class CompTeleop extends OpMode {
      */
     @Override
     public void loop() {
-        drivetrain.drive(new Vector(controller1.leftStick.x.value(), controller1.leftStick.y.value()), controller1.rightStick.x.value(),  controller1.rightBumper.isPressed());
         if(!controller2.square.isPressed()) {
             elevator.elevatorManual(controller2.leftStick.y.value());
         }
@@ -81,11 +83,6 @@ public class CompTeleop extends OpMode {
         }
 
         if (controller1.options.isPressed()) {drivetrain.resetIMU();}
-
-        if (controller1.triangle.isPressed()) drivetrain.turnToAngle(0);
-        if (controller1.x.isPressed()) drivetrain.turnToAngle(Math.PI);
-        if (controller1.circle.isPressed()) drivetrain.turnToAngle(Math.PI / 2);
-        if (controller1.square.isPressed()) drivetrain.turnToAngle(3 * Math.PI / 2);
 
         if (controller2.square.isPressed()) {
             elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT);
@@ -105,6 +102,20 @@ public class CompTeleop extends OpMode {
             elevator.headlight(0);
         }
 
+        boolean autoAlign = controller1.rightStick.x.hasBeenZero();
+
+        if(!autoAlign)
+            drivetrain.setTargetHeading(drivetrain.getPose().angle);
+        else if(controller1.triangle.wasJustPressed())
+            drivetrain.setTargetHeading(0);
+        else if(controller1.x.wasJustPressed())
+            drivetrain.setTargetHeading(3 *Math.PI / 4);
+        else if(controller1.circle.wasJustPressed())
+            drivetrain.setTargetHeading(-Math.PI / 2);
+        else if(controller1.square.wasJustPressed())
+            drivetrain.setTargetHeading(Math.PI / 2);
+
+        drivetrain.drive(new Vector(controller1.leftStick.x.value(), controller1.leftStick.y.value()), controller1.rightStick.x.value(), autoAlign, controller1.rightBumper.isPressed());
 
 
         controller1.update();
