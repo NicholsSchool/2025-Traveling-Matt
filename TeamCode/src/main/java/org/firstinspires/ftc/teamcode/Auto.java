@@ -20,6 +20,8 @@ import org.firstinspires.ftc.teamcode.subsystems.AutonomousRobot;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.Elevator;
 
+import java.util.function.BooleanSupplier;
+
 /**
  * Sample Auto to Copy Paste Edit with
  */
@@ -36,27 +38,20 @@ public class Auto extends LinearOpMode implements DriveConstants, ArmConstants {
     public void runOpMode() {
 
         ElapsedTime time = new ElapsedTime();
-        Elevator elevator = new Elevator(hardwareMap);
-        DriveTrain drivetrain = new DriveTrain(hardwareMap, new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0),0, false);
-        Pose2D initialPose = new Pose2D(DistanceUnit.INCH, -24, -63, AngleUnit.DEGREES, 90);
-        poseEstimator = new PoseEstimator(hardwareMap, initialPose, true);
-        driverOI = new Controller(gamepad1);
-        dashboard = FtcDashboard.getInstance();
-        autonomousRobot = new AutonomousRobot(false, hardwareMap);
-        Telemetry dashboardTelemetry = dashboard.getTelemetry();
-        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
-        telemetry.setMsTransmissionInterval(50);
+//        DriveTrain drivetrain = new DriveTrain(hardwareMap, 0, 0, 0, false);
+
+//        driverOI = new Controller(gamepad1);
+        autonomousRobot = new AutonomousRobot(false, hardwareMap, telemetry);
         waitForStart();
-        telemetry.addData("elevator position", elevator.getElevatorPosition());
-        telemetry.addData("heading", drivetrain.getHeading());
-        telemetry.addData("x", drivetrain.getPose());
 
 //
 //
 
 
+        autonomousRobot.redAuto(this::opModeIsActive);
 
-        autonomousRobot.redAuto();
+
+
     }
 
 

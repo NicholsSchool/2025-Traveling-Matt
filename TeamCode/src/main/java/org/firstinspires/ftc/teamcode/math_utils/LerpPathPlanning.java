@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.math_utils;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.constants.SplineConstants;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 
@@ -86,7 +87,7 @@ public class LerpPathPlanning implements SplineConstants {
      */
     public boolean spline(double turn, boolean autoAlign, boolean lowGear) {
         drivetrain.update();
-        robotPosition = new Point(drivetrain.getPose().x ,drivetrain.getPose().y);
+        robotPosition = new Point(drivetrain.getPose().getX(DistanceUnit.INCH),drivetrain.getPose().getY(DistanceUnit.INCH));
 
         Vector driveVector;
         if(distanceOnLine() > projectedDistance()) {

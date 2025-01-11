@@ -91,8 +91,14 @@ public class Elevator implements ArmConstants {
 //
 //    }
 
-    public void elevatorToPos(int targetPos){
+    public boolean elevatorToPos(int targetPos){
+        if(Math.abs(getElevatorPosition() - targetPos) < 300){
+            elevatorManual(0);
+            return true ;}
         elevatorManual(-Range.clip(elevatorController.calculate(getElevatorPosition() - targetPos), -1 , 1));
+        return false;
+
+
     }
 
     public double elevatorTest(int targetPos){

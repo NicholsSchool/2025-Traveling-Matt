@@ -37,7 +37,7 @@ public class CompTeleop extends OpMode {
     @Override
     public void init() {
 
-        drivetrain = new DriveTrain(hardwareMap, new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0), 0, false);
+        drivetrain = new DriveTrain(hardwareMap, new Pose2D(DistanceUnit.INCH, -24, -63, AngleUnit.DEGREES, 90),  90, false);
 
         intake = new Intake(hardwareMap, telemetry);
         elevator = new Elevator(hardwareMap);
@@ -105,7 +105,7 @@ public class CompTeleop extends OpMode {
         boolean autoAlign = controller1.rightStick.x.hasBeenZero();
 
         if(!autoAlign)
-            drivetrain.setTargetHeading(drivetrain.getPose().angle);
+            drivetrain.setTargetHeading(drivetrain.getPose().getHeading(AngleUnit.RADIANS));
         else if(controller1.triangle.wasJustPressed())
             drivetrain.setTargetHeading(0);
         else if(controller1.x.wasJustPressed())
@@ -125,9 +125,9 @@ public class CompTeleop extends OpMode {
 
         telemetry.addData("elevator position", elevator.getElevatorPosition());
         telemetry.addData("intake arm position", intake.getIntakePosition());
-        telemetry.addData("x", drivetrain.getPose().x);
-        telemetry.addData("y", drivetrain.getPose().y);
-        telemetry.addData("yaw", Math.toDegrees(drivetrain.getPose().angle));
+        telemetry.addData("x", drivetrain.getPose().getX(DistanceUnit.INCH));
+        telemetry.addData("y", drivetrain.getPose().getY(DistanceUnit.INCH));
+        telemetry.addData("yaw", Math.toDegrees(drivetrain.getPose().getHeading(AngleUnit.RADIANS)));
         telemetry.addData("Robot Pose", drivetrain.getPose().toString());
         telemetry.addData("elevatorTest", elevator.elevatorTest(57000));
     }

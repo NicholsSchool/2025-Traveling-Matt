@@ -21,10 +21,10 @@ public interface DriveConstants {
     /** The Maximum Output Value Magnitude of the Turning Profile */
     double TURN_PROFILE_MAX = 0.25;
     /** Virtual Low Gear Max Speed */
-    double VIRTUAL_LOW_GEAR = 0.5;
+    double VIRTUAL_LOW_GEAR = 0.56;
 
     /** Virtual High Gear Max Speed */
-    double VIRTUAL_HIGH_GEAR = 0.8;
+    double VIRTUAL_HIGH_GEAR = 0.9;
 
     /** Auto Align Proportional Constant */
     double AUTO_ALIGN_P = 0.45;
