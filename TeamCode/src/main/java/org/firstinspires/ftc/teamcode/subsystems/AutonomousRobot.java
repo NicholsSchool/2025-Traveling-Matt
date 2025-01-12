@@ -83,7 +83,7 @@ public class AutonomousRobot implements DriveConstants, ArmConstants {
             updateTelemetry();
         }
 
-        
+
         while(!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -40, -50, AngleUnit.DEGREES, 340),false) && isActive.getAsBoolean()){
             drivetrain.update();
             //-26, -35.5
@@ -132,6 +132,7 @@ public class AutonomousRobot implements DriveConstants, ArmConstants {
                 );
         telemetry.addData("elevator position", elevator.getElevatorPosition());
         telemetry.addData("intake arm position", intake.getIntakePosition());
+        telemetry.addData("intaketopose", Math.abs(intake.getIntakePosition() - 32000) < 1200);
         dashboard.sendTelemetryPacket(packet);
         telemetry.update();
     }
