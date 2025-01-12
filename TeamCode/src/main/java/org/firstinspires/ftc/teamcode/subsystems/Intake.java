@@ -76,12 +76,13 @@ public class Intake implements ArmConstants {
         }
 
     public boolean intakeToPos(int targetPos){
-        if (Math.abs(getIntakePosition() - targetPos) < 1000){
+        if (Math.abs(getIntakePosition() + targetPos) < 1200){
             intakeSoftLimited(0);
             return true;
         }
-        intakeSoftLimited(-Range.clip(intakeController.calculate(getIntakePosition() - targetPos), -1    , 1));
+        intakeSoftLimited(-Range.clip(intakeController.calculate(getIntakePosition() + targetPos), -1    , 1));
         return false;
+//        return true;
     }
 
 

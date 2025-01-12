@@ -77,15 +77,16 @@ public class AutonomousRobot implements DriveConstants, ArmConstants {
             updateTelemetry();
         }
 
-        intake.intakeServo(.8);
+
         intake.wristControl(true);
         while(!intake.intakeToPos(ArmConstants.INTAKEMAX) && isActive.getAsBoolean()){
             updateTelemetry();
         }
 
-
-        while(!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -26, -35.5, AngleUnit.DEGREES, 340),false) && isActive.getAsBoolean()){
+        
+        while(!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -40, -50, AngleUnit.DEGREES, 340),false) && isActive.getAsBoolean()){
             drivetrain.update();
+            //-26, -35.5
             updateTelemetry();
         }
 
@@ -129,6 +130,8 @@ public class AutonomousRobot implements DriveConstants, ArmConstants {
                         drivetrain.getPose().getX(DistanceUnit.INCH) + (9 * Math.cos(drivetrain.getPose().getHeading(AngleUnit.RADIANS))),
                         drivetrain.getPose().getY(DistanceUnit.INCH) + (9 * Math.sin(drivetrain.getPose().getHeading(AngleUnit.RADIANS)))
                 );
+        telemetry.addData("elevator position", elevator.getElevatorPosition());
+        telemetry.addData("intake arm position", intake.getIntakePosition());
         dashboard.sendTelemetryPacket(packet);
         telemetry.update();
     }
