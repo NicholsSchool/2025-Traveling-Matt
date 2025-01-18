@@ -59,8 +59,13 @@ public class CompTeleop extends OpMode {
 
     /*
      * Code to run ONCE when the driver hits PLAY
+
+     */
     @Override
     public void start() {
+//        while(!elevator.elevatorToPos(ArmConstants.AUTOELEVATORMIN)) {
+//        }
+//       elevator.resetElevatorposition();
     }
 
     /*
@@ -69,7 +74,7 @@ public class CompTeleop extends OpMode {
     @Override
     public void loop() {
         if(!controller2.square.isPressed()) {
-            elevator.elevatorManual(controller2.leftStick.y.value());
+            elevator.elevatorSoftlimited(controller2.leftStick.y.value());
         }
         intake.intakeSoftLimited(controller2.rightStick.y.value() * .8);
         if (controller2.leftBumper.isPressed()){
@@ -92,7 +97,7 @@ public class CompTeleop extends OpMode {
             intake.intakeToPos(-31000);
         }
 
-        if (Math.abs(elevator.getElevatorPosition() - 59000)< 1000) {
+        if (Math.abs(elevator.getElevatorPosition() - 52000)< 1000) {
             elevator.headlight(1);
 
         } else if (Math.abs(elevator.getElevatorPosition() - 30000)< 1000){
@@ -100,6 +105,13 @@ public class CompTeleop extends OpMode {
 
         } else{
             elevator.headlight(0);
+        }
+
+        if (controller2.dpadDown.isPressed()){
+            elevator.elevatorManual(-1);
+        }
+      if (controller2.dpadUp.isPressed()){
+            elevator.resetElevatorposition();
         }
 
         boolean autoAlign = controller1.rightStick.x.hasBeenZero();

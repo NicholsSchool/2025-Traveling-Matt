@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.constants.ArmConstants;
 import org.firstinspires.ftc.teamcode.math_utils.SimpleFeedbackController;
 import org.firstinspires.ftc.teamcode.subsystems.components.Encoders;
 import org.firstinspires.ftc.teamcode.math_utils.PIDController;
-import org.firstinspires.ftc.teamcode.subsystems.components.LED;
 //import org.firstinspires.ftc.teamcode.subsystems.components.OctoEncoder;
 
 
@@ -61,9 +60,18 @@ public class Elevator implements ArmConstants {
     }
 
 
-
+    public void elevatorNoGovernor(double power){
+        elevatorLeft.setPower(power);
+        elevatorRight.setPower(-power);
+    }
 
     public void elevatorManual(double power){
+        elevatorNoGovernor(Range.clip(power, -ELEVATORMAX, ELEVATORMAX));
+
+    }
+
+
+    public void elevatorSoftlimited(double power){
         if((power > 0 && getElevatorPosition() < ELEVATORMAX) || (power <= 0 && getElevatorPosition() > ELEVATORMIN)) {
             elevatorRight.setPower(-power);
             elevatorLeft.setPower(power);
@@ -93,11 +101,10 @@ public class Elevator implements ArmConstants {
 
     public boolean elevatorToPos(int targetPos){
         if(Math.abs(getElevatorPosition() - targetPos) < 300){
-            elevatorManual(0);
+            elevatorSoftlimited(0);
             return true ;}
-        elevatorManual(-Range.clip(elevatorController.calculate(getElevatorPosition() - targetPos), -1 , 1));
+        elevatorSoftlimited(-Range.clip(elevatorController.calculate(getElevatorPosition() - targetPos), -1 , 1));
         return false;
-
 
     }
 
@@ -109,11 +116,17 @@ public class Elevator implements ArmConstants {
         return -elevatorLeft.getCurrentPosition();
     }
 
+    public void resetElevatorposition(){
+        elevatorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        elevatorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
     public void headlight(double brightness){
         leftLight.setPosition(brightness);
         rightLight.setPosition(brightness);
 
     }
+
 
 }
 

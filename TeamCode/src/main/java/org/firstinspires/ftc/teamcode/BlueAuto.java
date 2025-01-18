@@ -15,12 +15,12 @@ import org.firstinspires.ftc.teamcode.math_utils.PoseEstimator;
 /**
  * Sample Auto to Copy Paste Edit with
  */
-@Autonomous(name = "redAuto")
-public class Auto extends LinearOpMode implements DriveConstants, ArmConstants {
+@Autonomous(name = "blueAuto")
+public class BlueAuto extends LinearOpMode implements DriveConstants, ArmConstants {
     private PoseEstimator poseEstimator;
     FtcDashboard dashboard;
     Controller driverOI;
-    AutonomousRobot autonomousRobot;
+    BlueAutonomousRobot blueautonomousrobot;
     /**
      * Runs the Auto routine
      */
@@ -31,20 +31,20 @@ public class Auto extends LinearOpMode implements DriveConstants, ArmConstants {
 //        DriveTrain drivetrain = new DriveTrain(hardwareMap, 0, 0, 0, false);
 
 //        driverOI = new Controller(gamepad1);
-        autonomousRobot = new AutonomousRobot(false, hardwareMap, telemetry);
+       blueautonomousrobot = new BlueAutonomousRobot(false, hardwareMap, telemetry);
         waitForStart();
 
 //
 //
 
 
-        autonomousRobot.redAuto(this::opModeIsActive);
+        blueautonomousrobot.blueAuto(this::opModeIsActive);
 
 
 
     }
 
 
- }
+}
 
 
