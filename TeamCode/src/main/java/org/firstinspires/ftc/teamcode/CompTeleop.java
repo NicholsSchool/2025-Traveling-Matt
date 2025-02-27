@@ -27,7 +27,6 @@ public class CompTeleop extends OpMode {
     DriveTrain drivetrain;
     Elevator elevator;
     Intake intake;
-//    Encoders encoder;
     LED leftLED, rightLED;
     boolean highGear = false;
 
@@ -73,10 +72,15 @@ public class CompTeleop extends OpMode {
      */
     @Override
     public void loop() {
+        //Run elevator - manual
         if(!controller2.square.isPressed()) {
             elevator.elevatorSoftlimited(controller2.leftStick.y.value());
         }
+
+        //Run intake slide - manual
         intake.intakeSoftLimited(controller2.rightStick.y.value() * .8);
+
+        //run intake, run outtake, or run nothing
         if (controller2.leftBumper.isPressed()){
             intake.intakeServo(1);
         } else if (controller2.rightBumper.isPressed()){
@@ -87,33 +91,53 @@ public class CompTeleop extends OpMode {
             intake.outtakeBlock(0);
         }
 
+        //reset sparkfun IMU
         if (controller1.options.isPressed()) {drivetrain.resetIMU();}
 
+        //go to basket height
         if (controller2.square.isPressed()) {
             elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT);
         }
 
+        //intake all the way out
         if (controller2.circle.isPressed()) {
             intake.intakeToPos(-31000);
         }
 
+        //wrist goes to it's "0" position
+        if (controller2.dpadLeft.isPressed()){
+            intake.wristToZero();
+        }
+
+        //wrist goes to it's "0" position
+        if (controller2.dpadRight.isPressed()){
+            intake.wristToOne();
+        }
+
+        //headlight at both basket heights, and half brightness for if it has a sample
         if (Math.abs(elevator.getElevatorPosition() - 52000)< 1000) {
             elevator.headlight(1);
 
         } else if (Math.abs(elevator.getElevatorPosition() - 30000)< 1000){
             elevator.headlight(1);
 
+        } else if (intake.hasSample()){
+            elevator.headlight(0.5);
         } else{
             elevator.headlight(0);
         }
 
-        if (controller2.dpadDown.isPressed()){
-            elevator.elevatorManual(-1);
-        }
-      if (controller2.dpadUp.isPressed()){
-            elevator.resetElevatorposition();
-        }
+//        //manual reset elevator
+//        if (controller2.dpadDown.isPressed()){
+//            elevator.elevatorManual(-1);
+//        }
 
+//        //reset elevator encoder to 0
+//      if (controller2.dpadUp.isPressed()){
+//            elevator.resetElevatorposition();
+//      }
+
+      //auto align, 90, 0, 135, -90
         boolean autoAlign = controller1.rightStick.x.hasBeenZero();
 
         if(!autoAlign)
@@ -127,21 +151,26 @@ public class CompTeleop extends OpMode {
         else if(controller1.square.wasJustPressed())
             drivetrain.setTargetHeading(Math.PI / 2);
 
+        //drive
         drivetrain.drive(new Vector(controller1.leftStick.x.value(), controller1.leftStick.y.value()), controller1.rightStick.x.value(), autoAlign, controller1.rightBumper.isPressed());
 
-
+        //update systems/controllers
         controller1.update();
         controller2.update();
         drivetrain.update();
 
 
+        //Allllll the telemetry
         telemetry.addData("elevator position", elevator.getElevatorPosition());
         telemetry.addData("intake arm position", intake.getIntakePosition());
         telemetry.addData("x", drivetrain.getPose().getX(DistanceUnit.INCH));
         telemetry.addData("y", drivetrain.getPose().getY(DistanceUnit.INCH));
         telemetry.addData("yaw", Math.toDegrees(drivetrain.getPose().getHeading(AngleUnit.RADIANS)));
         telemetry.addData("Robot Pose", drivetrain.getPose().toString());
-        telemetry.addData("elevatorTest", elevator.elevatorTest(57000));
+        telemetry.addData("Wrist Position", intake.getWristPos());
+        telemetry.addData("headlights", elevator.getHeadlight());
+        telemetry.addData("intake", intake.hasSample());
+        telemetry.addData("intake power", intake.getIntakePower());
     }
 
     /*

@@ -73,9 +73,10 @@ public class AutonomousRobot implements DriveConstants, ArmConstants {
 //        }
 
 //go to first block
-        while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -23, -39  , AngleUnit.DEGREES, 335), false) && isActive.getAsBoolean()) {
+        while (! elevator.elevatorToPos(ArmConstants.ELEVATORMIN) && isActive.getAsBoolean()) {
             drivetrain.update();
-            elevator.elevatorToPos(ArmConstants.ELEVATORMIN);
+//            elevator.elevatorToPos(ArmConstants.ELEVATORMIN);
+            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -21, -38  , AngleUnit.DEGREES, 345), false);
             //-26, -35.5
 //            intake.intakeToPos(ArmConstants.INTAKEMAX);
             updateTelemetry();
@@ -86,7 +87,7 @@ public class AutonomousRobot implements DriveConstants, ArmConstants {
         while (!intake.intakeToPos(ArmConstants.INTAKEMAX) && isActive.getAsBoolean()) {
             updateTelemetry();
             intake.intakeServo(.8);
-            intake.wristControl(true);
+//            intake.wristControl(true);
         }
 //intake servo run, drive a little forward
         time.reset();
@@ -99,7 +100,7 @@ public class AutonomousRobot implements DriveConstants, ArmConstants {
 //stop servos, intake in
         time.reset();
         intake.intakeServo(0);
-        intake.wristControl(false);
+//        intake.wristControl(false);
         while (!intake.intakeToPos(ArmConstants.INTAKEMIN) && isActive.getAsBoolean()) {
             updateTelemetry();
         }
@@ -119,7 +120,7 @@ public class AutonomousRobot implements DriveConstants, ArmConstants {
         while (time.seconds() < .1 && isActive.getAsBoolean()) {
 
         }
-        intake.wristControl(true);
+//        intake.wristControl(true);
 
 //elevator up, go to bucket
         while (!elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT) && isActive.getAsBoolean()) {
@@ -138,14 +139,16 @@ public class AutonomousRobot implements DriveConstants, ArmConstants {
         while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -56, -56, AngleUnit.DEGREES, 225), false)) {
             drivetrain.update();
             updateTelemetry();
-            elevator.elevatorToPos(ArmConstants.ELEVATORMIN);
+
 
 
         }
 
 //go to 2nd block
-        while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -36, -37, AngleUnit.DEGREES, 335), false) && isActive.getAsBoolean()) {
+        while (!  elevator.elevatorToPos(ArmConstants.ELEVATORMIN) && isActive.getAsBoolean()) {
             drivetrain.update();
+            elevator.elevatorToPos(ArmConstants.ELEVATORMIN);
+            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -36, -35, AngleUnit.DEGREES, 350), false);
             //-26, -35.5
 //            intake.intakeToPos(ArmConstants.INTAKEMAX);
             updateTelemetry();
@@ -156,7 +159,7 @@ public class AutonomousRobot implements DriveConstants, ArmConstants {
         while (!intake.intakeToPos(ArmConstants.INTAKEMAX) && isActive.getAsBoolean()) {
             updateTelemetry();
             intake.intakeServo(.8);
-            intake.wristControl(true);
+//            intake.wristControl(true);
         }
 
 //spin intake, drive a lil forward
@@ -170,7 +173,7 @@ public class AutonomousRobot implements DriveConstants, ArmConstants {
 //intake stop, intake back in
         time.reset();
         intake.intakeServo(0);
-        intake.wristControl(false);
+//        intake.wristControl(false);
         while (!intake.intakeToPos(ArmConstants.INTAKEMIN) && isActive.getAsBoolean()) {
             updateTelemetry();
         }
@@ -187,10 +190,10 @@ public class AutonomousRobot implements DriveConstants, ArmConstants {
 
         intake.outtakeBlock(0);
         time.reset();
-        while (time.seconds() < .1 && isActive.getAsBoolean()) {
+        while (time.seconds() < .1 && isActive. getAsBoolean()) {
 
         }
-        intake.wristControl(true);
+//        intake.wristControl(true);
 
 //bucket time!!!
         while (!elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT) && isActive.getAsBoolean()) {

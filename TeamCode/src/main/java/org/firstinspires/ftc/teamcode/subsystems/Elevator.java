@@ -47,11 +47,7 @@ public class Elevator implements ArmConstants {
         rightLight = hwMap.get(Servo.class, "rightLight");
         elevatorController = new SimpleFeedbackController(ELEVATOR_P);
 
-//        encoder = new Encoders(hwMap);
-//        slideEncoder = new OctoEncoder(hwMap, SLIDE_ENC_ID, OctoQuadBase.EncoderDirection.FORWARD);
-//        slideEncoder.reset();
-//
-//        setpoint = 0.0;
+
         pidController = new PIDController(0.0, 0.0, 0.0);
 
 
@@ -113,7 +109,7 @@ public class Elevator implements ArmConstants {
     }
 
     public int getElevatorPosition(){
-        return -elevatorLeft.getCurrentPosition();
+        return Math.abs(elevatorLeft.getCurrentPosition());
     }
 
     public void resetElevatorposition(){
@@ -125,6 +121,10 @@ public class Elevator implements ArmConstants {
         leftLight.setPosition(brightness);
         rightLight.setPosition(brightness);
 
+    }
+
+    public double getHeadlight(){
+        return leftLight.getPosition();
     }
 
 

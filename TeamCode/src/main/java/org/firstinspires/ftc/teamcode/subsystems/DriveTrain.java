@@ -199,7 +199,7 @@ public class DriveTrain implements DriveConstants {
 
     public Pose2D getPose() { return poseEstimator.getPose(); }
 
-    public void resetIMU() { od.resetHeading();}
+     public void resetIMU() { od.resetHeading();}
 
     public double getHeading(AngleUnit unit){
         return poseEstimator.getPose().getHeading(unit);
