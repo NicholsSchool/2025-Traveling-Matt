@@ -72,23 +72,7 @@ public class DriveTrain implements DriveConstants {
         backDrive.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         update();
 
-//
-//
-//        leftEncoder = new OctoEncoder(hwMap, LEFT_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
-//        rightEncoder = new OctoEncoder(hwMap, RIGHT_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
-//        backEncoder = new OctoEncoder(hwMap, BACK_DRIVE_ENC, OctoQuadBase.EncoderDirection.FORWARD);
-
-
-
-//
-//        leftDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
-//        rightDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
-//        backDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
-
-//        leftLight = new IndicatorLight(hwMap, "LeftLight", IndicatorLight.Colour.GREEN);
-//        rightLight = new IndicatorLight(hwMap, "RightLight", IndicatorLight.Colour.GREEN);
-//
-        driveProfile = new VectorMotionProfile(DRIVE_PROFILE_SPEED);
+             driveProfile = new VectorMotionProfile(DRIVE_PROFILE_SPEED);
         turnProfile = new MotionProfile(TURN_PROFILE_SPEED, TURN_PROFILE_MAX);
         turnController = new SimpleFeedbackController(AUTO_ALIGN_P);
 

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.hardware.rev.RevTouchSensor;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -11,15 +12,18 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.constants.ArmConstants;
+import org.firstinspires.ftc.teamcode.math_utils.PIDController;
 import org.firstinspires.ftc.teamcode.math_utils.SimpleFeedbackController;
 
 public class Intake implements ArmConstants {
     DcMotorEx intakeSlide;
-    Servo wrist;
     Telemetry telemetry;
-    CRServoImplEx intakeRight, intakeLeft;
+    CRServoImplEx intakeRight, intakeLeft, wrist;
     SimpleFeedbackController intakeController;
     RevTouchSensor touchSensor;
+    private final AnalogInput intakeEncoder;
+    public final PIDController wristPID;
+    private double intakeSetpoint;
 
 
     public Intake(HardwareMap hwMap, Telemetry telemetry) {
@@ -27,12 +31,17 @@ public class Intake implements ArmConstants {
         intakeRight = hwMap.get(CRServoImplEx.class, "intakeRight");
         intakeLeft = hwMap.get(CRServoImplEx.class, "intakeLeft");
         intakeSlide = hwMap.get(DcMotorEx.class, "intakeSlide");
-        wrist = hwMap.get(Servo.class, "rightWrist");
+        wrist = hwMap.get(CRServoImplEx.class, "rightWrist");
         intakeSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intakeSlide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         intakeSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intakeController = new SimpleFeedbackController(INTAKE_P);
         touchSensor = hwMap.get(RevTouchSensor.class, "touchSensor");
+        intakeEncoder = hwMap.get(AnalogInput.class, "intakeEncoder");
+
+        wristPID = new PIDController(INTAKEWRIST_P, 0.0, 0.0);
+
+        intakeSetpoint = 0.0;
 
     }
 
@@ -70,6 +79,38 @@ public class Intake implements ArmConstants {
         return intakeLeft.getPower();
     }
 
+    public double getIntakePosition() {
+        return intakeEncoder.getVoltage() / 3.3 * 360.0;
+    }
+
+    public void setIntakeSetpoint(double setpoint) {
+        this.intakeSetpoint = setpoint;
+    }
+
+//    public boolean wristGoToPos(double targetPos){
+//        wrist.setPower(-0.5);
+//        return (Math.abs(getIntakePosition() - targetPos) < 10);
+//
+//    }
+
+    public void wristGoToPos(double targetPos){
+        wristManual(wristPID.calculate(getIntakePosition(), targetPos));
+    }
+
+    public void wristManual(double power){
+        wrist.setPower(power);
+    }
+
+    public void wristRegression (){
+
+        if (getIntakeSlidePosition()> - 12000){
+            getIntakePosition();
+
+        }
+
+    }
+
+
     //mainly for autos, run intakeSlide out to a position
     public boolean intakeToPos(int targetPos){
         if (Math.abs(getIntakePosition() - targetPos) < 1200){
@@ -91,20 +132,8 @@ public class Intake implements ArmConstants {
 //
 //    }
 
-    //runs wrist to the "0" position
-    public void wristToZero(){
-        wrist.setPosition(0);
-    }
 
-    //runs wrist to the "1" position
-    public void wristToOne(){
-        wrist.setPosition(1);
-    }
 
-    //gets the position of the wrist
-    public double getWristPos(){
-        return wrist.getPosition();
-    }
 
     //outtakes a block
     public void outtakeBlock(double power){
@@ -121,7 +150,7 @@ public class Intake implements ArmConstants {
     }
 
     //get the current position of the intake slides
-    public int getIntakePosition(){
+    public int getIntakeSlidePosition(){
         return intakeSlide.getCurrentPosition();
     }
 }

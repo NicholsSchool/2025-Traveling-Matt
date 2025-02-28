@@ -104,16 +104,6 @@ public class CompTeleop extends OpMode {
             intake.intakeToPos(-31000);
         }
 
-        //wrist goes to it's "0" position
-        if (controller2.dpadLeft.isPressed()){
-            intake.wristToZero();
-        }
-
-        //wrist goes to it's "0" position
-        if (controller2.dpadRight.isPressed()){
-            intake.wristToOne();
-        }
-
         //headlight at both basket heights, and half brightness for if it has a sample
         if (Math.abs(elevator.getElevatorPosition() - 52000)< 1000) {
             elevator.headlight(1);
@@ -127,6 +117,13 @@ public class CompTeleop extends OpMode {
             elevator.headlight(0);
         }
 
+        if(controller2.dpadRight.isPressed()) {
+            intake.wristGoToPos(200);
+        }
+
+        if(controller2.dpadLeft.isPressed()){
+            intake.setIntakeSetpoint(ArmConstants.INTAKE_DOWN);
+        }
 //        //manual reset elevator
 //        if (controller2.dpadDown.isPressed()){
 //            elevator.elevatorManual(-1);
@@ -162,15 +159,15 @@ public class CompTeleop extends OpMode {
 
         //Allllll the telemetry
         telemetry.addData("elevator position", elevator.getElevatorPosition());
-        telemetry.addData("intake arm position", intake.getIntakePosition());
+        telemetry.addData("intake slide position", intake.getIntakeSlidePosition());
         telemetry.addData("x", drivetrain.getPose().getX(DistanceUnit.INCH));
         telemetry.addData("y", drivetrain.getPose().getY(DistanceUnit.INCH));
         telemetry.addData("yaw", Math.toDegrees(drivetrain.getPose().getHeading(AngleUnit.RADIANS)));
         telemetry.addData("Robot Pose", drivetrain.getPose().toString());
-        telemetry.addData("Wrist Position", intake.getWristPos());
         telemetry.addData("headlights", elevator.getHeadlight());
         telemetry.addData("intake", intake.hasSample());
         telemetry.addData("intake power", intake.getIntakePower());
+        telemetry.addData("intake position", intake.getIntakePosition());
     }
 
     /*
