@@ -50,6 +50,7 @@ public class StatesRedAutoRobot implements DriveConstants, ArmConstants {
             drivetrain.update();
             drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -51.5, -50, AngleUnit.DEGREES, 225), false);
             updateTelemetry();
+            intake.periodic();
         }
 
         time.reset();
@@ -58,17 +59,20 @@ public class StatesRedAutoRobot implements DriveConstants, ArmConstants {
             drivetrain.update();
             drivetrain.drive(new Vector(-.6, -.6), 0, false, false);
             updateTelemetry();
+            intake.periodic();
         }
 // back up
-        while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -57.5, -56, AngleUnit.DEGREES, 225), false)) {
+        while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -57.5, -55, AngleUnit.DEGREES, 225), false)) {
             drivetrain.update();
             updateTelemetry();
+            intake.periodic();
 
         }
 //
         while(!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -48, -54, AngleUnit.DEGREES, 270),false) && isActive.getAsBoolean()){
             drivetrain.update();
             elevator.elevatorToPos(ArmConstants.ASCENTHEIGHT);
+            intake.periodic();
 
             updateTelemetry();
         }
@@ -77,7 +81,8 @@ public class StatesRedAutoRobot implements DriveConstants, ArmConstants {
         while (! elevator.elevatorToPos(ArmConstants.ELEVATORMIN) && isActive.getAsBoolean()) {
             drivetrain.update();
 //            elevator.elevatorToPos(ArmConstants.ELEVATORMIN);
-            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -46.5, -56  , AngleUnit.DEGREES, 270), false);
+//            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -43.5, -56  , AngleUnit.DEGREES, 267), false);
+            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -43.5, -45  , AngleUnit.DEGREES, 267), false);
             //-26, -35.5
 //            intake.intakeToPos(ArmConstants.INTAKEMAX);
             updateTelemetry();
@@ -85,22 +90,45 @@ public class StatesRedAutoRobot implements DriveConstants, ArmConstants {
 
         }
 //intake out, servo spin, wrist go out
-        while (!intake.intakeToPos(ArmConstants.INTAKEMAX) && isActive.getAsBoolean()) {
+//        while (!intake.setWristSetpoint(160)) {
+//            intake.periodic();
+//            updateTelemetry();
+//            intake.intakeServo(.8);
+//            intake.periodic();
+//            intake.intakeToPos(ArmConstants.INTAKEMAX);
+//            intake.periodic();
+//            telemetry.addLine("Im in the loop");
+//            intake.periodic();
+//
+//        }
+
+        while (!intake.setWristSetpoint(100)) {
+            intake.periodic();
             updateTelemetry();
             intake.intakeServo(.8);
             intake.periodic();
-//            intake.wristGoToPos(true);
+            intake.intakeToPos(14500);
+            intake.periodic();
+            telemetry.addLine("Im in the loop");
+            intake.periodic();
 
-            intake.setWristSetpoint(138);
         }
 //intake servo run, drive a little forward
         time.reset();
-        while (time.seconds() < 1.5 && isActive.getAsBoolean()) {
+        while (time.seconds() < 1.87 && isActive.getAsBoolean()) {
+            intake.periodic();
             drivetrain.update();
-            drivetrain.drive(new Vector(-.4, .15), 0, false, false);
-            intake.intakeServo(.8);
+            intake.periodic();
+//            drivetrain.drive(new Vector(0, .4), 0, false, false);
+            intake.periodic();
+            intake.intakeServo(.6);
+            intake.periodic();
             updateTelemetry();
+            intake.periodic();
+            drivetrain.update();
         }
+
+        //|| intake.hasSample() && isActive.getAsBoolean()
 //stop servos, intake in
         time.reset();
         intake.intakeServo(0);
@@ -273,8 +301,8 @@ public class StatesRedAutoRobot implements DriveConstants, ArmConstants {
             telemetry.addData("intake arm position", intake.getIntakeSlidePosition());
             telemetry.addData("wrist postion", intake.getWristPos());
             telemetry.addData("time", time.seconds());
-            telemetry.addData("intakeToPose?", intake.intakeToPos(ArmConstants.INTAKEMAX));
-            telemetry.addData("intake at pos?", Math.abs(intake.getWristPos() - ArmConstants.INTAKEMAX) < 1200);
+//            telemetry.addData("intakeToPose?", intake.intakeToPos(ArmConstants.INTAKEMAX));
+//            telemetry.addData("intake at pos?", Math.abs(intake.getWristPos() - ArmConstants.INTAKEMAX) < 1200);
             dashboard.sendTelemetryPacket(packet);
             telemetry.update();
         }

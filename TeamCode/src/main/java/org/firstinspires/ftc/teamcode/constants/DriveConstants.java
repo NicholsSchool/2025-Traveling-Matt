@@ -16,7 +16,7 @@ public interface DriveConstants {
     double DRIVE_PROFILE_SPEED = 22.0;
 
     /** The Maximum Speed of the Turning Profile */
-    double TURN_PROFILE_SPEED = 4.0;
+    double TURN_PROFILE_SPEED = 6.0;
 
     /** The Maximum Output Value Magnitude of the Turning Profile */
     double TURN_PROFILE_MAX = 0.35;

@@ -99,8 +99,9 @@ public class Intake implements ArmConstants {
         return intakeEncoder.getVoltage() / 3.3 * 360.0;
     }
 
-    public void setWristSetpoint(double setpoint) {
+    public boolean setWristSetpoint(double setpoint) {
         this.wristSetpoint = setpoint;
+        return Math.abs(getWristPos() - this.wristSetpoint) < 8;
     }
 
 //    public boolean wristGoToPos(double targetPos){
@@ -108,10 +109,10 @@ public class Intake implements ArmConstants {
 //        return (Math.abs(getIntakePosition() - targetPos) < 10);
 //
 //    }
-
-    public void wristGoToPos(double targetPos){
-        wristManual(wristPID.calculate(getWristPos(), targetPos));
-    }
+//
+//    public void wristGoToPos(double targetPos){
+//        wristManual(wristPID.calculate(getWristPos(), targetPos));
+//    }
 
     public void wristManual(double power){
         wrist.setPower(power);
