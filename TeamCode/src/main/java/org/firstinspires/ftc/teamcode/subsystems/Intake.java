@@ -5,9 +5,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -23,7 +21,7 @@ public class Intake implements ArmConstants {
     RevTouchSensor touchSensor;
     private final AnalogInput intakeEncoder;
     public final PIDController wristPID;
-    private double intakeSetpoint;
+    private double wristSetpoint;
 
 
     public Intake(HardwareMap hwMap, Telemetry telemetry) {
@@ -41,7 +39,7 @@ public class Intake implements ArmConstants {
 
         wristPID = new PIDController(INTAKEWRIST_P, 0.0, 0.0);
 
-        intakeSetpoint = 0.0;
+        wristSetpoint = ArmConstants.INTAKE_BUCKET;
 
     }
 
@@ -53,25 +51,43 @@ public class Intake implements ArmConstants {
         }
     }
 
+    public void periodic(){
+
+        wristManual(wristPID.calculate(getWristPos(), wristSetpoint));
+
+    }
+
     //intake slide control, limited at 0 and the max extension
     public void intakeSoftLimited(double power){
-        if((power > 0 && intakeSlide.getCurrentPosition() > INTAKEMAX) || (power <= 0 && intakeSlide.getCurrentPosition() < INTAKEMIN)) {
+        if((power > 0 && getIntakeSlidePosition() < INTAKEMAX) || (power <= 0 && getIntakeSlidePosition() > INTAKEMIN)) {
             intakeSlideManual(power);
         }else{
             intakeSlide.setPower(0.0);
 
         }
 
+
         telemetry.addData("isIntaking", intakeSlide.getCurrentPosition() < INTAKEMAX + 10000);
-        telemetry.addData("Intaking limit", INTAKEMAX + 10000);
+        telemetry.addData("Intaking limit", INTAKEMAX);
 //        wristControl(intakeSlide.getCurrentPosition() < INTAKEMAX + 22850);
 
     }
 
+    // public void elevatorSoftlimited(double power){
+    //        if((power > 0 && getElevatorPosition() < ELEVATORMAX) || (power <= 0 && getElevatorPosition() > ELEVATORMIN)) {
+    //            elevatorRight.setPower(-power);
+    //            elevatorLeft.setPower(power);
+    //        }else{
+    //            elevatorRight.setPower(0.0);
+    //            elevatorLeft.setPower(0.0);
+    //        }
+    //
+    //    }
+
     //run intake servo
     public void intakeServo(double power){
-            intakeLeft.setPower(power);
-            intakeRight.setPower( power);
+            intakeLeft.setPower(-power);
+            intakeRight.setPower(-power);
     }
 
     //get the power value sent to the intake (for testing)
@@ -79,12 +95,12 @@ public class Intake implements ArmConstants {
         return intakeLeft.getPower();
     }
 
-    public double getIntakePosition() {
+    public double getWristPos() {
         return intakeEncoder.getVoltage() / 3.3 * 360.0;
     }
 
-    public void setIntakeSetpoint(double setpoint) {
-        this.intakeSetpoint = setpoint;
+    public void setWristSetpoint(double setpoint) {
+        this.wristSetpoint = setpoint;
     }
 
 //    public boolean wristGoToPos(double targetPos){
@@ -94,7 +110,7 @@ public class Intake implements ArmConstants {
 //    }
 
     public void wristGoToPos(double targetPos){
-        wristManual(wristPID.calculate(getIntakePosition(), targetPos));
+        wristManual(wristPID.calculate(getWristPos(), targetPos));
     }
 
     public void wristManual(double power){
@@ -104,7 +120,7 @@ public class Intake implements ArmConstants {
     public void wristRegression (){
 
         if (getIntakeSlidePosition()> - 12000){
-            getIntakePosition();
+            getWristPos();
 
         }
 
@@ -113,11 +129,11 @@ public class Intake implements ArmConstants {
 
     //mainly for autos, run intakeSlide out to a position
     public boolean intakeToPos(int targetPos){
-        if (Math.abs(getIntakePosition() - targetPos) < 1200){
+        if (Math.abs(getIntakeSlidePosition() - targetPos) < 1200){
             intakeSoftLimited(0);
             return true;
         }
-        intakeSoftLimited(Range.clip(intakeController.calculate(getIntakePosition() - targetPos), -1    , 1));
+        intakeSoftLimited(-Range.clip(intakeController.calculate(getIntakeSlidePosition() - targetPos), -1, 1));
         return false;
     }
 
@@ -137,8 +153,8 @@ public class Intake implements ArmConstants {
 
     //outtakes a block
     public void outtakeBlock(double power){
-        intakeRight.setPower(-power);
-        intakeLeft.setPower(-power);
+        intakeRight.setPower(power);
+        intakeLeft.setPower(power);
     }
 
     //we don't need this I think
@@ -151,6 +167,6 @@ public class Intake implements ArmConstants {
 
     //get the current position of the intake slides
     public int getIntakeSlidePosition(){
-        return intakeSlide.getCurrentPosition();
+        return -intakeSlide.getCurrentPosition();
     }
 }

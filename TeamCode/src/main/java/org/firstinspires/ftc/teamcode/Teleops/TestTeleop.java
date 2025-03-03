@@ -1,5 +1,5 @@
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Teleops;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -12,7 +12,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.controller.Controller;
-import org.firstinspires.ftc.teamcode.math_utils.Vector;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 //import org.firstinspires.ftc.teamcode.subsystems.components.Encoders;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -134,7 +133,7 @@ public class TestTeleop extends OpMode {
         drivetrain.update();
         poseEstimator.update();
         telemetry.addData("elevator position", elevator.getElevatorPosition());
-        telemetry.addData("intake arm position", intake.getIntakePosition());
+        telemetry.addData("intake arm position", intake.getWristPos());
         telemetry.addData("x", drivetrain.getPose().getX(DistanceUnit.INCH));
         telemetry.addData("y", drivetrain.getPose().getY(DistanceUnit.INCH));
         telemetry.addData("yaw", Math.toDegrees(drivetrain.getPose().getHeading(AngleUnit.RADIANS)));

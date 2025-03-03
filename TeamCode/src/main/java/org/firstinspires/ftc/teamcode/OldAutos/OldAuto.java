@@ -1,5 +1,5 @@
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OldAutos;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -15,12 +15,12 @@ import org.firstinspires.ftc.teamcode.math_utils.PoseEstimator;
 /**
  * Sample Auto to Copy Paste Edit with
  */
-@Autonomous(name = "blueAuto")
-public class BlueAuto extends LinearOpMode implements DriveConstants, ArmConstants {
+@Autonomous(name = "redAuto")
+public class OldAuto extends LinearOpMode implements DriveConstants, ArmConstants {
     private PoseEstimator poseEstimator;
     FtcDashboard dashboard;
     Controller driverOI;
-    BlueAutonomousRobot blueautonomousrobot;
+    AutonomousRobot autonomousRobot;
     /**
      * Runs the Auto routine
      */
@@ -31,20 +31,20 @@ public class BlueAuto extends LinearOpMode implements DriveConstants, ArmConstan
 //        DriveTrain drivetrain = new DriveTrain(hardwareMap, 0, 0, 0, false);
 
 //        driverOI = new Controller(gamepad1);
-       blueautonomousrobot = new BlueAutonomousRobot(false, hardwareMap, telemetry);
+        autonomousRobot = new AutonomousRobot(false, hardwareMap, telemetry);
         waitForStart();
 
 //
 //
 
 
-        blueautonomousrobot.blueAuto(this::opModeIsActive);
+        autonomousRobot.redAuto(this::opModeIsActive);
 
 
 
     }
 
 
-}
+ }
 
 

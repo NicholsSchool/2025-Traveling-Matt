@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OldAutos;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -258,8 +258,8 @@ public class AutonomousRobot implements DriveConstants, ArmConstants {
                             drivetrain.getPose().getY(DistanceUnit.INCH) + (9 * Math.sin(drivetrain.getPose().getHeading(AngleUnit.RADIANS)))
                     );
             telemetry.addData("elevator position", elevator.getElevatorPosition());
-            telemetry.addData("intake arm position", intake.getIntakePosition());
-            telemetry.addData("intaketopose", Math.abs(intake.getIntakePosition() - 32000) < 1200);
+            telemetry.addData("intake arm position", intake.getWristPos());
+            telemetry.addData("intaketopose", Math.abs(intake.getWristPos() - 32000) < 1200);
             dashboard.sendTelemetryPacket(packet);
             telemetry.update();
         }

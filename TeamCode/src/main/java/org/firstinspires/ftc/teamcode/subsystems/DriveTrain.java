@@ -99,7 +99,7 @@ public class DriveTrain implements DriveConstants {
             );
         }
         driveInput = driveProfile.calculate(driveInput.clipMagnitude(
-                (lowGear ? VIRTUAL_LOW_GEAR : VIRTUAL_HIGH_GEAR) - Math.abs(turn * 0.3)));
+                (lowGear ? VIRTUAL_LOW_GEAR : VIRTUAL_HIGH_GEAR) - Math.abs(turn * 0.2)));
         double power = driveInput.magnitude();
         double angle = driveInput.angle();
 

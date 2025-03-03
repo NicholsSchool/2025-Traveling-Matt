@@ -98,7 +98,8 @@ public class Elevator implements ArmConstants {
     public boolean elevatorToPos(int targetPos){
         if(Math.abs(getElevatorPosition() - targetPos) < 300){
             elevatorSoftlimited(0);
-            return true ;}
+            return true;
+        }
         elevatorSoftlimited(-Range.clip(elevatorController.calculate(getElevatorPosition() - targetPos), -1 , 1));
         return false;
 

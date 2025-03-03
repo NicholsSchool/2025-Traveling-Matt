@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OldAutos;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.subsystems.components.OpticalSensor;
 
 import java.util.function.BooleanSupplier;
 
-public class ParkAutonomousRobot implements DriveConstants, ArmConstants {
+public class BlueAutonomousRobot implements DriveConstants, ArmConstants {
     FtcDashboard dashboard;
     DriveTrain drivetrain;
     Elevator elevator;
@@ -31,7 +31,7 @@ public class ParkAutonomousRobot implements DriveConstants, ArmConstants {
 
 
 
-    public ParkAutonomousRobot(boolean isBlue, HardwareMap hardwareMap, Telemetry telemetry){
+    public BlueAutonomousRobot(boolean isBlue, HardwareMap hardwareMap, Telemetry telemetry){
         Pose2D initialPose = new Pose2D(DistanceUnit.INCH, -24, -63, AngleUnit.DEGREES, 0);
         drivetrain = new DriveTrain(hardwareMap, initialPose, 90, false);
         intake = new Intake(hardwareMap, telemetry);
@@ -42,93 +42,6 @@ public class ParkAutonomousRobot implements DriveConstants, ArmConstants {
         telemetry.setMsTransmissionInterval(50);
     }
 
-    public void parkAuto(BooleanSupplier isActive){
-        ElapsedTime time = new ElapsedTime();
-        time.reset();
-
-        while(!elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT) && isActive.getAsBoolean()){
-            drivetrain.update();
-            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -52, -52, AngleUnit.DEGREES, 225),false);
-            updateTelemetry();
-        }
-
-        time.reset();
-
-        while(time.seconds() < 1 && isActive.getAsBoolean()) {
-            drivetrain.update();
-            drivetrain.drive(new Vector(-2, -2), 0, false, false);
-            updateTelemetry();
-        }
-
-        while(!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -56, -56, AngleUnit.DEGREES, 225),false)){
-            drivetrain.update();
-            updateTelemetry();
-        }
-
-        while(!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -24, -10, AngleUnit.DEGREES, 0),false) && isActive.getAsBoolean()){
-            drivetrain.update();
-            elevator.elevatorToPos(ArmConstants.ASCENTHEIGHT);
-
-            updateTelemetry();
-        }
-
-
-
-//
-////        intake.intakeServo(.8);
-////        intake.wristControl(true);
-////        while(!intake.intakeToPos(ArmConstants.INTAKEMAX) && isActive.getAsBoolean()){
-////            updateTelemetry();
-////        }
-////
-////        while(!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -26, -35.5, AngleUnit.DEGREES, 320),false) && isActive.getAsBoolean()){
-////            drivetrain.update();
-////            //-26, -35.5
-//////            intake.intakeToPos(ArmConstants.INTAKEMAX);
-////            updateTelemetry();
-////            intake.intakeServo(.8);
-////
-////        }
-////        time.reset();
-////        while(time.seconds() < 1.5 && isActive.getAsBoolean()) {
-////            intake.intakeServo(.8);
-////            updateTelemetry();
-////        }
-////
-////
-////        intake.intakeServo(0);
-////        intake.wristControl(false);
-////        while(!intake.intakeToPos(ArmConstants.INTAKEMIN) && isActive.getAsBoolean()){
-////            updateTelemetry();
-////        }
-////        intake.outtakeBlock(.3);
-//
-////        while(!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -36, -20, AngleUnit.DEGREES, 90),false) && isActive.getAsBoolean()){
-////            drivetrain.update();
-////            updateTelemetry();
-////
-////        }
-////
-////        while(!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -29, -16, AngleUnit.DEGREES, 90),false) && isActive.getAsBoolean()){
-////            drivetrain.update();
-////            updateTelemetry();
-////
-////
-////        }
-////
-////        while(!elevator.elevatorToPos(ArmConstants.ASCENTHEIGHT) && isActive.getAsBoolean()){
-////            updateTelemetry();
-////        }
-//
-//
-//
-//
-//
-//
-//
-//
-//
- }
 
     public void blueAuto(BooleanSupplier isActive){
         ElapsedTime time = new ElapsedTime();
@@ -136,7 +49,7 @@ public class ParkAutonomousRobot implements DriveConstants, ArmConstants {
 
         while(!elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT) && isActive.getAsBoolean()){
             drivetrain.update();
-            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -57, -57, AngleUnit.DEGREES, 225),false);
+            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -54, -54, AngleUnit.DEGREES, 225),false);
             updateTelemetry();
         }
 
@@ -153,9 +66,22 @@ public class ParkAutonomousRobot implements DriveConstants, ArmConstants {
             updateTelemetry();
         }
 
-        while(!elevator.elevatorToPos(ArmConstants.ELEVATORMIN) && isActive.getAsBoolean()){
+//        while(!elevator.elevatorToPos(ArmConstants.ELEVATORMIN) && isActive.getAsBoolean()){
+//            drivetrain.update();
+//            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -24, -37.5, AngleUnit.DEGREES, 90),false);
+//            updateTelemetry();
+//        }
+
+        while(!elevator.elevatorToPos(0) && isActive.getAsBoolean()){
             drivetrain.update();
-            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -24, -37.5, AngleUnit.DEGREES, 90),false);
+            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -24, -10, AngleUnit.DEGREES, 0),false);
+            updateTelemetry();
+        }
+
+        while(!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -24, -10, AngleUnit.DEGREES, 0),false) && isActive.getAsBoolean()){
+            drivetrain.update();
+            elevator.elevatorToPos(ArmConstants.ASCENTHEIGHT);
+
             updateTelemetry();
         }
 
@@ -182,8 +108,8 @@ public class ParkAutonomousRobot implements DriveConstants, ArmConstants {
                         drivetrain.getPose().getY(DistanceUnit.INCH) + (9 * Math.sin(drivetrain.getPose().getHeading(AngleUnit.RADIANS)))
                 );
         telemetry.addData("elevator position", elevator.getElevatorPosition());
-        telemetry.addData("intake arm position", intake.getIntakePosition());
-        telemetry.addData("intaketopose", Math.abs(intake.getIntakePosition() - 32000) < 1200);
+        telemetry.addData("intake arm position", intake.getWristPos());
+        telemetry.addData("intaketopose", Math.abs(intake.getWristPos() - 32000) < 1200);
         dashboard.sendTelemetryPacket(packet);
         telemetry.update();
     }

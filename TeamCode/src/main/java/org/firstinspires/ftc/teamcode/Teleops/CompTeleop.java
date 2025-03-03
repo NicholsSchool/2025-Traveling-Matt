@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Teleops;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -82,9 +82,9 @@ public class CompTeleop extends OpMode {
 
         //run intake, run outtake, or run nothing
         if (controller2.leftBumper.isPressed()){
-            intake.intakeServo(1);
+            intake.intakeServo(.8);
         } else if (controller2.rightBumper.isPressed()){
-            intake.outtakeBlock(1);
+            intake.outtakeBlock(.8);
         } else {
             telemetry.addData("nothing pressed", "true");
             intake.intakeServo(0);
@@ -101,11 +101,11 @@ public class CompTeleop extends OpMode {
 
         //intake all the way out
         if (controller2.circle.isPressed()) {
-            intake.intakeToPos(-31000);
+            intake.intakeToPos(31000);
         }
 
         //headlight at both basket heights, and half brightness for if it has a sample
-        if (Math.abs(elevator.getElevatorPosition() - 52000)< 1000) {
+        if (Math.abs(elevator.getElevatorPosition() - ArmConstants.BUCKETHEIGHT) < 1000) {
             elevator.headlight(1);
 
         } else if (Math.abs(elevator.getElevatorPosition() - 30000)< 1000){
@@ -117,13 +117,28 @@ public class CompTeleop extends OpMode {
             elevator.headlight(0);
         }
 
-        if(controller2.dpadRight.isPressed()) {
-            intake.wristGoToPos(200);
+//        if(controller2.dpadRight.isPressed()) {
+//            intake.wristGoToPos(200);
+//        }
+
+//        if(controller2.dpadLeft.isPressed()){
+//            intake.setIntakeSetpoint(ArmConstants.INTAKE_DOWN);
+//        }
+//
+        intake.periodic();
+
+//        if (controller2.dpadRight.isPressed()) intake.setIntakeSetpoint(ArmConstants.INTAKE_DOWN);
+
+
+        if (intake.getIntakeSlidePosition() < 12000) {
+            intake.setWristSetpoint(ArmConstants.INTAKE_BUCKET);
+        } else {
+            intake.setWristSetpoint(intake.getIntakeSlidePosition() * ArmConstants.LINEAR_REGRESSION_M + ArmConstants.LINEAR_REGRESSION_B);
         }
 
-        if(controller2.dpadLeft.isPressed()){
-            intake.setIntakeSetpoint(ArmConstants.INTAKE_DOWN);
-        }
+//        y=64.75233\cdot0.999976^{x}
+        //intake.setIntakeSetpoint(ArmConstants.REGRESSION_M *  Math.pow(ArmConstants.REGRESSION_B, intake.getIntakeSlidePosition())); (exponential)
+
 //        //manual reset elevator
 //        if (controller2.dpadDown.isPressed()){
 //            elevator.elevatorManual(-1);
@@ -167,7 +182,7 @@ public class CompTeleop extends OpMode {
         telemetry.addData("headlights", elevator.getHeadlight());
         telemetry.addData("intake", intake.hasSample());
         telemetry.addData("intake power", intake.getIntakePower());
-        telemetry.addData("intake position", intake.getIntakePosition());
+        telemetry.addData("intake position", intake.getWristPos());
     }
 
     /*
