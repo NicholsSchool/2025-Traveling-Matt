@@ -14,7 +14,7 @@ public interface ArmConstants {
     int INTAKEMAX = 33000;
 
     //the elevator encoder heights for the top basket and ascent bar
-    int BUCKETHEIGHT = 62400;
+    int BUCKETHEIGHT = 61000;
     int ASCENTHEIGHT = 17550;
 
     //these values are guesses, have to find correct ones
@@ -22,7 +22,7 @@ public interface ArmConstants {
     double INTAKE_DOWN = 137.0;
 
     //PID coefficients
-    double ELEVATOR_P = 0.001;
+    double ELEVATOR_P = 0.0003;
     double INTAKE_P = 0.0003;
     double INTAKEWRIST_P = 5.2E-3;
 //5E-3

@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.teamcode.subsystems.Elevator.ELEVATOR_STATE.GO_TO_POSITION;
+import static org.firstinspires.ftc.teamcode.subsystems.Elevator.ELEVATOR_STATE.MANUAL;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -16,16 +19,16 @@ import org.firstinspires.ftc.teamcode.math_utils.PIDController;
 public class Elevator implements ArmConstants {
     DcMotorEx elevatorRight, elevatorLeft;
     Encoders encoder;
-    PIDController pidController;
+    PIDController elevatorPID;
     double setpoint;
     Servo rightLight, leftLight;
     SimpleFeedbackController elevatorController;
-//    OctoEncoder slideEncoder;
+    ELEVATOR_STATE state = MANUAL;
 
-
-
-
-
+    public enum ELEVATOR_STATE {
+        MANUAL,
+        GO_TO_POSITION
+    }
 
     /**
      *
@@ -48,10 +51,19 @@ public class Elevator implements ArmConstants {
         elevatorController = new SimpleFeedbackController(ELEVATOR_P);
 
 
-        pidController = new PIDController(0.0, 0.0, 0.0);
+        elevatorPID = new PIDController(ELEVATOR_P, 0.0, 0.0);
 
+    }
 
+    public void periodic() {
 
+        switch (state) {
+            case GO_TO_POSITION:
+                elevatorSoftlimited(-(elevatorController.calculate(getElevatorPosition() - setpoint)));
+                break;
+            case MANUAL:
+                setpoint = getElevatorPosition();
+        }
 
     }
 
@@ -67,7 +79,11 @@ public class Elevator implements ArmConstants {
     }
 
 
+
     public void elevatorSoftlimited(double power){
+
+        if (power > 0.05) { state = MANUAL; }
+
         if((power > 0 && getElevatorPosition() < ELEVATORMAX) || (power <= 0 && getElevatorPosition() > ELEVATORMIN)) {
             elevatorRight.setPower(-power);
             elevatorLeft.setPower(power);
@@ -100,9 +116,11 @@ public class Elevator implements ArmConstants {
             elevatorSoftlimited(0);
             return true;
         }
-        elevatorSoftlimited(-Range.clip(elevatorController.calculate(getElevatorPosition() - targetPos), -1 , 1));
-        return false;
 
+        this.setpoint = targetPos;
+        state = GO_TO_POSITION;
+
+        return false;
     }
 
     public double elevatorTest(int targetPos){

@@ -95,7 +95,7 @@ public class CompTeleop extends OpMode {
         if (controller1.options.isPressed()) {drivetrain.resetIMU();}
 
         //go to basket height
-        if (controller2.square.isPressed()) {
+        if (controller2.square.wasJustPressed()) {
             elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT);
         }
 
@@ -126,6 +126,7 @@ public class CompTeleop extends OpMode {
 //        }
 //
         intake.periodic();
+        elevator.periodic();
 
 //        if (controller2.dpadRight.isPressed()) intake.setIntakeSetpoint(ArmConstants.INTAKE_DOWN);
 

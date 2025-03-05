@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.constants.ArmConstants;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 //import org.firstinspires.ftc.teamcode.subsystems.components.Encoders;
@@ -84,6 +85,18 @@ public class TestTeleop extends OpMode {
     public void loop() {
 
 
+        if(controller2.square.isPressed()){
+            elevator.elevatorToPos(17000);
+        }
+
+
+        if(controller2.square.isPressed()){
+            elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT);
+        }
+
+        elevator.periodic();
+
+
         telemetry.addData("OTOS Heading", poseEstimator.otos.getHeading());
         telemetry.addData("OTOS Position", poseEstimator.otos.getPosition().toString());
 
@@ -111,7 +124,6 @@ public class TestTeleop extends OpMode {
         dashboard.sendTelemetryPacket(packet);
         telemetry.update();
 
-        drivetrain.drive(controller1.leftStick.toVector(), controller1.rightStick.x.value(), false, !controller1.rightBumper.isPressed());
 
 
 
