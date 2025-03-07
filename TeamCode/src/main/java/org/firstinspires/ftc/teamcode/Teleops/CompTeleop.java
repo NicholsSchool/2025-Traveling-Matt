@@ -76,6 +76,7 @@ public class CompTeleop extends OpMode {
         controller1.update();
         controller2.update();
         drivetrain.update();
+        elevator.periodic();
         //Run elevator - manual
         //ELEVATOR MANUAL
         if( Math.abs(controller2.leftStick.y.value()) > 0.05 ) {
@@ -84,7 +85,7 @@ public class CompTeleop extends OpMode {
         } else { elevator.setState(Elevator.ELEVATOR_STATE.GO_TO_POSITION); }
 
         if(controller2.square.wasJustPressed()){
-            elevator.elevatorToPos(10000);
+            elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT);
         }
 
         if (controller2.square.wasJustReleased()){

@@ -14,7 +14,7 @@ public interface ArmConstants {
     int INTAKEMAX = 33000;
 
     //the elevator encoder heights for the top basket and ascent bar
-    int BUCKETHEIGHT = 62500;
+    int BUCKETHEIGHT = 61900;
     int ASCENTHEIGHT = 17550;
 
     //these values are guesses, have to find correct ones

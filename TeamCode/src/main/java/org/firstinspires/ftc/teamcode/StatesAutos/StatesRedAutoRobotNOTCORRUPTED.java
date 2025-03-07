@@ -40,16 +40,19 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
         dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         telemetry.setMsTransmissionInterval(50);
+        elevator.setState(Elevator.ELEVATOR_STATE.GO_TO_POSITION);
     }
 
     public void redAuto(BooleanSupplier isActive) {
         time.reset();
+
 //go to bucket #0
         while (!elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT) && isActive.getAsBoolean()) {
             drivetrain.update();
             drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -51.5, -50, AngleUnit.DEGREES, 225), false);
             updateTelemetry();
             intake.periodic();
+            elevator.periodic();
         }
 
         time.reset();
@@ -58,11 +61,13 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
             drivetrain.update();
             drivetrain.drive(new Vector(-.6, -.6), 0, false, false);
             updateTelemetry();
+            elevator.periodic();
             intake.periodic();
         }
 // back up #0
         while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -57.5, -55, AngleUnit.DEGREES, 225), false)) {
             drivetrain.update();
+            elevator.periodic();
             updateTelemetry();
             intake.periodic();
 
@@ -71,7 +76,8 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
         while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -48, -54, AngleUnit.DEGREES, 270), false) && isActive.getAsBoolean()) {
             drivetrain.update();
             elevator.elevatorToPos(ArmConstants.ASCENTHEIGHT);
-            intake.periodic();
+            elevator.periodic();
+                intake.periodic();
 
             updateTelemetry();
         }
@@ -83,6 +89,7 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
 //            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -43.5, -56  , AngleUnit.DEGREES, 267), false);
 //            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -44.5, -30  , AngleUnit.DEGREES, 267), false);
             elevator.elevatorToPos(ArmConstants.ELEVATORMIN);
+            elevator.periodic();
             //-26, -35.5
 //            intake.intakeToPos(ArmConstants.INTAKEMAX);
             updateTelemetry();
@@ -94,6 +101,7 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
 
         //intake and run slides out #1
         while (!intake.setWristSetpoint(85)) {
+            elevator.periodic();
             intake.periodic();
             updateTelemetry();
             intake.intakeServo(.8);
@@ -118,6 +126,7 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
         //go to handoff #1
         while (!intake.setWristSetpoint(ArmConstants.INTAKE_BUCKET) && isActive.getAsBoolean()) {
             intake.periodic();
+            elevator.periodic();
 
             intake.intakeToPos(ArmConstants.INTAKEMIN);
             updateTelemetry();
@@ -151,6 +160,7 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
 //go to bucket #1
         while (!elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT) && isActive.getAsBoolean()) {
             drivetrain.update();
+            elevator.periodic();
             drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -51.5, -50, AngleUnit.DEGREES, 225), false);
             updateTelemetry();
             intake.periodic();
@@ -160,6 +170,7 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
 //forward #1
         while (time.seconds() < .7 && isActive.getAsBoolean()) {
             drivetrain.update();
+            elevator.periodic();
             drivetrain.drive(new Vector(-.6, -.6), 0, false, false);
             updateTelemetry();
             intake.periodic();
@@ -168,6 +179,7 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
         while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -57.5, -55, AngleUnit.DEGREES, 225), false)) {
             drivetrain.update();
             updateTelemetry();
+            elevator.periodic();
             intake.periodic();
 
         }
@@ -175,6 +187,7 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
         // midpoint #2
         while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -52, -54, AngleUnit.DEGREES, 270), false) && isActive.getAsBoolean()) {
             drivetrain.update();
+            elevator.periodic();
             elevator.elevatorToPos(ArmConstants.ASCENTHEIGHT);
             intake.periodic();
 
@@ -184,6 +197,7 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
 //go to #2 block
         while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -54.5, -41.0, AngleUnit.DEGREES, 267), false) && isActive.getAsBoolean()) {
             drivetrain.update();
+            elevator.periodic();
 //            elevator.elevatorToPos(ArmConstants.ELEVATORMIN);
 //            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -43.5, -56  , AngleUnit.DEGREES, 267), false);
 //            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -44.5, -30  , AngleUnit.DEGREES, 267), false);
@@ -200,6 +214,7 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
 
         //wrist/intake/slides go out #2
         while (!intake.setWristSetpoint(85)) {
+            elevator.periodic();
             intake.periodic();
             updateTelemetry();
             intake.intakeServo(.8);
@@ -252,6 +267,7 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
 
 //bucket time!!! #2
         while (!elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT) && isActive.getAsBoolean()) {
+            elevator.periodic();
             drivetrain.update();
             drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -51.5, -50, AngleUnit.DEGREES, 225), false);
             updateTelemetry();
@@ -261,6 +277,7 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
         time.reset();
         while (time.seconds() < .7 && isActive.getAsBoolean()) {
             drivetrain.update();
+            elevator.periodic();
             drivetrain.drive(new Vector(-.6, -.6), 0, false, false);
             updateTelemetry();
             intake.periodic();
@@ -268,6 +285,7 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
 //back up #2
         while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -57.5, -55, AngleUnit.DEGREES, 225), false)) {
             drivetrain.update();
+            elevator.periodic();
             updateTelemetry();
             intake.periodic();
 
@@ -277,6 +295,7 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
         // midpoint #3
         while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -52, -52, AngleUnit.DEGREES, 270), false) && isActive.getAsBoolean()) {
             drivetrain.update();
+            elevator.periodic();
             elevator.elevatorToPos(ArmConstants.ASCENTHEIGHT);
             intake.periodic();
 
@@ -286,6 +305,8 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
         // go to #3 block
         while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -52.2, -43, AngleUnit.DEGREES, 300), false) && isActive.getAsBoolean()) {
             drivetrain.update();
+
+            elevator.periodic();
 
             elevator.elevatorToPos(ArmConstants.ELEVATORMIN);
 
@@ -299,6 +320,7 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
         //run wrist/slides/intake out #3
         while (!intake.setWristSetpoint(145 )) {
             intake.periodic();
+            elevator.periodic();
             updateTelemetry();
             intake.intakeServo(.8);
             intake.periodic();
@@ -324,6 +346,7 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
         intake.intakeServo(0);
         while (!intake.setWristSetpoint(ArmConstants.INTAKE_BUCKET) && isActive.getAsBoolean()) {
             intake.periodic();
+            elevator.periodic();
 
             intake.intakeToPos(ArmConstants.INTAKEMIN);
             updateTelemetry();
@@ -349,6 +372,7 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
 
         while (!intake.setWristSetpoint(250)) {
             intake.periodic();
+            elevator.periodic();
             updateTelemetry();
             intake.periodic();
         }
@@ -356,6 +380,7 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
 //go to bucket #3
         while (!elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT) && isActive.getAsBoolean()) {
             drivetrain.update();
+            elevator.periodic();
             drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -51.5, -50, AngleUnit.DEGREES, 225), false);
             updateTelemetry();
             intake.periodic();
@@ -364,6 +389,7 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
         time.reset();
         while (time.seconds() < .7 && isActive.getAsBoolean()) {
             drivetrain.update();
+            elevator.periodic();
             drivetrain.drive(new Vector(-.6, -.6), 0, false, false);
             updateTelemetry();
             intake.periodic();
@@ -371,6 +397,7 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
 //back up #2
         while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -57.5, -55, AngleUnit.DEGREES, 225), false)) {
             drivetrain.update();
+            elevator.periodic();
             updateTelemetry();
             intake.periodic();
 
