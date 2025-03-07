@@ -20,14 +20,15 @@ public class Elevator implements ArmConstants {
     DcMotorEx elevatorRight, elevatorLeft;
     Encoders encoder;
     PIDController elevatorPID;
-    double setpoint;
+    double elevatorSetpoint;
     Servo rightLight, leftLight;
     SimpleFeedbackController elevatorController;
     ELEVATOR_STATE state = MANUAL;
 
     public enum ELEVATOR_STATE {
         MANUAL,
-        GO_TO_POSITION
+        GO_TO_POSITION,
+        STOPPED
     }
 
     /**
@@ -59,11 +60,12 @@ public class Elevator implements ArmConstants {
 
         switch (state) {
             case GO_TO_POSITION:
-                elevatorNoGovernor(elevatorPID.calculate(getElevatorPosition(), setpoint));
+                elevatorNoGovernor(elevatorPID.calculate(getElevatorPosition(), elevatorSetpoint));
                 break;
             case MANUAL:
-                setpoint = getElevatorPosition();
+                elevatorSetpoint = getElevatorPosition();
                 break;
+            case STOPPED:
             default:
                 elevatorNoGovernor(0);
                 break;
@@ -77,15 +79,23 @@ public class Elevator implements ArmConstants {
         elevatorRight.setPower(-power);
     }
 
-    public void setState(){
-
+    public void setState(ELEVATOR_STATE state)
+    {
+        this.state = state;
     }
 
-    public double getSetpoint(){
-        return setpoint;
+
+    public boolean setSetpoint(double setpoint) {
+//        this.state = GO_TO_POSITION;
+        this.elevatorSetpoint = setpoint;
+        if (Math.abs(setpoint - this.getElevatorPosition()) < 1000) {
+            return true;
+        } else { return false; }
     }
 
     public void elevatorSoftlimited(double power){
+
+//        this.state = ELEVATOR_STATE.MANUAL;
 
         if (Math.abs(power) > 0.1) { state = MANUAL; }
 
@@ -126,11 +136,11 @@ public class Elevator implements ArmConstants {
 
     public boolean elevatorToPos(int targetPos){
         if(Math.abs(getElevatorPosition() - targetPos) < 300){
-            elevatorNoGovernor(0);
+//            elevatorNoGovernor(0);
             return true;
         }
 
-        this.setpoint = targetPos;
+        this.elevatorSetpoint = targetPos;
         state = GO_TO_POSITION;
 
         return false;

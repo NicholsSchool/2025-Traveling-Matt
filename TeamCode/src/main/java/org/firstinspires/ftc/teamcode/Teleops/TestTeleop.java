@@ -88,7 +88,24 @@ public class TestTeleop extends OpMode {
 //        if(controller2.square.isPressed()){
 //            elevator.elevatorToPos(17000);
 //        }
+
+        controller1.update();
+        controller2.update();
 //
+//        if(controller2.square.wasJustPressed()){
+//            elevator.elevatorToPos(10000);
+//        }
+//
+//        if (controller2.square.wasJustReleased()){
+//            elevator.elevatorToPos(100);
+//        }
+
+        //ELEVATOR MANUAL
+        if( Math.abs(controller2.leftStick.y.value()) > 0.2 ) {
+            elevator.setState(Elevator.ELEVATOR_STATE.MANUAL);
+            elevator.elevatorNoGovernor( controller2.leftStick.y.value() );
+        } else { elevator.setState(Elevator.ELEVATOR_STATE.GO_TO_POSITION); }
+
         if(controller2.square.wasJustPressed()){
             elevator.elevatorToPos(10000);
         }
@@ -97,7 +114,14 @@ public class TestTeleop extends OpMode {
             elevator.elevatorToPos(100);
         }
 
-        elevator.elevatorSoftlimited(controller2.leftStick.y.value() );
+        //ELEVATOR SETPOINTS
+//        if (controller2.square.wasJustPressed()) elevator.setSetpoint(ElevatorConstants.WAYPOINT_ZERO);
+
+        if (controller2.rightBumper.wasJustPressed()) elevator.setSetpoint(ArmConstants.BUCKETHEIGHT);
+        if (controller2.rightBumper.wasJustReleased()) elevator.setSetpoint(0);
+        //replace these with sample waypoints :3
+//
+//        elevator.elevatorSoftlimited(controller2.leftStick.y.value() );
 
         elevator.periodic();
 
@@ -110,7 +134,7 @@ public class TestTeleop extends OpMode {
 //        telemetry.addData("Using LL", poseEstimator.isUsingLL());
 
         telemetry.addData("elevator real", elevator.getElevatorPosition());
-        telemetry.addData("elevator setpoint", elevator.getSetpoint());
+//        telemetry.addData("elevator setpoint", elevator.getSetpoint());
         telemetry.addData("state", elevator.getState());
 
         TelemetryPacket packet = new TelemetryPacket();
@@ -149,8 +173,7 @@ public class TestTeleop extends OpMode {
 //
 //        drivetrain.drive(new Vector(controller1.leftStick.x.value(), controller1.leftStick.y.value()), controller1.rightStick.x.value(), autoAlign, controller1.rightBumper.isPressed());
 //
-        controller1.update();
-        controller2.update();
+
         drivetrain.update();
         poseEstimator.update();
         telemetry.addData("elevator position", elevator.getElevatorPosition());

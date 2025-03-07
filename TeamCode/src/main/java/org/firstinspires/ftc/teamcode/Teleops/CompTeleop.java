@@ -72,9 +72,23 @@ public class CompTeleop extends OpMode {
      */
     @Override
     public void loop() {
+
+        controller1.update();
+        controller2.update();
+        drivetrain.update();
         //Run elevator - manual
-        if(!controller2.square.isPressed()) {
-            elevator.elevatorSoftlimited(controller2.leftStick.y.value());
+        //ELEVATOR MANUAL
+        if( Math.abs(controller2.leftStick.y.value()) > 0.05 ) {
+            elevator.setState(Elevator.ELEVATOR_STATE.MANUAL);
+            elevator.elevatorNoGovernor( controller2.leftStick.y.value() );
+        } else { elevator.setState(Elevator.ELEVATOR_STATE.GO_TO_POSITION); }
+
+        if(controller2.square.wasJustPressed()){
+            elevator.elevatorToPos(10000);
+        }
+
+        if (controller2.square.wasJustReleased()){
+            elevator.elevatorToPos(100);
         }
 
         //Run intake slide - manual
@@ -93,11 +107,11 @@ public class CompTeleop extends OpMode {
 
         //reset sparkfun IMU
         if (controller1.options.isPressed()) {drivetrain.resetIMU();}
-
-        //go to basket height
-        if (controller2.square.isPressed()) {
-            elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT);
-        }
+//
+//        //go to basket height
+//        if (controller2.square.isPressed()) {
+//            elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT);
+//        }
 
         //intake all the way out
         if (controller2.circle.isPressed()) {
