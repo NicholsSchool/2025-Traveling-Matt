@@ -85,24 +85,33 @@ public class TestTeleop extends OpMode {
     public void loop() {
 
 
-        if(controller2.square.isPressed()){
-            elevator.elevatorToPos(17000);
+//        if(controller2.square.isPressed()){
+//            elevator.elevatorToPos(17000);
+//        }
+//
+        if(controller2.square.wasJustPressed()){
+            elevator.elevatorToPos(10000);
         }
 
-
-        if(controller2.square.isPressed()){
-            elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT);
+        if (controller2.square.wasJustReleased()){
+            elevator.elevatorToPos(100);
         }
+
+        elevator.elevatorSoftlimited(controller2.leftStick.y.value() );
 
         elevator.periodic();
 
 
-        telemetry.addData("OTOS Heading", poseEstimator.otos.getHeading());
-        telemetry.addData("OTOS Position", poseEstimator.otos.getPosition().toString());
+//        telemetry.addData("OTOS Heading", poseEstimator.otos.getHeading());
+//        telemetry.addData("OTOS Position", poseEstimator.otos.getPosition().toString());
+//
+//        telemetry.addData("Initial Pose", String.format(Locale.US, "(%.3f, %.3f)", poseEstimator.initialPose.getX(DistanceUnit.INCH), poseEstimator.initialPose.getY(DistanceUnit.INCH)));
+//        telemetry.addData("Robot Pose", String.format(Locale.US, "(%.3f, %.3f)", poseEstimator.getPose().getX(DistanceUnit.INCH), poseEstimator.getPose().getY(DistanceUnit.INCH)));
+//        telemetry.addData("Using LL", poseEstimator.isUsingLL());
 
-        telemetry.addData("Initial Pose", String.format(Locale.US, "(%.3f, %.3f)", poseEstimator.initialPose.getX(DistanceUnit.INCH), poseEstimator.initialPose.getY(DistanceUnit.INCH)));
-        telemetry.addData("Robot Pose", String.format(Locale.US, "(%.3f, %.3f)", poseEstimator.getPose().getX(DistanceUnit.INCH), poseEstimator.getPose().getY(DistanceUnit.INCH)));
-        telemetry.addData("Using LL", poseEstimator.isUsingLL());
+        telemetry.addData("elevator real", elevator.getElevatorPosition());
+        telemetry.addData("elevator setpoint", elevator.getSetpoint());
+        telemetry.addData("state", elevator.getState());
 
         TelemetryPacket packet = new TelemetryPacket();
         packet.fieldOverlay()
@@ -156,12 +165,7 @@ public class TestTeleop extends OpMode {
         telemetry.addData("Initial Pose", String.format(Locale.US, "(%.3f, %.3f)", poseEstimator.initialPose.getX(DistanceUnit.INCH), poseEstimator.initialPose.getY(DistanceUnit.INCH)));
         telemetry.addData("Robot Pose", String.format(Locale.US, "(%.3f, %.3f)", poseEstimator.getPose().getX(DistanceUnit.INCH), poseEstimator.getPose().getY(DistanceUnit.INCH)));
         telemetry.addData("Using LL", poseEstimator.isUsingLL());
-
-
-
-
-
-
+        telemetry.addData("state", elevator.getState());
     }
 
     /*

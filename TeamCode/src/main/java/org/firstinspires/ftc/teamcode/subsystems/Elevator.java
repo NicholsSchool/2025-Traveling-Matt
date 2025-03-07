@@ -48,7 +48,7 @@ public class Elevator implements ArmConstants {
 
         leftLight = hwMap.get(Servo.class, "leftLight");
         rightLight = hwMap.get(Servo.class, "rightLight");
-        elevatorController = new SimpleFeedbackController(ELEVATOR_P);
+//        elevatorController = new SimpleFeedbackController(ELEVATOR_P);
 
 
         elevatorPID = new PIDController(ELEVATOR_P, 0.0, 0.0);
@@ -59,10 +59,14 @@ public class Elevator implements ArmConstants {
 
         switch (state) {
             case GO_TO_POSITION:
-                elevatorSoftlimited(-(elevatorController.calculate(getElevatorPosition() - setpoint)));
+                elevatorNoGovernor(elevatorPID.calculate(getElevatorPosition(), setpoint));
                 break;
             case MANUAL:
                 setpoint = getElevatorPosition();
+                break;
+            default:
+                elevatorNoGovernor(0);
+                break;
         }
 
     }
@@ -73,16 +77,18 @@ public class Elevator implements ArmConstants {
         elevatorRight.setPower(-power);
     }
 
-    public void elevatorManual(double power){
-        elevatorNoGovernor(Range.clip(power, -ELEVATORMAX, ELEVATORMAX));
+    public void setState(){
 
     }
 
-
+    public double getSetpoint(){
+        return setpoint;
+    }
 
     public void elevatorSoftlimited(double power){
 
-        if (power > 0.05) { state = MANUAL; }
+        if (Math.abs(power) > 0.1) { state = MANUAL; }
+
 
         if((power > 0 && getElevatorPosition() < ELEVATORMAX) || (power <= 0 && getElevatorPosition() > ELEVATORMIN)) {
             elevatorRight.setPower(-power);
@@ -94,10 +100,17 @@ public class Elevator implements ArmConstants {
 
     }
 
+    public String getState(){
+    switch (state) {
+        case GO_TO_POSITION:
+            return "gotopos";
 
-
-
-
+        case MANUAL:
+            return "manual";
+        default:
+            return "default";
+    }
+    }
 
 
     /**
@@ -113,7 +126,7 @@ public class Elevator implements ArmConstants {
 
     public boolean elevatorToPos(int targetPos){
         if(Math.abs(getElevatorPosition() - targetPos) < 300){
-            elevatorSoftlimited(0);
+            elevatorNoGovernor(0);
             return true;
         }
 
@@ -123,12 +136,12 @@ public class Elevator implements ArmConstants {
         return false;
     }
 
-    public double elevatorTest(int targetPos){
-        return  (-Range.clip(elevatorController.calculate(getElevatorPosition() - targetPos), -1 , 1));
-    }
+//    public double elevatorTest(int targetPos){
+//        return  (-Range.clip(elevatorController.calculate(getElevatorPosition() - targetPos), -1 , 1));
+//    }
 
     public int getElevatorPosition(){
-        return Math.abs(elevatorLeft.getCurrentPosition());
+        return -elevatorLeft.getCurrentPosition();
     }
 
     public void resetElevatorposition(){

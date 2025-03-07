@@ -33,6 +33,15 @@ public class Button {
     }
 
     /**
+     * The button's change of state
+     *
+     * @return whether the button was just released
+     */
+    public boolean wasJustReleased() {
+        return !isPressed && wasPressed;
+    }
+
+    /**
      * The Button as a String
      *
      * @return whether the Button is pressed

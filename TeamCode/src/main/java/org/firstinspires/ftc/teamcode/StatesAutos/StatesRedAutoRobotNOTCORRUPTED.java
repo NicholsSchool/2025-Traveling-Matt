@@ -44,46 +44,41 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
 
     public void redAuto(BooleanSupplier isActive) {
         time.reset();
-//go to bucket
+//go to bucket #0
         while (!elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT) && isActive.getAsBoolean()) {
             drivetrain.update();
-            elevator.periodic();
             drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -51.5, -50, AngleUnit.DEGREES, 225), false);
             updateTelemetry();
             intake.periodic();
         }
 
         time.reset();
-//forward?
+//forward #0
         while (time.seconds() < .7 && isActive.getAsBoolean()) {
             drivetrain.update();
-            elevator.periodic();
             drivetrain.drive(new Vector(-.6, -.6), 0, false, false);
             updateTelemetry();
             intake.periodic();
         }
-// back up
+// back up #0
         while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -57.5, -55, AngleUnit.DEGREES, 225), false)) {
             drivetrain.update();
-            elevator.periodic();
             updateTelemetry();
             intake.periodic();
 
         }
-//
-        while(!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -48, -54, AngleUnit.DEGREES, 270),false) && isActive.getAsBoolean()){
+//midpoint #1
+        while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -48, -54, AngleUnit.DEGREES, 270), false) && isActive.getAsBoolean()) {
             drivetrain.update();
-            elevator.periodic();
             elevator.elevatorToPos(ArmConstants.ASCENTHEIGHT);
             intake.periodic();
 
             updateTelemetry();
         }
 
-//go to first block
-        while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -44.5, -43.6  , AngleUnit.DEGREES, 267), false) && isActive.getAsBoolean()) {
+//go to #1 block
+        while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -44.5, -42.2, AngleUnit.DEGREES, 267), false) && isActive.getAsBoolean()) {
             drivetrain.update();
-            elevator.periodic();
 //            elevator.elevatorToPos(ArmConstants.ELEVATORMIN);
 //            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -43.5, -56  , AngleUnit.DEGREES, 267), false);
 //            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -44.5, -30  , AngleUnit.DEGREES, 267), false);
@@ -94,23 +89,12 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
 
 
         }
-
+//stop motors running #1
         drivetrain.runDriveMotors(0);
-//intake out, servo spin, wrist go out
-//        while (!intake.setWristSetpoint(160)) {
-//            intake.periodic();
-//            updateTelemetry();
-//            intake.intakeServo(.8);
-//            intake.periodic();
-//            intake.intakeToPos(ArmConstants.INTAKEMAX);
-//            intake.periodic();
-//            telemetry.addLine("Im in the loop");
-//            intake.periodic();
-//
-//     }
+
+        //intake and run slides out #1
         while (!intake.setWristSetpoint(85)) {
             intake.periodic();
-            elevator.periodic();
             updateTelemetry();
             intake.intakeServo(.8);
             intake.periodic();
@@ -122,35 +106,34 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
 
         }
 
+        //intake block #1
         time.reset();
-        while(time.seconds() < 0.6 && isActive.getAsBoolean()) {
+        while (time.seconds() < 0.6 && isActive.getAsBoolean() || intake.hasSample() && isActive.getAsBoolean()) {
             intake.intakeServo(.8);
         }
-//intake servo run, drive a little forward
 
-
-        //|| intake.hasSample() && isActive.getAsBoolean()
-//stop servos, intake in
+        intake.intakeServo(0);
         time.reset();
         intake.intakeServo(0);
+        //go to handoff #1
         while (!intake.setWristSetpoint(ArmConstants.INTAKE_BUCKET) && isActive.getAsBoolean()) {
             intake.periodic();
-            elevator.periodic();
 
             intake.intakeToPos(ArmConstants.INTAKEMIN);
             updateTelemetry();
         }
 
         intake.intakeSoftLimited(0);
-//outtake block, and then stop
+
+//outtake block #1
 
         time.reset();
         while (time.seconds() < .1 && isActive.getAsBoolean()) {
 
         }
         time.reset();
-        while (time.seconds() < 1.1 && isActive.getAsBoolean()) {
-            intake.outtakeBlock(.8);
+        while (time.seconds() < 1.0 && isActive.getAsBoolean()) {
+            intake.outtakeBlock(.5);
             updateTelemetry();
         }
         intake.outtakeBlock(0);
@@ -161,14 +144,12 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
 
         while (!intake.setWristSetpoint(250)) {
             intake.periodic();
-            elevator.periodic();
             updateTelemetry();
             intake.periodic();
         }
 
-//go to bucket
+//go to bucket #1
         while (!elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT) && isActive.getAsBoolean()) {
-            elevator.periodic();
             drivetrain.update();
             drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -51.5, -50, AngleUnit.DEGREES, 225), false);
             updateTelemetry();
@@ -176,25 +157,23 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
         }
 
         time.reset();
-//forward?
+//forward #1
         while (time.seconds() < .7 && isActive.getAsBoolean()) {
             drivetrain.update();
             drivetrain.drive(new Vector(-.6, -.6), 0, false, false);
             updateTelemetry();
             intake.periodic();
         }
-// back up
+// back up #1
         while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -57.5, -55, AngleUnit.DEGREES, 225), false)) {
             drivetrain.update();
-            elevator.periodic();
             updateTelemetry();
             intake.periodic();
 
         }
 
-        //
-        while(!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -52, -54, AngleUnit.DEGREES, 270),false) && isActive.getAsBoolean()){
-            elevator.periodic();
+        // midpoint #2
+        while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -52, -54, AngleUnit.DEGREES, 270), false) && isActive.getAsBoolean()) {
             drivetrain.update();
             elevator.elevatorToPos(ArmConstants.ASCENTHEIGHT);
             intake.periodic();
@@ -202,10 +181,9 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
             updateTelemetry();
         }
 
-//go to second block
-        while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -53.5, -42.2  , AngleUnit.DEGREES, 267), false) && isActive.getAsBoolean()) {
+//go to #2 block
+        while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -54.5, -41.0, AngleUnit.DEGREES, 267), false) && isActive.getAsBoolean()) {
             drivetrain.update();
-            elevator.periodic();
 //            elevator.elevatorToPos(ArmConstants.ELEVATORMIN);
 //            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -43.5, -56  , AngleUnit.DEGREES, 267), false);
 //            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -44.5, -30  , AngleUnit.DEGREES, 267), false);
@@ -220,9 +198,9 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
         drivetrain.runDriveMotors(0);
         intake.intakeSoftLimited(0);
 
+        //wrist/intake/slides go out #2
         while (!intake.setWristSetpoint(85)) {
             intake.periodic();
-            elevator.periodic();
             updateTelemetry();
             intake.intakeServo(.8);
             intake.periodic();
@@ -234,33 +212,30 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
 
         }
 
+        //intake run #2
         time.reset();
-        while(time.seconds() < 1.5 && isActive.getAsBoolean()) {
+        while (time.seconds() < 0.7 && isActive.getAsBoolean()) {
             intake.intakeServo(.8);
         }
-//intake servo run, drive a little forward
 
-
-        //|| intake.hasSample() && isActive.getAsBoolean()
-//stop servos, intake in
+        //intake handoff #2
         time.reset();
         intake.intakeServo(0);
         while (!intake.setWristSetpoint(ArmConstants.INTAKE_BUCKET) && isActive.getAsBoolean()) {
             intake.periodic();
-            elevator.periodic();
 
             intake.intakeToPos(ArmConstants.INTAKEMIN);
             updateTelemetry();
         }
-//outtake block, and then stop
 
+//outtake block #2
         time.reset();
         while (time.seconds() < .1 && isActive.getAsBoolean()) {
 
         }
         time.reset();
-        while (time.seconds() < 1.1 && isActive.getAsBoolean()) {
-            intake.outtakeBlock(.8);
+        while (time.seconds() < 1.0 && isActive.getAsBoolean()) {
+            intake.outtakeBlock(.5);
             updateTelemetry();
         }
         intake.outtakeBlock(0);
@@ -274,97 +249,138 @@ public class StatesRedAutoRobotNOTCORRUPTED implements DriveConstants, ArmConsta
             updateTelemetry();
             intake.periodic();
         }
-//
-////go to 2nd block
-//        while (!  elevator.elevatorToPos(ArmConstants.ELEVATORMIN) && isActive.getAsBoolean()) {
-//            drivetrain.update();
-//            elevator.elevatorToPos(ArmConstants.ELEVATORMIN);
-//            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -36, -35, AngleUnit.DEGREES, 350), false);
-//            //-26, -35.5
-////            intake.intakeToPos(ArmConstants.INTAKEMAX);
-//            updateTelemetry();
-//
-//
-//        }
-////intake out, spin servo
-//        while (!intake.intakeToPos(ArmConstants.INTAKEMAX) && isActive.getAsBoolean()) {
-//            updateTelemetry();
-//            intake.intakeServo(.8);
-////            intake.wristControl(true);
-//        }
-//
-////spin intake, drive a lil forward
-//        time.reset();
-//        while (time.seconds() < 1.5 && isActive.getAsBoolean()) {
-//            drivetrain.update();
-//            intake.intakeServo(.8);
-//            drivetrain.drive(new Vector(-.4, .15), 0, false, false);
-//            updateTelemetry();
-//        }
-////intake stop, intake back in
-//        time.reset();
-//        intake.intakeServo(0);
-////        intake.wristControl(false);
-//        while (!intake.intakeToPos(ArmConstants.INTAKEMIN) && isActive.getAsBoolean()) {
-//            updateTelemetry();
-//        }
-////outtake block
-//        time.reset();
-//        while (time.seconds() < .1 && isActive.getAsBoolean()) {
-//
-//        }
-//        time.reset();
-//        while (time.seconds() < 1.1 && isActive.getAsBoolean()) {
-//            intake.outtakeBlock(.8);
-//            updateTelemetry();
-//        }
-//
-//        intake.outtakeBlock(0);
-//        time.reset();
-//        while (time.seconds() < .1 && isActive. getAsBoolean()) {
-//
-//        }
-////        intake.wristControl(true);
-//
-////bucket time!!!
-//        while (!elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT) && isActive.getAsBoolean()) {
-//            drivetrain.update();
-//            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -53, -50, AngleUnit.DEGREES, 225), false);
-//            updateTelemetry();
-//        }
-////push in
-//        time.reset();
-//        while (time.seconds() < .8 && isActive.getAsBoolean()) {
-//            drivetrain.update();
-//            drivetrain.drive(new Vector(-.6, -.6), 0, false, false);
-//            updateTelemetry();
-//        }
-////back up
-//        while (!elevator.elevatorToPos(ArmConstants.ELEVATORMIN)) {
-//            drivetrain.update();
-//            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -56, -56, AngleUnit.DEGREES, 225), false);
-//            updateTelemetry();
-//            elevator.elevatorToPos(ArmConstants.ELEVATORMIN);
 
-//        while(!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -36, -20, AngleUnit.DEGREES, 90),false) && isActive.getAsBoolean()){
-//            drivetrain.update();
-//            updateTelemetry();
-//
-//        }
-//
-//        while(!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -29, -16, AngleUnit.DEGREES, 90),false) && isActive.getAsBoolean()){
-//            drivetrain.update();
-//            updateTelemetry();
-//
-//
-//        }
-//
-//        while(!elevator.elevatorToPos(ArmConstants.ASCENTHEIGHT) && isActive.getAsBoolean()){
-//            updateTelemetry();
-//        }
+//bucket time!!! #2
+        while (!elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT) && isActive.getAsBoolean()) {
+            drivetrain.update();
+            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -51.5, -50, AngleUnit.DEGREES, 225), false);
+            updateTelemetry();
+            intake.periodic();
+        }
+//push in #2
+        time.reset();
+        while (time.seconds() < .7 && isActive.getAsBoolean()) {
+            drivetrain.update();
+            drivetrain.drive(new Vector(-.6, -.6), 0, false, false);
+            updateTelemetry();
+            intake.periodic();
+        }
+//back up #2
+        while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -57.5, -55, AngleUnit.DEGREES, 225), false)) {
+            drivetrain.update();
+            updateTelemetry();
+            intake.periodic();
 
-//
+        }
+
+
+        // midpoint #3
+        while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -52, -52, AngleUnit.DEGREES, 270), false) && isActive.getAsBoolean()) {
+            drivetrain.update();
+            elevator.elevatorToPos(ArmConstants.ASCENTHEIGHT);
+            intake.periodic();
+
+            updateTelemetry();
+        }
+
+        // go to #3 block
+        while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -52.2, -43, AngleUnit.DEGREES, 300), false) && isActive.getAsBoolean()) {
+            drivetrain.update();
+
+            elevator.elevatorToPos(ArmConstants.ELEVATORMIN);
+
+            updateTelemetry();
+
+
+        }
+
+        drivetrain.runDriveMotors(0);
+
+        //run wrist/slides/intake out #3
+        while (!intake.setWristSetpoint(145 )) {
+            intake.periodic();
+            updateTelemetry();
+            intake.intakeServo(.8);
+            intake.periodic();
+            intake.intakeToPos(22550);
+            intake.periodic();
+            telemetry.addLine("Im in the loop");
+            telemetry.addLine("Im updated");
+            intake.periodic();
+
+        }
+
+        //intake #3
+        time.reset();
+        while (time.seconds() < 0.7 && isActive.getAsBoolean()) {
+            intake.intakeServo(.8);
+        }
+//intake servo run, drive a little forward
+
+
+        //|| intake.hasSample() && isActive.getAsBoolean()
+// intake in
+        time.reset();
+        intake.intakeServo(0);
+        while (!intake.setWristSetpoint(ArmConstants.INTAKE_BUCKET) && isActive.getAsBoolean()) {
+            intake.periodic();
+
+            intake.intakeToPos(ArmConstants.INTAKEMIN);
+            updateTelemetry();
+        }
+
+        intake.intakeSoftLimited(0);
+//outtake block, and then stop
+
+        time.reset();
+        while (time.seconds() < .1 && isActive.getAsBoolean()) {
+
+        }
+        time.reset();
+        while (time.seconds() < 1.0 && isActive.getAsBoolean()) {
+            intake.outtakeBlock(.6);
+            updateTelemetry();
+        }
+        intake.outtakeBlock(0);
+        time.reset();
+        while (time.seconds() < .1 && isActive.getAsBoolean()) {
+
+        }
+
+        while (!intake.setWristSetpoint(250)) {
+            intake.periodic();
+            updateTelemetry();
+            intake.periodic();
+        }
+
+//go to bucket #3
+        while (!elevator.elevatorToPos(ArmConstants.BUCKETHEIGHT) && isActive.getAsBoolean()) {
+            drivetrain.update();
+            drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -51.5, -50, AngleUnit.DEGREES, 225), false);
+            updateTelemetry();
+            intake.periodic();
+        }
+//push in #2
+        time.reset();
+        while (time.seconds() < .7 && isActive.getAsBoolean()) {
+            drivetrain.update();
+            drivetrain.drive(new Vector(-.6, -.6), 0, false, false);
+            updateTelemetry();
+            intake.periodic();
+        }
+//back up #2
+        while (!drivetrain.driveToPose(new Pose2D(DistanceUnit.INCH, -57.5, -55, AngleUnit.DEGREES, 225), false)) {
+            drivetrain.update();
+            updateTelemetry();
+            intake.periodic();
+
+        }
+
+
+
+
     }
+
 
 
 
