@@ -170,4 +170,9 @@ public class Intake implements ArmConstants {
     public int getIntakeSlidePosition(){
         return -intakeSlide.getCurrentPosition();
     }
+
+    public void resetIntakeSlideposition(){
+        intakeSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intakeSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
 }

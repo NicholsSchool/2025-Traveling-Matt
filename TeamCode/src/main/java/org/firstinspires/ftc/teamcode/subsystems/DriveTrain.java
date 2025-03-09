@@ -94,7 +94,7 @@ public class DriveTrain implements DriveConstants {
     public void drive(Vector driveInput, double turn, boolean autoAlign, boolean lowGear) {
         turn = 3.5 * (turnProfile.calculate(autoAlign ? turnToAngle() : turn));
         double turnCalculated = Math.abs(turn) < 0.05 ? turnProfile.calculate(turnToAngle()) : turn * 0.3;
-        turnCalculated = turnCalculated * (lowGear ? 0.75 : 1.0);
+        turnCalculated = turnCalculated * (lowGear ? 0.5 : 1.0);
         if(Math.abs(turn) < 0.05){
             setTargetHeading(getHeading(AngleUnit.RADIANS)
             );
@@ -184,7 +184,10 @@ public class DriveTrain implements DriveConstants {
 
     public Pose2D getPose() { return poseEstimator.getPose(); }
 
-     public void resetIMU() { od.resetHeading();}
+     public void resetIMU() {
+        od.resetHeading();
+        targetHeading = 0;
+    }
 
     public double getHeading(AngleUnit unit){
         return poseEstimator.getPose().getHeading(unit);

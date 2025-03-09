@@ -159,6 +159,15 @@ public class CompTeleop extends OpMode {
             intake.setWristSetpoint(intake.getIntakeSlidePosition() * ArmConstants.LINEAR_REGRESSION_M + ArmConstants.LINEAR_REGRESSION_B);
         }
 
+        //intake slide encoder reset to 0
+        if (controller2.dpadUp.isPressed()){
+            intake.resetIntakeSlideposition();
+        }
+
+        if (controller2.dpadDown.isPressed()){
+            intake.intakeSlideManual(-1);
+        }
+
 //        y=64.75233\cdot0.999976^{x}
         //intake.setIntakeSetpoint(ArmConstants.REGRESSION_M *  Math.pow(ArmConstants.REGRESSION_B, intake.getIntakeSlidePosition())); (exponential)
 
