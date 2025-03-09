@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.Teleops;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -29,6 +32,7 @@ public class CompTeleop extends OpMode {
     Intake intake;
     LED leftLED, rightLED;
     boolean highGear = false;
+    FtcDashboard dashboard;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -43,6 +47,10 @@ public class CompTeleop extends OpMode {
 
         controller1 = new Controller(gamepad1);
         controller2 = new Controller(gamepad2);
+
+        dashboard = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
+        telemetry.setMsTransmissionInterval(50);
 
 
         // Tell the driver that initialization is complete.
@@ -188,6 +196,23 @@ public class CompTeleop extends OpMode {
 
 
         //Allllll the telemetry
+        TelemetryPacket packet = new TelemetryPacket();
+        packet.fieldOverlay()
+                .setAlpha(0.7)
+                .setStrokeWidth(1)
+                .setStroke("Red")
+                .strokeCircle(
+                        drivetrain.getPose().getX(DistanceUnit.INCH),
+                        drivetrain.getPose().getY(DistanceUnit.INCH),
+                        9
+                )
+                .setStroke("Green")
+                .strokeLine(
+                        drivetrain.getPose().getX(DistanceUnit.INCH),
+                        drivetrain.getPose().getY(DistanceUnit.INCH),
+                        drivetrain.getPose().getX(DistanceUnit.INCH) + (9 * Math.cos(drivetrain.getPose().getHeading(AngleUnit.RADIANS))),
+                        drivetrain.getPose().getY(DistanceUnit.INCH) + (9 * Math.sin(drivetrain.getPose().getHeading(AngleUnit.RADIANS)))
+                );
         telemetry.addData("elevator position", elevator.getElevatorPosition());
         telemetry.addData("intake slide position", intake.getIntakeSlidePosition());
         telemetry.addData("x", drivetrain.getPose().getX(DistanceUnit.INCH));
@@ -198,6 +223,8 @@ public class CompTeleop extends OpMode {
         telemetry.addData("intake", intake.hasSample());
         telemetry.addData("intake power", intake.getIntakePower());
         telemetry.addData("intake position", intake.getWristPos());
+        dashboard.sendTelemetryPacket(packet);
+        telemetry.update();
     }
 
     /*
